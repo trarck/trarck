@@ -128,6 +128,7 @@
             if(!items) return null;
             var endIndex=items.length-1;
             var maxZIndexObj=items[endIndex];
+			//此处有bug,没有考虑树形渲染结构。
             for(var i=endIndex-1;i>=0;i--){
                 maxZIndexObj=maxZIndexObj._zOrder<items[i]._zOrder?items[i]:maxZIndexObj;
             }

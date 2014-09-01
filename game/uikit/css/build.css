@@ -1,0 +1,205 @@
+.Screen{
+    position: relative;
+}
+
+/*==wrap effect==*/
+.wrap .Sprite{
+    -moz-box-shadow:0px 0px 2px #CC0000;
+    -webkit-box-shadow:0px 0px 2px #CC0000;
+    box-shadow:0px 0px 2px #CC0000;
+    position: absolute;
+}
+.wrap .Text{
+    -moz-box-shadow:0px 0px 2px #0000CC;
+    -webkit-box-shadow:0px 0px 2px #0000CC;
+    box-shadow:0px 0px 2px #0000CC;
+    position: absolute;
+}
+
+.wrap .Button{
+    -moz-box-shadow:0px 0px 2px #FFCC00;
+    -webkit-box-shadow:0px 0px 2px #FFCC00;
+    box-shadow:0px 0px 2px #FFCC00;
+    position: absolute;
+
+}
+
+
+.wrap .TFButton{
+    -moz-box-shadow:0px 0px 2px #FF00CC;
+    -webkit-box-shadow:0px 0px 2px #FF00CC;
+    box-shadow:0px 0px 2px #FF00CC;
+    position: absolute;
+    /*overflow: hidden;*/
+}
+
+.wrap .Group{
+    -moz-box-shadow:0px 0px 2px #FF00CC;
+    -webkit-box-shadow:0px 0px 2px #FF00CC;
+    box-shadow:0px 0px 2px #FF00CC;
+    position: absolute;
+}
+
+/*for struct view*/
+.Group .tree-icon.lock{
+    background: url("images/lock_key.png");
+}
+
+.wrap .Button .Sprite,.wrap .Button .Text,
+.wrap .TFButton .Sprite,.wrap .TFButton .Text{
+    -moz-box-shadow:none;
+    -webkit-box-shadow:none;
+    box-shadow:none;
+}
+
+
+.wrap .Group.selected,.Group.selected,
+.wrap .Sprite.selected,.Sprite.selected,
+.wrap .Text.selected,.Text.selected,
+.wrap .Button.selected,.Button.selected,
+.wrap .TFButton.selected,.TFButton.selected{
+    -moz-box-shadow:none;
+    -webkit-border-shadow:none;
+    box-shadow:none;
+    outline:#0C0 solid 1px;
+    /*-moz-box-shadow:0px 0px 2px #0C0;*/
+    /*-webkit-box-shadow:0px 0px 2px #0C0;*/
+    /*box-shadow:0px 0px 2px #0C0;*/
+}
+
+.resize-handle.se{
+    position: absolute;
+    width:10px;
+    height:10px;
+    left:100%;
+    top:100%;
+    border:1px solid #CCC;
+    margin:-6px 0 0 -6px;
+}
+
+
+a.btn{
+    display:inline-block;
+    zoom:1;
+    width:16px;
+    height:16px;
+    font-size: 0;
+    vertical-align: middle;
+}
+.btn-add{
+    background: url(../images/add.png);
+}
+.btn-del,.btn-cancel{
+    background: url(../images/del.png);
+}
+.btn-ok{
+    background: url(../images/accept.png);
+}
+
+
+#main{
+    margin:10px;
+}
+.sreen-attr{
+    clear:both;
+}
+#content{
+    border:1px solid #ccc;
+    float:left;
+    position: relative;
+    width:640px;
+    height:960px;
+    overflow: hidden;
+
+    user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#content img{
+    user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#content .hover{
+    border:1px solid #F00;
+    margin:-1px 0 0 -1px;
+}
+
+#attrView{
+    float:left;
+    border:1px solid #ccc;
+    width:320px;
+    font-size: 12px;
+}
+#attrView h4{
+    border-bottom:1px solid #ccc;
+    margin-bottom:6px;
+    padding:6px 3px;
+}
+
+.fixed-attr label,.args-attr label{
+    margin:4px 3px 4px 0;
+    width:86px;
+    text-align:right;
+    display:inline-block;
+    zoom:1;
+}
+.fixed-attr input{
+    width:80px;
+}
+.fixed-attr input[name=asset],.fixed-attr input[name=tag],.fixed-attr input[name=text]{
+    width:220px;
+}
+.fixed-attr .small{
+    width:40px;
+}
+
+.args-attr input{
+     width:180px;
+ }
+
+#attrView h4.ext{
+    border-top:1px solid #ccc;
+    margin-top:6px;
+}
+#attrView h4.ext a{
+    margin-left:220px;
+}
+.args-attr input[name=argsKey]{
+    width:80px;
+}
+.args-attr span{
+    margin-right:3px;
+}
+.args-attr a{
+    margin-left:5px;
+}
+
+#structView{
+    position: relative;
+    float:left;
+    width: 200px;
+    min-height: 600px;
+    border:1px solid #ccc;
+}
+
+#structView .Node,#structView .Sprite,#structView .Text{
+    position:relative;
+
+}
+
+#structView .Sprite .tree-icon{
+    background: url("images/icon_image.png");
+}
+
+#structView .Text .tree-icon{
+    background: url("images/icon_text.png");
+}
+
+#structView .Button .tree-icon,#structView .TFButton .tree-icon{
+    background: url("images/icon_button.png");
+}

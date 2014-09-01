@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> duan </title>
+  <style type="text/css">
+      /*
+斗兽棋
+*/
+      #animalChecker{
+          position:relative;
+          left:100px;
+          width:522px;
+          height:522px;
+      }
+      #animalChecker .background{
+          width:100%;
+          height:100%;
+          background:#999;
+      }
+      #animalContent{
+          position:absolute;
+          top:0;
+          left:0;
+           width:522px;
+          height:522px;
+      }
+      #animalContent img{
+          position:absolute;
+          border:0 node;
+          width:128px;
+          height:128px;
+          background:#FF0;
+      }
+  </style>
+ </head>
+
+ <body>
+  <div id="animalChecker">
+      <div class="background">
+        
+      </div>
+      <div id="animalContent">
+          
+      </div>
+  </div>
+  <script type="text/javascript" src="../jquery.js"></script>
+  <script type="text/javascript" src="AnimalChecker.js"></script>
+  <script type="text/javascript">
+      var animal=new AnimalChecker({waitForOther:true,side:1,user:"tra",view:document.getElementById("animalChecker"),content:document.getElementById("animalContent")});
+      var ticket=0;
+      getData();
+      
+      function getData() {
+        $.ajax({
+            url:"get.php?user=duan",
+            dataType:"json",
+            data:{ticket:ticket},
+            success:function (data) {
+                  window.ticket=data.ticket;
+                  if (data.items){
+                     animal.parseBack(data.items);
+                  }
+                  getData();
+            },
+            error:function(){
+                //getData();
+            }
+            
+        });
+       
+    }
+  </script>
+ </body>
+</html>

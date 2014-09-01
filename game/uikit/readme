@@ -1,0 +1,18 @@
+config:
+	In the server/index.js file, staticMaps section,set "/Content" equal the absolute path of Transformers/Content,"/JSON" to absolute path of Transformers/Code/View/JSON.
+	Nothing to do with "/yhge" and "/yh".It just for test.
+	Now,support command arguments.
+	run "node server --help" show usage.
+
+start:
+	nodejs version should be 0.8.x.
+	run "node server -tf pathToTransformersProject"
+	
+use:
+   Open from your web browser by navigating to url:
+
+   http://localhost:8421/editor.html
+
+   The Chrome, Safari, and Firefox web browsers are supported. Other web
+   browsers, including Internet Explorer, are not supported.
+	

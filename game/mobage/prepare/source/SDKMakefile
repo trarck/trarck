@@ -1,0 +1,54 @@
+port=8002
+
+ifdef generateArchives
+ioptions:=generateArchives=$(generateArchives)
+else
+ioptions:=
+endif
+
+ooptions:=$(ioptions) $(options)
+
+## ngCore SDK Makefile usage:
+##
+## Arguments:
+##
+## Pass generateArchives=true to server targets to generate content zips.
+## Pass port=xxxx to server targets to set port used by server.
+## Pass safe=true to limit server to serving only files under cwd.
+##
+## Targets:
+##
+
+help:			## Show this help.
+	@fgrep "##" $(MAKEFILE_LIST) | fgrep -v fgrep
+
+server:			## Run server.  Set port with arg port=xxxx.
+	node ./Tools/jake/lib/jake.js -f ./Tools/prepare/ServerJakefile server $(ooptions) suppressLegacy=true serverPort=$(port) logRoot=$(logRoot)
+
+server-compress:	## Run server with code minification/obfuscation.
+	node ./Tools/jake/lib/jake.js -f ./Tools/prepare/ServerJakefile server $(ooptions) suppressLegacy=true serverPort=$(port) logRoot=$(logRoot) compress=true
+
+toggle-jp:		## Switch to JP Social implementation.
+	cd NGCore/Client/ && rm -f Social.js && ln -s Social/JP.js Social.js
+	cd NGCore/Client/ && rm -f Bank.js && ln -s Bank/JP.js Bank.js
+
+toggle-us:		## Switch to US Social implementation.
+	cd NGCore/Client/ && rm -f Social.js && ln -s Social/US.js Social.js
+	cd NGCore/Client/ && rm -f Bank.js && ln -s Bank/US.js Bank.js
+
+arun: MYIP=$(shell ifconfig | fgrep broadcast | head -1 | sed -e s/^.\*inet\ // | sed s/\ netmask.\*// )
+arun: MYPACKAGEID=com.mobage.ww
+arun: MYPORT=8002
+arun: MYNATIVELOG=false
+arun:			## Run local Android build with given ngCore game path.
+                        ## Ex: make arun game=Samples/Launcher
+arun:           
+	adb shell 'am start -a $(MYPACKAGEID).RUN -e server http://$(MYIP):$(MYPORT) -e game $(game) -e nativeLog $(MYNATIVELOG)'
+
+                        ## Stop running ngCore activity.
+astop: MYPACKAGEID=com.mobage.ww
+astop:
+	adb shell 'am broadcast -a $(MYPACKAGEID).STOP'
+
+
+.PHONY: server server-compress toggle-jp toggle-us arun astop

@@ -1,0 +1,1 @@
+yhge.ui.EventType={    Show:"show",    Hide:"hide"};

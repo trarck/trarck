@@ -1,0 +1,81 @@
+{
+    "name":"yhge",
+    "version":0.14,
+    "prefix":"yhge",
+    "dest":"dist/{version}/",
+    "src":"..",
+    "headerTemplate":"header.txt",
+
+    "useFilter":0,
+    "tagBegin":"(function(){",
+    "tagEnd":"})();",
+    "beginRegexp":"\\s*\\(\\s*function\\s*\\(.*\\)\\s*\\{",
+    "endRegexp":"\\}\\)\\s*\\(\\)\\s*;*",
+
+    "builds":{
+        "root":{
+            "dir":"../",
+            "files":["ns.js"]
+        },
+        "core":{
+            "files":["Base.js", "Accessor.js","Util.js"]
+        },
+        "math":{
+            "files":["Geometry.js", "QuatTree.js", "TransformMatrix.js", "TransformQuatTree.js","ColorTransform.js"]
+        },
+        "times":{
+            "files":["Scheduler.js", "Timer.js", "AnimationManager.js"]
+        },
+        "animation":{
+            "files":["Animation.js", "AnimationVariable.js", "Frame.js", "ActionAnimation.js", "AnimationGroup.js"]
+        },
+        "event":{
+            "files":[
+                "EventObject.js", "MouseEventObject.js", "TouchEventObject.js",
+                "EventListenerManager.js", "UIEventListenerManager.js"
+            ]
+        },
+        "organizer":{
+            "files":["List.js"]
+        },
+        "input":{
+            "files":["Util.js", "Mouse.js", "Touch.js", "Input.js", "ListVisualEventProcessor.js"]
+        },
+        "renderer":{
+            "files":["ColorPrototype.js","Node.js","Sprite.js","Text.js"]
+        },
+        "renderer.canvas":{
+            "dir":"../renderer/canvas/",
+            "files":[
+                "Sprite.js", "AnimateSprite.js","Text.js",
+                "shape/Shape.js", 
+                "shape/Path.js"
+            ]
+        },
+        "renderer.canvas.swf":{
+            "dir":"../renderer/canvas/swf/",
+            "files":[
+                "ASObject.js",
+                "Clip.js",
+                "Shape.js",
+                "ShapeCache.js",
+                "MorphShape.js",
+                "MovieClip.js",
+                "GlyphShape.js",
+                "GlyphFont.js",
+                "GlyphText.js",
+                "DynamicText.js",
+                "Button.js",
+                "MainTimeLine.js",
+                "Generator.js"
+            ]
+        },
+
+        "engine":{
+            "dir":"../",
+            "files":[
+                "Engine.js"
+            ]
+        }
+    }
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> base </title>
+  <style type="text/css">
+    #canvas{
+        float:left;
+    }
+    #conf{
+        float:left;
+    }
+    #conf input{
+        width:3em;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <form id="conf">
+        <p>position x:<input name="px" value="0"/> y:<input name="py" value="0"/></p>
+        <p>rotation <input name="r" value="0"/></p>
+        <p>scale x:<input name="sx" value="0"/> y:<input name="sy" value="0"/></p>
+        <p><input type="button" value="do"/></p>
+   </form>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../ns.js"></script>
+   <script type="text/javascript" src="../core/Base.js"></script>
+   <script type="text/javascript" src="../core/Accessor.js"></script>
+
+   <script type="text/javascript">
+
+    var A=function(){
+        this.initialize();
+    };
+    A.prototype.initialize=function(){
+        console.log("A this.constructor=",this.constructor);
+        console.log("A this.constructor._super_",this.constructor._super_);
+        console.log("A A._super_",A._super_);
+        //可以做为判断是不是直接调用new 还是子类初始化时，初始化父类方法。
+        //子类初始化时，初始化父类一般会使用apply否则就没有意义。
+        console.log("A this.constructor=A ",this.constructor==A);
+        console.log("A this.constructor._super_=A._super_",this.constructor._super_==A._super_);
+    };
+
+    A.prototype.md=function(){
+        console.log("A md ");
+        console.log("this hasOwnProperty p "+Object.prototype.hasOwnProperty.call(this,"p"));
+        console.log("this.constructor.prototype hasOwnProperty p "+Object.prototype.hasOwnProperty.call(this.constructor.prototype,"p"));
+        console.log("A.prototype hasOwnProperty p "+Object.prototype.hasOwnProperty.call(A.prototype,"p"));
+    };
+    A.prototype.p=3;
+
+    var B=yhge.core.Class(A,{
+
+        classname:"B",
+
+        initialize:function(props){
+            B._super_.initialize.apply(this,arguments);
+            console.log("B this.constructor=",this.constructor);
+            console.log("B this.constructor._super_",this.constructor._super_);
+            console.log("B B._super_",B._super_);
+            console.log("B this.constructor=B ",this.constructor==B);
+            console.log("B this.constructor._super_=B._super_",this.constructor._super_==B._super_);
+        },
+        md:function(){
+            console.log("before B md ");
+            console.log("this hasOwnProperty p "+Object.prototype.hasOwnProperty.call(this,"p"));
+            console.log("this.constructor.prototype hasOwnProperty p "+Object.prototype.hasOwnProperty.call(this.constructor.prototype,"p"));
+            console.log("B.prototype hasOwnProperty p "+Object.prototype.hasOwnProperty.call(B.prototype,"p"));
+            console.log("B this.constructor=B ",this.constructor==B);
+            B._super_.md.apply(this,arguments);//安全的调用
+//          B._super_.md();//安全的调用
+//          this.constructor._super_.md();//不安全的调用，this可能会被改变
+//          this.constructor._super_.md.apply(this,arguments);// 不安全的调用，改变父类的this
+            console.log("after B md");
+        }
+    });
+    var C=yhge.core.Class(B,{
+
+        classname:"C",
+
+        initialize:function(props){
+            C._super_.initialize.apply(this,arguments);
+            console.log("C this.constructor=",this.constructor);
+            console.log("C this.constructor._super_",this.constructor._super_);
+            console.log("C C._super_",C._super_);
+            console.log("C this.constructor=C ",this.constructor==C);
+            console.log("C this.constructor._super_=C._super_",this.constructor._super_==C._super_);
+        },
+        md:function(){
+            console.log("before C md ");
+            console.log("this hasOwnProperty p "+Object.prototype.hasOwnProperty.call(this,"p"));
+            console.log("this.constructor.prototype hasOwnProperty p "+Object.prototype.hasOwnProperty.call(this.constructor.prototype,"p"));
+            console.log("C.prototype hasOwnProperty p "+Object.prototype.hasOwnProperty.call(C.prototype,"p"));
+            C._super_.md.apply(this,arguments);//安全的调用
+//          C._super_.md();//安全的调用
+//          this.constructor._super_.md();//不安全的调用，this可能会被改变
+//          this.constructor._super_.md.apply(this,arguments);//不安全的调用，改变父类的this
+            console.log("after C md");
+        }
+    });
+    console.log("before new A");
+    var a=new A();
+    console.log("after new A");
+    console.log("before new B");
+    var b=new B(33);
+    console.log("after new B");
+    console.log("before new C");
+    var c=new C(44);
+    console.log("after new C");
+
+    console.log("--------------");
+    c.md();
+    a.md();
+    b.md();
+    </script>
+ </body>
+</html>

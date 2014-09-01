@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> 测试矢量图和位图显示性能 </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+      var scene=document.getElementById('canvas');
+      var ctx = scene.getContext('2d');
+      var width=scene.width,height=scene.height;
+      var itemSize={width:256,height:256};
+
+      ctx.fillStyle = "#EEE";
+      ctx.fillRect(0,0,width,height);
+      
+      ctx.translate(width/2,height/2);
+
+      var img=new Image();
+      img.src="resource/rect2.png";
+      img.onload=function () {
+           
+      }
+
+      var img2=new Image();
+      img2.src="resource/1.png";
+
+      var linegrad2=ctx.createLinearGradient(0,0,itemSize.width,0);
+      linegrad2.addColorStop(0,"#FF0");
+      linegrad2.addColorStop(1,"#000");
+
+      var cache=document.createElement("canvas");
+      cache.width=2;
+      cache.height=2;
+      cacheCtx=cache.getContext('2d');
+//      cacheCtx.globalAlpha=1;
+      createCache(cacheCtx);
+      //console.log(cache.toDataURL());
+      var cacheImg=new Image;
+
+      cacheImg.setAttribute("src",cache.toDataURL());
+      //console.log(cache);
+      ctx.save();
+      var bt=(new Date()).getTime();
+      for(var i=0;i<10000;i++){
+//        drawRect();
+//        drawRect2();
+          drawRect3();
+//        drawImage();
+//          drawRectCache();
+      }
+      var et=(new Date()).getTime();
+      alert(et-bt);
+      ctx.restore();
+
+//      ctx.save();
+//      var bt=(new Date()).getTime();
+//      for(var i=0;i<100;i++){
+////        drawRect21();
+////        drawRect22();
+////        drawImage21();
+////          drawImage22();
+//          drawRectCache21();
+////          drawRectCache22();
+//      }
+//      var et=(new Date()).getTime();
+//      alert(et-bt);
+//      ctx.restore();
+      /*
+                            100             1000                        10000
+
+        drawRect            20,19,19            190,190,190             1863,1851,1851
+
+        drawRect2           20,20,20            191,192,191             1872,1870,1869
+        drawRect3           5,3,5               50,50,50                498,496,495
+        drawImage           6,6,6               57,57,57                556,566,560
+        drawImage2          163,164,163         1636,1623,1635
+        drawRectcache       160,164,161
+        
+
+        drawRect21              38,40,38            376,376,378
+        drawRect22              39,40,38            380,379,378
+        drawImage21             13,14,13            115,116,115
+        drawImage22             329,330,329         3267,3271,3268
+        drawRectcache21         323,322,321         3219,3217,3245
+
+        使用canvas缓存路径会使性能降低，和普通位图一样的性能。
+        但是使用颜色简单的图片比使用颜色复杂的图片的性能高。
+      */    
+
+      function drawRect() {
+        ctx.fillStyle="#CC3366";
+        ctx.fillRect(0,0,itemSize.width,itemSize.height);
+      }
+
+      function drawRect2() {
+        ctx.fillStyle="#CC3366";
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(itemSize.width,0);
+        ctx.lineTo(itemSize.width,itemSize.height);
+        ctx.lineTo(0,itemSize.height);
+        ctx.closePath();
+        ctx.fill();
+      }
+      
+      function drawRect3() {
+        ctx.fillStyle=linegrad2;
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(itemSize.width,0);
+        ctx.lineTo(itemSize.width,itemSize.height);
+        ctx.lineTo(0,itemSize.height);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function drawImage() {
+         ctx.drawImage(img,0,0,itemSize.width,itemSize.height);
+      }
+      function drawImage2() {
+         ctx.drawImage(img2,0,0,itemSize.width,itemSize.height);
+      }
+
+      function drawRectCache() {
+         ctx.drawImage(cache,0,0,itemSize.width,itemSize.height);
+      }
+
+
+      function createCache(context) {
+        context.fillStyle="#CC3366";
+        context.beginPath();
+        context.moveTo(0,0);
+        context.lineTo(itemSize.width,0);
+        context.lineTo(itemSize.width,itemSize.height);
+        context.lineTo(0,itemSize.height);
+        context.closePath();
+        context.fill();
+      }
+
+
+      function drawRect22() {
+        ctx.fillStyle="#CC3366";
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(itemSize.width,0);
+        ctx.lineTo(itemSize.width,itemSize.height);
+        ctx.lineTo(0,itemSize.height);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.save();
+        ctx.translate(-100,-100);
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(itemSize.width,0);
+        ctx.lineTo(itemSize.width,itemSize.height);
+        ctx.lineTo(0,itemSize.height);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawRect21() {
+        ctx.fillStyle="#CC3366";
+        ctx.fillRect(0,0,itemSize.width,itemSize.height);
+
+        ctx.save();
+        ctx.translate(-100,-100);
+        ctx.fillRect(0,0,itemSize.width,itemSize.height);
+        ctx.restore();
+      }
+
+      function drawImage21() {
+         ctx.drawImage(img,0,0,itemSize.width,itemSize.height);
+         ctx.save();
+         ctx.translate(-100,-100);
+         ctx.drawImage(img,0,0,itemSize.width,itemSize.height);
+         ctx.restore();
+      }
+      
+      function drawImage22() {
+         ctx.drawImage(img2,0,0,itemSize.width,itemSize.height);
+         ctx.save();
+         ctx.translate(-100,-100);
+         ctx.drawImage(img2,0,0,itemSize.width,itemSize.height);
+         ctx.restore();
+      }
+      function drawRectCache21() {
+         ctx.drawImage(cache,0,0,itemSize.width,itemSize.height);
+         ctx.save();
+         ctx.translate(-100,-100);
+         ctx.drawImage(cache,0,0,itemSize.width,itemSize.height);
+         ctx.restore();
+      }
+
+      function drawRectCache22() {
+         ctx.drawImage(cacheImg,0,0,itemSize.width,itemSize.height);
+         ctx.save();
+         ctx.translate(-100,-100);
+         ctx.drawImage(cacheImg,0,0,itemSize.width,itemSize.height);
+         ctx.restore();
+      }
+
+
+      function rect(ctx,strokeStyle,translate,rotate,afterTranslate){
+        ctx.save();
+        ctx.strokeStyle =strokeStyle;
+        ctx.translate(translate[0],translate[1]);
+        ctx.rotate(rotate*Math.PI/180);
+        afterTranslate && ctx.translate(afterTranslate[0],afterTranslate[1]);
+        ctx.restore();
+      }
+    </script>
+ </body>
+</html>

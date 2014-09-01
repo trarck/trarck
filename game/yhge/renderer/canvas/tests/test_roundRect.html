@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="300" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+
+   <script type="text/javascript" src="../../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Rect.js"></script>
+   <script type="text/javascript" src="../shape/RoundRect.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //ctx.fillStyle="#CCCCCC";
+    ctx.fillRect(0,0,300,300);
+    
+    var RoundRect=yhge.renderer.canvas.shape.RoundRect;
+
+    var rect1=new RoundRect({
+        width:50,
+        height:50,
+        color:"#00FF00",
+        radius:10
+    });
+    rect1.setPosition(10,10);
+    rect1.render(ctx);
+   
+    var rect1=new RoundRect({
+        width:50,
+        height:50,
+        color:"#00FF00",
+        radius:[20,10]
+    });
+    rect1.setPosition(70,10);
+    rect1.render(ctx);
+
+    var rect1=new RoundRect({
+        width:50,
+        height:50,
+        color:"#00FF00",
+        radius:[10,20,30,40]
+    });
+    rect1.setPosition(130,10);
+    rect1.render(ctx);
+
+    var rect1=new RoundRect({
+        width:100,
+        height:40,
+        color:"#00FF00",
+        radius:{
+            topLeft:{x:52,y:12},
+            topRight:{x:52,y:12},
+            bottomRight:{x:52,y:12},
+            bottomLeft:{x:52,y:12}
+        }
+    });
+    rect1.setPosition(20,70);
+    rect1.render(ctx);
+    
+
+    var rect1=new RoundRect({
+        width:50,
+        height:50,
+        color:"#00FF00",
+        radius:{
+            topLeft:{x:25,y:25},
+            topRight:{x:25,y:25},
+            bottomRight:{x:25,y:25},
+            bottomLeft:{x:25,y:25}
+        }
+    });
+    rect1.setPosition(160,70);
+    rect1.render(ctx);
+    
+    ctx.strokeStyle="#F00";
+    ctx.beginPath();
+    ctx.arc(185,95,25,0,2*Math.PI);
+    ctx.stroke();
+    </script>
+ </body>
+</html>

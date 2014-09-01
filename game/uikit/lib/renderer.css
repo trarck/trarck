@@ -1,0 +1,15 @@
+.Node,.Sprite,.Text{
+    position:absolute;
+}
+.Sprite{
+
+}
+.Text{
+    display:table;
+    zoom:1;
+}
+.Text .cnt{
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}

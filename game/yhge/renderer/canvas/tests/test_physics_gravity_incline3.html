@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+
+   <script type="text/javascript" src="../../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Circle.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //ctx.fillStyle="#CCCCCC";
+    
+    var sceneWidth=800,sceneHeight=300;
+    ctx.fillRect(0,0,sceneWidth,sceneHeight);
+
+    var Circle=yhge.renderer.canvas.shape.Circle;
+
+    var radio=6;
+
+    var circle1=new Circle({
+        radius:radio,
+        color:"#00FF00"
+    });
+
+    
+
+    var p1={x:400,y:300},p2={x:800,y:100};
+
+    var A=p2.y-p1.y,B=p1.x-p2.x,C=p2.x*p1.y-p1.x*p2.y;
+//    var A=1,B=-1,C=100;    
+    var k=A/B,k2=k*k;
+    
+    var cos=Math.sqrt(1/(1+k2));
+    var sin=Math.abs(k)*cos;
+    var sin2=sin*sin,cos2=cos*cos;
+    
+    var tmpvx,tmpvy,tmpv;
+
+    line(ctx,p1,p2);
+
+    var G=1;
+    var ax=0,ay=1,a;
+    var vx=30,vy=0,v=0;
+    var x=0,y=p1.y-10;
+    var s=0;
+
+    var changed=false;
+    
+    var lastTime=(new Date()).getTime(),now,delta;
+
+    var timer=setInterval(function  () {
+        now=(new Date()).getTime();
+        delta=now-lastTime;
+        lastTime=now;
+
+        ctx.fillRect(0,0,sceneWidth,sceneHeight);
+        line(ctx,p1,p2);
+       
+        delta=delta*0.01;
+        if( !changed && x>=p1.x){
+//            vy=vx*sin;
+//            vx=vx*cos;
+//            ax=G*sin*cos;
+//            ay=-G*sin*sin;
+//            changed=true;
+            v=vx;
+            a=G*sin;
+        }
+
+        if(x<p1.x){
+            x+=vx;
+            circle1.setPosition(x,y);
+        }else if(x>sceneWidth){
+            clearInterval(timer);
+        }else{
+            tmpv=v+a*delta;
+            s+=(tmpv*tmpv-v*v)*0.5/a;
+            circle1.setPosition(s*cos,s*sin);
+//            tmpvx=vx+ax*delta;
+//            tmpvy=vy+ay*delta;
+//            x+=(tmpvx*tmpvx-vx*vx)*0.5/G;
+//            y+=(tmpvy*tmpvy-vy*vy)*0.5/G;
+//            console.log(tmpvx,tmpvy,x,y);
+//            vx=tmpvx;
+//            vy=tmpvy;
+        }
+        
+        circle1.render(ctx);
+    },30);
+
+    function line(ctx,from,to) {
+        ctx.strokeStyle="#FFF";
+        ctx.beginPath();
+        ctx.moveTo(from.x,from.y);
+        ctx.lineTo(to.x,to.y);
+        ctx.stroke();
+    }
+
+    function getDistance(x,y) {
+        return Math.abs(A*x+B*y+C)/Math.sqrt(A*A+B*B);
+    }
+    </script>
+ </body>
+</html>

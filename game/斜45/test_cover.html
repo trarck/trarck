@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+    #map{
+        position: absolute;
+        top:40px;
+        left:20px;
+        width: 800px;
+        height: 400px;
+        background: #CCC url(bg.gif);
+    }
+    .shandows{
+        position: absolute;
+        z-index:1;
+    }
+    .units{
+        position: absolute;
+        z-index:2;
+    }
+    #map img{
+        position: absolute;
+        opacity:0.2;
+    }
+  </style>
+ </head>
+
+ <body>
+  <button onclick="actionType(1)">create</button>
+  <button onclick="actionType(2)">move</button>  
+  <button onclick="actionType(3)">delete</button>
+  <div id="map">
+      <div class="grounds"></div>
+      <div class="shandows"></div>
+      <div class="units"></div>
+  </div>
+  <script type="text/javascript" src="../js/jquery.js"></script>
+  <script type="text/javascript" src="js/angle45.js"></script>
+  <script type="text/javascript" src="js/cover.js"></script>
+  <script type="text/javascript">
+      <!--
+      var COL=10,ROW=10,
+          titles=[];
+      var map=document.getElementById("map");
+      var items=map.getElementsByTagName("div");
+      var action=1;
+      var map45=new Angle45({
+          COL:COL,
+          ROW:ROW,
+          xUnit:14,
+          yUnit:8,
+          stage:map,
+          grounds:items[0],
+          shandows:items[1],
+          units:items[2]
+      });
+      document.oncontextmenu=function(e){return false;}  
+      $.event.add(map45,"click",function (event,mapCoord) {
+            mapCoord.x=Math.floor(mapCoord.x);
+            mapCoord.y=Math.floor(mapCoord.y);
+            switch(action){
+                case 1:
+                    if(!this.hasUnit(mapCoord)){
+                        createUnit(this,mapCoord);
+                    }
+                    break;
+                case 2:
+                    moveUnit(this,mapCoord);
+                    
+                    break;
+                case 3:
+                    if(this.hasUnit(mapCoord)){
+                        this.removeUnit(mapCoord);
+                    }
+                    break;
+            }
+           
+           
+      });
+      function createUnit(m,coord) {
+         var unit= m.addUnit(coord);
+         m.addShandow(unit,coord);
+      }  
+      var unitSelected=null,lastCoord={x:null,y:null};
+      function moveUnit(m,coord) {
+         if(lastCoord.x==coord.x&&lastCoord.y==coord.y) return;
+
+         var curr=m.getUnit(coord);
+         if(curr!=null){
+            unitSelected=curr;
+            lastCoord=coord;
+         }if(curr==null&&unitSelected!=null){
+            m.setUnit(unitSelected,coord,true);
+            m.setShandow(unitSelected.shandow,coord,true);
+            m.clearUnit(lastCoord);
+            lastCoord=coord;
+         }
+         
+         
+      }  
+      function actionType(type) {
+        action=type;
+      }
+
+      var cover=new Cover();
+      cover.set(0,0,1,1,1);
+      var r=cover.getMap();
+      console.log(r);
+     // -->
+  </script>
+ </body>
+</html>

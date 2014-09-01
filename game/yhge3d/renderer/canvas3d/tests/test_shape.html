@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="300" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+    
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+
+   <script type="text/javascript" src="../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Rect.js"></script>
+   <script type="text/javascript" src="../shape/RoundRect.js"></script>
+   <script type="text/javascript" src="../shape/Arc.js"></script>
+   <script type="text/javascript" src="../shape/Circle.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.fillRect(0,0,300,300);
+    
+
+    var shape=yhge.renderer.canvas.shape;
+    
+    
+    var Rect=shape.Rect;
+    var Arc=shape.Arc;
+    var RoundRect=shape.RoundRect;
+    var Circle=shape.Circle;
+
+    var rect=new Rect({
+        width:50,
+        height:50,
+        color:"#11FF00"
+    });
+    rect.setPosition(10,10);
+    rect.render(ctx);
+    
+    var roundRect=new RoundRect({
+        width:50,
+        height:50,
+        color:"#00FF00",
+        radius:10
+    });
+    roundRect.setPosition(70,10);
+    roundRect.render(ctx);
+
+    var circle=new Circle({
+        radius:30,
+        color:"#00FF00"
+    });
+
+    circle.setPosition(160,40);
+    circle.render(ctx);
+
+    var arc=new Arc({
+        radius:30,
+        startAngle:0,
+        endAngle:-Math.PI/2,
+        anticlockwise:true,
+        color:"#00FF00"
+    });
+    
+    arc.setPosition(100,100);
+    arc.render(ctx);
+    
+    var items=[rect,roundRect,circle,arc];
+    var solid=true;
+    setInterval(function  () {
+       ctx.fillRect(0,0,300,300);
+       for(var i=0;i<items.length;i++){
+            items[i].setSolid(solid);
+            items[i].render(ctx);
+       }
+       solid=!solid;
+    },1000);
+
+    </script>
+ </body>
+</html>

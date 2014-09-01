@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> clip </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+
+   <script type="text/javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.fillRect(0,0,800,600);
+    
+
+//    ctx.beginPath();
+//    ctx.strokeStyle="#0F0";
+//    ctx.moveTo(0,0);
+//    ctx.lineTo(300,0);
+//    ctx.lineTo(300,200);
+//    ctx.lineTo(0,200);
+//    ctx.lineTo(0,0);
+//    ctx.stroke();
+//
+//    ctx.beginPath();
+//    ctx.moveTo(320,200);
+//    ctx.lineTo(420,200);
+//    ctx.lineTo(420,300);
+//    ctx.lineTo(320,300);
+//    ctx.lineTo(320,200);
+//    ctx.stroke();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle="#0F0";
+    ctx.moveTo(0,0);
+    ctx.lineTo(300,0);
+    ctx.lineTo(300,200);
+    ctx.lineTo(0,200);
+    ctx.closePath();
+    ctx.stroke();
+
+//    ctx.beginPath();
+    ctx.moveTo(350,150);
+    ctx.lineTo(450,150);
+    ctx.lineTo(450,250);
+    ctx.lineTo(350,250);
+    ctx.lineTo(350,150);
+    ctx.stroke();
+    ctx.clip();
+
+
+    ctx.beginPath();
+    ctx.fillStyle="#F00";
+    ctx.moveTo(40,150);
+    ctx.lineTo(140,150),
+    ctx.lineTo(140,250),
+    ctx.lineTo(40,150),
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.translate(100,0);
+    ctx.fillStyle="#F00";
+    ctx.moveTo(40,150);
+    ctx.lineTo(140,150),
+    ctx.lineTo(140,250),
+    ctx.lineTo(40,150),
+    ctx.fill();
+
+//    ctx.restore();
+//    ctx.translate(140,0);
+
+    ctx.translate(40,0);
+
+    ctx.beginPath();
+    ctx.translate(100,0);
+    ctx.fillStyle="#00F";
+    ctx.moveTo(40,150);
+    ctx.lineTo(140,150),
+    ctx.lineTo(140,250),
+    ctx.lineTo(40,150),
+    ctx.fill();
+
+   
+    
+
+    </script>
+ </body>
+</html>

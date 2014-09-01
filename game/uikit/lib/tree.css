@@ -1,0 +1,73 @@
+.tree{
+	font-size:13px;
+}
+.tree ul{
+	padding-left:16px;
+	background:url(images/tree/elbow-line.gif) repeat-y;
+}
+.tree ul.tree-single{
+	background:none;
+}
+.tree ul li{
+	display:inline;
+}
+.tree ul li div{
+	overflow:hidden;
+	height:18px;
+	line-height:18px;
+	padding-top:0px;
+	cursor:pointer;
+}
+.tree ul li div span{
+	overflow:hidden;
+	display:inline-block;
+	width:16px;
+	height:18px;
+	vertical-align:bottom;
+	zoom:1;
+}
+.tree ul li div a{
+	overflow:hidden;
+	display:inline-block;
+	margin-left:2px;
+	height:18px;
+	text-decoration:none;
+	zoom:1;
+}
+.tree-node-expanded .tree-elbow{
+	background:url(images/tree/elbow-minus.gif);
+}
+.tree-node-expanded .tree-elbow-end{
+	background:url(images/tree/elbow-end-minus.gif);
+}
+
+.tree-node-collapsed .tree-elbow{
+	background:url(images/tree/elbow-plus.gif);
+}
+
+.tree-node-collapsed .tree-elbow-end{
+	background:url(images/tree/elbow-end-plus.gif);
+}
+
+.tree-node-leaf .tree-elbow{
+	background:url(images/tree/elbow.gif);
+}
+.tree-node-leaf .tree-elbow-end{
+	background:url(images/tree/elbow-end.gif);
+}
+
+
+.tree-icon{
+	height:16px;
+	background:url(images/tree/folder.gif);
+}
+.tree-chk{
+	margin: 0 2px;
+	height:16px;
+}
+.tree-node-leaf .tree-icon{
+	background:url(images/tree/leaf.gif);
+}
+.tree  .selected a{
+	background-color: #fafafa;
+}

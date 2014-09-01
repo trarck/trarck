@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> sprite </title>
+  <style type="text/css">
+    #canvas{
+        float:left;
+    }
+    #conf{
+        float:left;
+    }
+    #conf input{
+        width:3em;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <form id="conf">
+        <p>position x:<input name="px" value="0"/> y:<input name="py" value="0"/></p>
+        <p>rotation <input name="r" value="0"/></p>
+        <p>scale x:<input name="sx" value="0"/> y:<input name="sy" value="0"/></p>
+        <p><input type="button" value="do"/></p>
+   </form>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../ns.js"></script>
+   <script type="text/javascript" src="../core/Base.js"></script>
+   <script type="text/javascript" src="../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../times/Scheduler.js"></script>
+
+   <script type="text/javascript" src="../math/Geometry.js"></script>
+   <script type="text/javascript" src="../math/TransformMatrix.js"></script>
+    
+   <script type="text/javascript" src="../animation/Animation.js"></script>
+   <script type="text/javascript" src="../animation/Frame.js"></script>
+
+   <script type="text/javascript" src="../renderer/Node.js"></script>
+   <script type="text/javascript" src="../renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../renderer/canvas/AnimateSprite.js"></script>
+
+   <script type="text/javascript" src="../fx/Easing.js"></script>
+   <script type="text/javascript" src="../fx/YHFx.js"></script>
+   <script type="text/javascript" src="../fx/FxNode.js"></script>
+   <script type="text/javascript" src="../fx/FxNodeGroup.js"></script>
+
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //ctx.fillStyle="#CCCCCC";
+    //ctx.fillRect(0,0,300,300);
+    var Scheduler=yhge.times.Scheduler;
+
+    var Sprite=yhge.renderer.canvas.Sprite;
+
+    var AnimateSprite=yhge.renderer.canvas.AnimateSprite;
+
+    var Animation=yhge.renderer.Animation;
+
+    var Frame=yhge.renderer.Frame;
+    
+    var Fx=yhge.fx.Fx;
+
+    Scheduler.getInstance({interval:1000/30}).run();
+
+ 
+    var texture=new Image();
+    texture.src="resource/1.png";
+
+
+
+    var sprite=new Sprite({
+        width:160,
+        height:184,
+        texture:texture
+    });
+    sprite.setAnchorPoint(80,92);
+    sprite.setPosition(160,184);
+    //sprite.setRotation(45);
+    //sprite.setScale(0.5,0.5);
+    sprite.render(ctx);
+
+    Scheduler.getInstance().addTask(function(){
+        ctx.clearRect(0,0,800,600);
+        sprite.render(ctx);
+    },Scheduler.Render);
+
+    var fx=new Fx(Scheduler.getInstance());
+
+//    Fx.initialize(Scheduler.getInstance());
+
+//   fx.animate(sprite,{position:{x:600,y:400}},700);
+   fx.animateWithGroup(sprite,{position:{x:600,y:400}},700);
+
+    </script>
+ </body>
+</html>

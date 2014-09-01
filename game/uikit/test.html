@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>View Editor</title>
+    <link rel="stylesheet" type="text/css" href="../yhge/renderer/html/renderer.css"/>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/build.css"/>
+</head>
+<script type="text/javascript" src="js/jquery.js"></script>
+<body>
+    <form id="test">
+        <input type="radio" name="tt" value="1" id="tt1"/>true <input type="radio" name="tt" value="0" id="tt0"/>false
+        <input type="button" onclick="ttts()"/>
+        <input type="file" id="asset"/>
+    </form>
+</body>
+<script type="text/javascript">
+ function ttts(){
+     var testForm=document.getElementById("test");
+     console.log(testForm.elements);
+     console.log($("#test").serialize());
+     console.log($("#asset").val())
+//     console.log($("[name=tt]"));
+//     $("[name=tt]").val([1,0]);
+ }
+
+</script>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> canvas </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+
+   <script type="text/javascript" src="../ns.js"></script>
+   <script type="text/javascript" src="../core/Base.js"></script>
+   <script type="text/javascript" src="../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../event/Scheduler.js"></script>
+   <script type="text/javascript" src="../event/Timer.js"></script>
+   <script type="text/javascript" src="../event/AnimationManager.js"></script>
+
+   <script type="application/x-javascript">
+    var scheduler=new yhge.times.Scheduler(),
+    timer=new yhge.times.Timer(scheduler),
+    animationManager=new yhge.times.AnimationManager(scheduler);
+    scheduler.run();
+    
+    var t=(new Date()).getTime();
+    timer.setTimeout(function () {
+        var n=(new Date()).getTime();
+        console.log("this is a timeout:",n-t);
+    },1000);
+    
+    var tt=(new Date()).getTime();
+    timer.setInterval(function () {
+       var  n=(new Date()).getTime();
+        console.log("this is a interval",n-tt);
+        tt=n;
+    },2000);
+
+    var ttt=(new Date()).getTime();
+    setInterval(function () {
+     var  n=(new Date()).getTime();
+        console.log("this is window interval",n-ttt);
+        ttt=n;
+    },2000);
+
+    var animation={};
+    var tttt=(new Date()).getTime();
+    var d=0;
+    animation.update=function () {
+        var  n=(new Date()).getTime();
+        d+=n-tttt;
+        console.log("this is animation",n-tttt);
+        tttt=n;
+        if(d>=1200){
+            console.log("do remove");
+            animationManager.remove(animation);
+        }
+    }
+animationManager.add(animation);
+    </script>
+ </body>
+</html>

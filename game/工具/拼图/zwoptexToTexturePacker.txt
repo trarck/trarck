@@ -1,0 +1,21 @@
+{
+	"frames":{
+		{% for sprite in sprites %}
+		"{{ sprite.name }}":
+		{
+			"frame":{"x":{{sprite.textureRectX}},"y":{{sprite.textureRectY}},"w":{{sprite.textureRectWidth}},"h":{{sprite.textureRectHeight}}},
+			rotated": {% if sprite.isRotated %}true{% else %}false{% /if %},
+			"trimmed": {% if sprite.isTrimmed %}true{% else %}false{% /if %},
+			"spriteSourceSize": {"x":{{sprite.spriteColorRectX}},"y":{{sprite.spriteColorRectY}},"w":{{sprite.spriteColorRectWidth}},"h":{{sprite.spriteColorRectHeight}}},
+			"sourceSize": {"w":{{sprite.spriteSizeWidth}},"h":{{sprite.spriteSizeHeight}}}
+		},
+		{% /for %}
+	},
+	"meta":{
+		"version": "1.0",
+		"image": "{{ metadata.target.textureFileName }}{{ metadata.target.textureFileExtension }}",
+		"format": "{{ metadata.format }}",
+		"size": {"w":{{ metadata.sizeWidth }},"h":{{ metadata.sizeHeight }}},
+		"scale": "1"
+	}
+}

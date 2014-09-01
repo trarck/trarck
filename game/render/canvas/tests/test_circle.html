@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="300" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../yhge/ns.js"></script>
+   <script type="text/javascript" src="../../../yhge/core/Base.js"></script>
+   <script type="text/javascript" src="../../../yhge/core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../../../yhge/Geometry.js"></script>
+
+   <script type="text/javascript" src="../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Circle.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //ctx.fillStyle="#CCCCCC";
+    //ctx.fillRect(0,0,300,300);
+    
+
+    var circle1=new Circle({
+        radius:50,
+        color:"#00FF00"
+    });
+
+    var x=y=70;
+    setInterval(function  () {
+        ctx.clearRect(0,0,300,300);
+        x+=2;
+        y+=2;
+        circle1.setPosition(x,y);
+        circle1.render(ctx);
+    },30);
+    </script>
+ </body>
+</html>

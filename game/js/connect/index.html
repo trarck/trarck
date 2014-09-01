@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> connect </title>
+ </head>
+
+ <body>
+     <input id="user" />
+      <input id="words" /><input type="button" id="smt" value="说话" onclick="say()"/>
+      <div id="result">
+
+      </div>
+      <script type="text/javascript" src="../jquery.js"></script>
+      <script type="text/javascript">
+      <!--
+        
+        var $result=$("#result");
+        var $words=$("#words");
+        var $user=$("#user");
+        var ticket;
+
+        //getData();
+
+        function getData() {
+            $.getJSON("get.php",{ticket:ticket},function (data) {
+                  $result[0].innerHTML+='<p>'+data.user+"说:"+data.msg+'</p>';
+                  ticket=data.ticket;
+                  getData();
+            });
+        }
+
+        function say() {
+             var data={msg:$words.val(),user:$user.val()};
+             $.post("post.php",data);
+        }
+      //-->
+      </script>
+ </body>
+</html>

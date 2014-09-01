@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> canvas </title>
+  <style type="text/css">
+    #canvas{
+        background-color: #DDD;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+   
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../../../math/QuatTree.js"></script>
+   <script type="text/javascript" src="../../../math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../../../times/Scheduler.js"></script>
+   
+   <script type="text/javascript" src="../../../event/EventObject.js"></script>
+   <script type="text/javascript" src="../../../event/MouseEventObject.js"></script>
+   <script type="text/javascript" src="../../../event/EventListenerManager.js"></script>
+   <script type="text/javascript" src="../../../event/UIEventListenerManager.js"></script>
+   
+   <script type="text/javascript" src="../../../input/Mouse.js"></script>
+   <script type="text/javascript" src="../../../scene/VisualEventProcessor.js"></script>
+   
+
+   <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Sprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Rect.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/RoundRect.js"></script>
+   
+   <script type="text/javascript" src="../../../scene/Scene.js"></script>
+   <script type="text/javascript" src="../../../scene/SceneUpdater.js"></script>
+
+   <script type="text/javascript" src="../../../ui/Component.js"></script>
+   <script type="text/javascript" src="../../../ui/canvas/Border.js"></script>
+
+
+   <script type="text/javascript">
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle="#FFF";
+        ctx.fillRect(0,0,800,600);
+        
+        var Border=yhge.ui.canvas.Border;
+        
+        ctx.save();
+        ctx.translate(10,10);
+        var border=new Border({
+           top:{
+               width:10,
+               style:"#F00"
+           }, 
+           right:{
+               width:40,
+               style:"#0F0"
+           }, 
+           bottom:{
+               width:10,
+               style:"#00F"
+           }, 
+           left:{
+               width:40,
+               style:"#FF0"
+           },
+           width:80,
+           height:80
+        });
+        border.draw(ctx);
+        
+        ctx.translate(180,0);
+
+        var border2=new Border({
+           top:{
+               width:20,
+               style:"#F00"
+           }, 
+           right:{
+               width:20,
+               style:"#0F0"
+           }, 
+           bottom:{
+               width:20,
+               style:"#0FF"
+           }, 
+           left:{
+               width:20,
+               style:"#FF0"
+           },
+           width:100,
+           height:100,
+           radius:10
+        });
+        border2.drawSimpleRadius(ctx);
+        
+        ctx.translate(160,0);
+        var border3=new Border({
+           top:{
+               width:1,
+               style:"#F00"
+           }, 
+           right:{
+               width:1,
+               style:"#0F0"
+           }, 
+           bottom:{
+               width:1,
+               style:"#0FF"
+           }, 
+           left:{
+               width:1,
+               style:"#F0F"
+           },
+           width:100,
+           height:100,
+           radius:10
+        });
+        border3.drawSimpleRadius(ctx);
+    	ctx.restore();
+    	
+    	ctx.save();
+        ctx.translate(10,170);
+        var border4=new Border({
+           top:{
+               width:20,
+               style:"#F00"
+           }, 
+           right:{
+               width:10,
+               style:"#0F0"
+           }, 
+           bottom:{
+               width:20,
+               style:"#0FF"
+           }, 
+           left:{
+               width:10,
+               style:"#FF0"
+           },
+           width:60,
+           height:60,
+           radius:{
+                topLeft:{
+                    height:20,
+                    width:20
+                },
+                topRight:{
+                   height:20,
+                   width:20
+                },
+                bottomRight:{
+                    height:20,
+                    width:20
+                },
+                bottomLeft:{
+                    height:20,
+                    width:20
+                }
+           }
+        });
+        border4.drawComplexRadius(ctx);
+        
+        ctx.translate(120,0);
+        var border5=new Border({
+           top:{
+               width:20,
+               style:"#F00"
+           }, 
+           right:{
+               width:30,
+               style:"#0F0"
+           }, 
+           bottom:{
+               width:40,
+               style:"#0FF"
+           }, 
+           left:{
+               width:10,
+               style:"#FF0"
+           },
+           width:60,
+           height:60,
+           radius:{
+                topLeft:{
+                    height:20,
+                    width:20
+                },
+                topRight:{
+                   height:20,
+                   width:20
+                },
+                bottomRight:{
+                    height:20,
+                    width:20
+                },
+                bottomLeft:{
+                    height:20,
+                    width:20
+                }
+           }
+        });
+        border5.drawComplexRadius(ctx);
+        
+        ctx.translate(140,0);
+        var border6=new Border({
+           top:{
+               width:20,
+               style:"#F00"
+           }, 
+           right:{
+               width:30,
+               style:"#0F0"
+           }, 
+           bottom:{
+               width:40,
+               style:"#0FF"
+           }, 
+           left:{
+               width:10,
+               style:"#FF0"
+           },
+           width:60,
+           height:60,
+           radius:{
+                topLeft:{
+                    height:40,
+                    width:20
+                },
+                topRight:{
+                   height:40,
+                   width:20
+                },
+                bottomRight:{
+                    height:40,
+                    width:20
+                },
+                bottomLeft:{
+                    height:40,
+                    width:20
+                }
+           }
+        });
+        border6.drawComplexRadius(ctx);
+   </script>
+ </body>
+</html>

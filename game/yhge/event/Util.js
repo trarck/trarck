@@ -1,0 +1,1 @@
+yhge.event.bind=function () {};yhge.event.unbind=function () {};

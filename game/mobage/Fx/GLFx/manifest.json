@@ -1,0 +1,10 @@
+{
+	"code": [
+		"../NGCore/Client/Legacy.js",
+		"./Code/Main.js"
+	],
+	"textures": [
+		"./Content/*.png",
+        "./Content/*.jpg"
+	]
+}

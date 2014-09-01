@@ -1,0 +1,40 @@
+{
+    "name":"yhge",
+    "version":0.141,
+    "prefix":"yhge",
+    "dest":"dist/{version}/",
+    "src":"..",
+    "headerTemplate":"header.txt",
+
+    "useFilter":0,
+    "tagBegin":"(function(){",
+    "tagEnd":"})();",
+    "beginRegexp":"\\s*\\(\\s*function\\s*\\(.*\\)\\s*\\{",
+    "endRegexp":"\\}\\)\\s*\\(\\)\\s*;*",
+
+    "builds":{
+        "root":{
+            "dir":"../",
+            "files":["ns.js"]
+        },
+        "core":{
+            "files":["Base.js", "Accessor.js","Util.js"]
+        },
+        "math":{
+            "files":["Geometry.js", "TransformMatrix.js"]
+        },
+		"keybord":{
+			"dir":"../input/keybord/",
+            "files":["KeyCode.js", "Keybord.js", "SingleInputMove.js"]
+        },
+        "renderer":{
+            "files":["ColorPrototype.js","Node.js","Sprite.js","Text.js"]
+        },
+        "renderer.html":{
+            "dir":"../renderer/html/",
+            "files":[
+                "Node.js", "Sprite.js","Text.js"
+            ]
+        }
+    }
+}

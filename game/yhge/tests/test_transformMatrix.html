@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> canvas </title>
+  <style type="text/css">
+    #canvas{
+        background-color: #DDD;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../ns.js"></script>
+   <script type="text/javascript" src="../core/Base.js"></script>
+   <script type="text/javascript" src="../core/Accessor.js"></script>
+   
+   <script type="text/javascript" src="../math/Geometry.js"></script>
+   <script type="text/javascript" src="../math/TransformMatrix.js"></script>
+   
+
+   <script type="text/javascript">
+        var TransformMatrix=yhge.math.TransformMatrix;
+        
+        var x=100,y=80;
+
+        var matrix=TransformMatrix.getIdentity();
+        matrix.setTranslate(10,10);
+        var p=matrix.pointApply(x,y);
+        if(p.x==110 && p.y==90) alert("translate ok");
+        
+        var matrix=TransformMatrix.getIdentity();
+        matrix.setRotate(45*Math.PI/180);
+        //alert("a="+matrix.a+",b="+matrix.b+",c="+matrix.c+",d="+matrix.d);
+        var p=matrix.pointApply(x,y);
+        //alert(p.x+","+p.y);
+        if(parseInt(p.x)==14 && parseInt(p.y)==127) alert("rotate ok");
+
+        var matrix=TransformMatrix.getIdentity();
+        matrix.setScale(1.5,2);
+        var p=matrix.pointApply(x,y);
+        if(p.x==150 && p.y==160) alert("scale ok");
+       
+
+       var matrix=TransformMatrix.getIdentity();
+        matrix.setTranslate(10,10);
+        matrix.setRotate(45*Math.PI/180);
+        matrix.setScale(1.5,2);
+        var p=matrix.pointApply(x,y);
+        if(p.x==28 && p.y==254) alert("muti ok");
+   </script>
+ </body>
+</html>

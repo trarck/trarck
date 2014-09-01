@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title> 猜数字 </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ </head>
+
+ <body>
+  <input type="text" id="number"/>
+  <div id="print">
+
+  </div>
+  <script type="text/javascript">
+  <!--
+    var number=document.getElementById("number");
+    var print=document.getElementById("print");
+    var diget="",size=4,a,b;
+initDiget();
+    number.onkeyup=function (e) {
+        e=e||window.event;
+        var charCode=e.keyCode;
+        if(charCode==13&&number.value.length==4){
+            doGuess(number.value);
+            printf(number.value);
+            if(a==size){
+                alert("OK");
+                print.innerHTML="";
+                initDiget();
+            }
+        }
+    }
+   
+    //生成一个4位数，每位各不相同
+    
+    function initDiget() {
+        var NS=[0,1,2,3,4,5,6,7,8,9];
+        var temp;
+        diget="";
+        for(var i=0;i<size;i++){
+            temp=Math.floor(Math.random()*NS.length);
+            diget+=NS[temp].toString();
+            NS.splice(temp,1);
+        }
+        
+        //printf(diget);
+        return diget;
+    }
+    function doGuess(v) {
+       a=b=0; 
+       for(var i=0;i<size;i++){
+         for(var j=0;j<size;j++){
+            if(diget.charAt(i)==v.charAt(j)){
+               
+                if(i==j){
+                    a++;
+                }else{
+                     b++;
+                }
+
+            }
+         }
+       }
+    }
+    function printf(v) {
+        var p=document.createElement("p");
+        p.innerHTML=v+"   "+a+"A"+b+"B";
+        print.appendChild(p);
+    }
+  //-->
+  </script>
+ </body>
+</html>

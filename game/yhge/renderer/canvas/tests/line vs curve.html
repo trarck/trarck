@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle = "#EEE";
+        ctx.fillRect(0,0,800,600);
+        
+        ctx.fillStyle="#F00"
+        //只是stroke，line 比curve快三分之一
+        //如果生成剪切路径二者速度差不多
+        //耗时的是输出图像
+        var bt=(new Date()).getTime();
+        for(var i=0;i<500;i++){
+            ctx.beginPath();
+            ctx.moveTo(300,400);
+            //ctx.bezierCurveTo(320,440,   330,460,    400,400);
+            ctx.bezierCurveTo(320,400,   330,400,    400,400);
+            ctx.bezierCurveTo(400,340,   400,320,    400,300);
+            ctx.bezierCurveTo(340,300,   330,300,    300,300);
+            ctx.bezierCurveTo(300,320,   300,340,    300,400);
+
+//            ctx.lineTo(400,400);
+//            ctx.lineTo(400,300);
+//            ctx.lineTo(300,300);
+//            ctx.lineTo(300,400);
+
+            ctx.clip();
+            //ctx.fillRect(200,200,200,200);
+        }
+        var et=(new Date()).getTime();
+        alert(et-bt);
+        
+      } 
+    </script>
+ </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+
+   <script type="text/javascript" src="../ns.js"></script>
+   <script type="text/javascript" src="../core/Base.js"></script>
+   <script type="text/javascript" src="../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../Engine.js"></script>
+
+   <script type="text/javascript" src="../renderer/Renderer.js"></script>
+
+   <script type="text/javascript">
+
+    var engine=new yhge.Engine({
+        renderer:{conavasId:"canvas",renderer:"webgl"}
+    });
+
+    if(engine.enable){
+        alert("engine init sucess!");
+    }else{
+        alert("engine init failure!");
+    }
+
+    </script>
+ </body>
+</html>

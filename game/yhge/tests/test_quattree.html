@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> quattree </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script type="text/javascript" src="../ns.js"></script>
+    <script type="text/javascript" src="../core/Base.js"></script>
+    <script type="text/javascript" src="../core/Accessor.js"></script>
+
+    <script type="text/javascript" src="../math/QuatTree.js"></script>
+
+    <script type="text/javascript">
+        var QuatTree=yhge.math.QuatTree;
+        
+        var rect={
+            x:0,
+            y:0,
+            width:512,
+            height:512
+        };
+        var gridSize={width:1,height:1};
+        var maxDepth=9;
+
+//        var gridSize={width:2,height:2};
+//        var maxDepth=8;
+        
+        var objs=[
+            {
+                _position:{x:2,y:2},
+                _width:1,
+                _height:1,
+            },
+            {
+                _position:{x:268,y:2},
+                _width:1,
+                _height:1,
+            },
+            {
+                _position:{x:34,y:342},
+                _width:1,
+                _height:1,
+            },
+            {
+                _position:{x:342,y:442},
+                _width:1,
+                _height:1,
+            },
+            {
+                _position:{x:1,y:1},
+                _width:256,
+                _height:256,
+            }
+        ];
+        
+        var quattree=new QuatTree(rect);
+        quattree.build(maxDepth);
+        console.log(quattree);
+        
+        t=now();
+        for(var i=0;i<objs.length;i++){
+            quattree.add(objs[i]);
+        }
+        console.log("add:"+(now()-t));
+        
+        t=now();
+        var ret=quattree.getObjsInRange({left:0,top:0,right:512,bottom:256});
+        console.log("get:"+(now()-t));
+        console.log(ret.length==2);
+
+        t=now();
+        ret=quattree.getObjsInRange({left:4,top:2,right:512,bottom:256});
+        console.log("get:"+(now()-t));
+        console.log(ret);
+        //testBuild();
+        
+        t=now();
+        var ret=quattree.getObjsContainPoint({x:2,y:2});
+        console.log("get point objs:"+(now()-t));
+        console.log(ret);
+
+        t=now();
+        var ret=quattree.getObjsContainPoint({x:8,y:9});
+        console.log("get point objs:"+(now()-t));
+        console.log(ret);
+        
+        function origenSearch(){
+            
+        }
+
+        function testBuild () {
+            var s="",t;
+            for(var i=6;i<=9;i++){
+                t=now();
+                var quattree=new QuatTree(rect);
+                quattree.build(maxDepth);
+                s+=i+" use:"+(now()-t)+"\n";
+            }
+            console.log(s);
+        }
+
+        function now () {
+            return (new Date()).getTime();
+        }
+        function sizeToDepth (size,gridSize) {
+            return Math.log(size/gridSize)/Math.LN2;
+        }
+
+        function depthToGridSize (size,depth) {
+            return size/Math.pow(2,depth);
+        }
+    </script>
+ </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="300" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+    
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+
+   <script type="text/javascript" src="../../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Path.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.fillRect(0,0,300,300);
+    
+
+    var Path=yhge.renderer.canvas.shape.Path;
+    
+    var path1=new Path({records:[
+        ["fillStyle","#F00"],
+        ["moveTo",40,150],
+        ["lineTo",140,150],
+        ["lineTo",140,250],
+        ["lineTo",40,150],
+        ["fill"]
+    ]});
+    path1.render(ctx);
+
+    var path2=new Path({records:[
+        ["strokeStyle","#0F0"],
+        ["moveTo",160,150],
+        ["lineTo",260,150],
+        ["lineTo",260,250],
+        ["lineTo",160,150],
+        ["stroke"]
+    ]});
+    path2.render(ctx);
+    </script>
+ </body>
+</html>

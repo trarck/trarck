@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> sprite </title>
+  <style type="text/css">
+    .bird {
+        background: transparent url(images/bird-forward-back.png) 0 0 no-repeat;
+        position: absolute;
+        width: 180px;
+        height: 123px;
+        z-index: 2000;
+        cursor: pointer;
+    }
+  </style>
+ </head>
+
+ <body>
+  <div id="birdWrap" class="">
+      <div class="bird"></div><div class="bird"></div><div class="bird"></div><div class="bird"></div><div class="bird"></div>
+  </div>
+  <script type="text/javascript" src="sprite.js"></script>
+  <script type="text/javascript">
+      <!--
+      var birdWrap=document.getElementById("birdWrap");
+      var items=birdWrap.getElementsByTagName("div");
+      var birds=[];
+      for(var i=0;i<items.length;i++){
+          birds[i]=new HtmlSprite({ele:items[i],totalFrames:3,fps:10,autoPlay:true});
+      }
+      for(var i=0;i<items.length;i++){
+         var x=Math.random()*800,y=Math.random()*600,ele=items[i],st=ele.style;
+         st.top=y+"px";
+         st.left=x+"px";
+      }
+//      setInterval(function(){
+//          for(var i=0;i<items.length;i++){
+//             var rd=Math.random()*3.14,x=Math.cos(rd)*10,y=Math.sin(rd)*10,ele=items[i],st=ele.style;
+//             st.top=ele.offsetTop+y+"px";
+//             st.left=ele.offsetLeft+x+"px";
+//          }
+//      },40);
+     // -->
+  </script>
+ </body>
+</html>

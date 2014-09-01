@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> sprite </title>
+  <style type="text/css">
+    #canvas{
+        float:left;
+    }
+    #conf{
+        float:left;
+    }
+    #conf input{
+        width:3em;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <form id="conf">
+        <p>position x:<input name="px" value="0"/> y:<input name="py" value="0"/></p>
+        <p>rotation <input name="r" value="0"/></p>
+        <p>scale x:<input name="sx" value="0"/> y:<input name="sy" value="0"/></p>
+        <p><input type="button" value="do"/></p>
+   </form>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+    
+   <script type="text/javascript" src="../../../animation/Animation.js"></script>
+   <script type="text/javascript" src="../../../animation/Frame.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Sprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/AnimateSprite.js"></script>
+
+   
+
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //ctx.fillStyle="#CCCCCC";
+    //ctx.fillRect(0,0,300,300);
+    
+    var Sprite=yhge.renderer.canvas.Sprite;
+
+    var AnimateSprite=yhge.renderer.canvas.AnimateSprite;
+
+    var Animation=yhge.renderer.Animation;
+
+    var Frame=yhge.renderer.Frame;
+
+    var Card=yhge.core.Class(Sprite,{
+        
+        draw:function (context) {
+            context.strokeStyle="#000";
+            context.strokeRect(0,0,this._width,this._height);
+            context.drawImage(this._texture,0,0,16,16,20,20,16,16);
+            context.drawImage(this._texture,0,0,16,16,38,20,16,16);
+            context.drawImage(this._texture,0,0,16,16,20,38,16,16);
+            context.drawImage(this._texture,0,0,16,16,38,38,16,16);
+        }
+        
+    });
+
+
+    var texture=new Image();
+    texture.src="resource/1.png";
+    
+    var heart=new Image();
+    heart.src="resource/heart.png";
+
+
+    var card=new Card();
+    //注意属性的先后顺序
+    card.setAttributes({
+        width:128,
+        height:128,
+        texture:heart
+    });
+    card.render(ctx);
+
+    var sprite=new Sprite();
+    sprite.setAttributes({
+        width:160,
+        height:184,
+        texture:texture
+    });
+    sprite.setAnchorPoint(80,92);
+    sprite.setPosition(160,184);
+    //sprite.setRotation(45);
+    //sprite.setScale(0.5,0.5);
+    sprite.render(ctx);
+
+    var texture=new Image();
+    texture.src="resource/2.png";
+
+    var as=new AnimateSprite();
+    as.setAttributes({
+        width:160,
+        height:184
+    });
+    
+
+    var animation=new Animation({duration:250});
+    
+    animation.addFrame(new Frame(texture,[0,0,70,124],[70,124]));
+    animation.addFrame(new Frame(texture,[70,0,70,124],[70,124]));
+    animation.addFrame(new Frame(texture,[140,0,70,124],[70,124]));
+    animation.addFrame(new Frame(texture,[210,0,70,124],[70,124]));
+
+    as.setPosition(0,0);
+    as.setAnimation(animation);
+    as.render(ctx);
+    
+    var lastTime=(new Date()).getTime();
+    var r=0,x=0,y=0,speed=1,fx=1,fy=1;
+
+    var n=0;
+
+    setInterval(function  () {
+        var now=(new Date()).getTime();
+        animation.update(now-lastTime);
+        ctx.fillRect(0,0,800,600);
+        
+        x+=fx*speed;
+        y+=fy*speed;
+
+        if(x>800-70){
+            fx=-1;
+            x=800-70;
+        }else if(x<0){
+            fx=1;
+            x=0;
+        }
+        
+        if(y>600-124){
+            fy=-1;
+            y=600-124;
+        }else if(y<0){
+            fy=1;
+            y=0;
+        }
+        as.setPosition(x,y);
+        as.render(ctx);
+        lastTime=now;
+         r+=2;
+         sprite.setRotation(r);
+         sprite.render(ctx);
+         n++;
+    },50/3);
+    
+    var fps=document.getElementById("fps");
+    setInterval(function  () {
+        fps.innerHTML=n;
+        n=0;
+    },1000);
+
+    </script>
+ </body>
+</html>

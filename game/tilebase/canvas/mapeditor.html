@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+    #map{
+        overflow: hidden;
+        position: absolute;
+        top:40px;
+        left:20px;
+        width: 832px;
+        height: 384px;
+    }
+    #map .world{
+        position: absolute;
+        top:0;
+        left:0;
+        width:3200px;
+        height:1600px;
+        background: #CCC url(images/grid/coord_bg.png);
+    }
+    #map .camera{
+        position:absolute;
+        top:0;
+        left:0;
+        border:1px solid red;
+        width:256px;
+        height:256px;
+        z-index:1000;
+    }
+    .shandows{
+        position: absolute;
+        z-index:1;
+    }
+    .units{
+        position: absolute;
+        z-index:2;
+    }
+    #map img{
+        position: absolute;
+       /* opacity:0.8;*/
+    }
+  </style>
+ </head>
+
+ <body>
+  <button onclick="actionType(1)">create</button>
+  <button onclick="actionType(2)">move</button>  
+  <button onclick="actionType(3)">delete</button>
+  <!-- 非tile base 背景用图片 -->
+  <div id="map">
+      <!-- word space -->
+      <div class="world">
+       <!--<div class="background"></div> 无高度，可叠加精灵(通常是静态图片和静态精灵):草地，地板，石头，地沟，动态水面，风吹动的草地-->
+      <!--  <div class="intermediate"></div>有高度，(通常是地图的点缀):墙，石头 -->
+      <!--  <div class="foreground"></div>精灵:角色，NPC，怪物 -->
+      </div>
+      <div class="interface"></div>
+  </div>
+  <script type="text/javascript" src="../js/jquery.js"></script>
+  <script type="text/javascript" src="../../yh/src/core/declare.js"></script>
+  <script type="text/javascript" src="../../yh/src/core/common.js"></script>
+  <script type="text/javascript" src="../../yh/src/core/mouse.js"></script>
+  <script type="text/javascript" src="../../yh/src/core/dragDrop.js"></script>
+  <script type="text/javascript" src="../../yh/src/core/resize.js"></script>
+
+  <script type="text/javascript" src="lib/Accessor.js"></script>
+
+  <script type="text/javascript" src="isometric/Direction.js"></script>
+  <script type="text/javascript" src="isometric/Util.js"></script>
+  <script type="text/javascript" src="isometric/Tile.js"></script>
+  <script type="text/javascript" src="isometric/World.js"></script>
+  <script type="text/javascript" src="isometric/Astar.js"></script>
+  
+  <script type="text/javascript" src="conf.js"></script>
+    
+  <script type="text/javascript" src="util/Astar.js"></script>
+
+  <script type="text/javascript" src="tile/BaseTile.js"></script>
+  <script type="text/javascript" src="tile/Moveable.js"></script>
+  <script type="text/javascript" src="tile/BackgroundTile.js"></script>
+  <script type="text/javascript" src="tile/Box.js"></script>
+  <script type="text/javascript" src="tile/Role.js"></script>
+
+  <script type="text/javascript" src="Layer.js"></script>
+
+  <script type="text/javascript" src="World.js"></script>
+  <script type="text/javascript" src="Camera.js"></script>
+
+  <script type="text/javascript" src="Game.js"></script>
+  <script type="text/javascript">
+      <!--
+        editor.active();
+     // -->
+  </script>
+ </body>
+</html>

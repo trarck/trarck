@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> canvas </title>
+  <style type="text/css">
+    #canvas{
+        background-color: #DDD;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../../../math/QuatTree.js"></script>
+   <script type="text/javascript" src="../../../math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../../../times/Scheduler.js"></script>
+   
+   <script type="text/javascript" src="../../../event/EventObject.js"></script>
+   <script type="text/javascript" src="../../../event/MouseEventObject.js"></script>
+   <script type="text/javascript" src="../../../event/TouchEventObject.js"></script>
+   <script type="text/javascript" src="../../../event/EventListenerManager.js"></script>
+   <script type="text/javascript" src="../../../event/UIEventListenerManager.js"></script>
+   
+   <script type="text/javascript" src="../../../input/Util.js"></script>
+   <script type="text/javascript" src="../../../input/Mouse.js"></script>
+   <script type="text/javascript" src="../../../input/Touch.js"></script>
+   <script type="text/javascript" src="../../../input/Input.js"></script>
+
+
+   <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Sprite.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Rect.js"></script>
+   
+   <script type="text/javascript" src="../../../scene/Scene.js"></script>
+   <script type="text/javascript" src="../../../scene/SingleSceneUpdater.js"></script>
+   <script type="text/javascript" src="../../../scene/VisualEventProcessor.js"></script>
+
+   <script type="text/javascript">
+        var Scheduler=yhge.times.Scheduler;
+        
+        var Node=yhge.renderer.Node;
+        var Rect=yhge.renderer.canvas.shape.Rect;
+        var UIEventListenerManager=yhge.event.UIEventListenerManager;
+        var Scene=yhge.scene.Scene;
+        var SingleSceneUpdater=yhge.scene.SingleSceneUpdater;
+        
+        var canvas=document.getElementById("canvas");
+        var ctx = canvas.getContext('2d');
+         
+        
+        var rect={
+            x:0,
+            y:0,
+            width:640,
+            height:480
+        };
+        var size={width:5,height:5};
+
+        var processor=new yhge.scene.VisualEventProcessor(rect,size);
+        var input=new yhge.input.Input(canvas);
+        
+        input.setupMouseEventWithProcessor(processor);
+        
+        
+        //ctx.fillRect(0,0,640,480);
+        
+        var scene=new Scene({
+            width:640,
+            height:480
+        });
+        
+        var background=new Rect({
+            width:640,
+            height:480,
+            color:"#000000",
+            solid:true,
+            zOrder:-65535
+        });
+        
+        var rect1=new Rect({
+            width:50,
+            height:50,
+            color:"#11FF00",
+            zOrder:1
+        });
+        
+        var rect2=new Rect({
+            width:80,
+            height:80,
+            color:"#FF1133"
+        });
+        
+        var rect3=new Rect({
+            width:80,
+            height:80,
+            color:"#11FFFF"
+        });
+        rect3.setPosition(120,120);
+        rect3.setRotation(45);
+
+        var rect6=new Rect({
+            width:80,
+            height:80,
+            color:"#11FFFF"
+        });
+        rect6.setPosition(120,120);
+        
+        var rect4=new Rect({
+            width:20,
+            height:20,
+            color:"#FFEEEE"
+        });
+        var rect5=new Rect({
+            width:30,
+            height:30,
+            color:"#33FF99"
+        });
+        
+        scene.addChild(background);
+        scene.addChild(rect1);
+        scene.addChild(rect2);
+        scene.addChild(rect3);
+        scene.addChild(rect4);
+        scene.addChild(rect5);
+        scene.addChild(rect6);
+        
+        //processor.addObservable(scene);
+        processor.addObservable(rect1);
+        processor.addObservable(rect2);
+        processor.addObservable(rect3);
+        processor.addObservable(background);
+        
+        
+        var scheduler=new Scheduler();
+        var sceneUpdater=SingleSceneUpdater.getInstance(scheduler,ctx);
+        
+        sceneUpdater.setScene(scene);
+        scheduler.run();
+        
+        
+        //background.render(ctx);
+        //rect1.render(ctx);
+        //rect2.render(ctx);
+        //rect3.render(ctx);
+        
+       
+        
+        UIEventListenerManager.addEventListener(rect1,"click",function(){
+            console.log("rect1 is clicked"); 
+        });
+        
+        UIEventListenerManager.addEventListener(rect2,"click",function(){
+            console.log("rect2 is clicked"); 
+        });
+        UIEventListenerManager.addEventListener(rect3,"click",function(){
+            console.log("rect3 is clicked"); 
+        });
+        
+        
+        UIEventListenerManager.addEventListener(rect1,"mousedown",function(){
+            console.log("rect1 is down"); 
+            rect1.setColor("#FFFf00");
+        });
+        UIEventListenerManager.addEventListener(rect1,"mouseup",function(){
+            console.log("rect1 is up"); 
+            rect1.setColor("#11FF00");
+        });
+        
+        UIEventListenerManager.addEventListener(rect2,"mouseover",function(){
+            console.log("rect2 is mouseover"); 
+            rect2.setColor("#FFFf00");
+        });
+        UIEventListenerManager.addEventListener(rect2,"mouseout",function(){
+            console.log("rect2 is mouseout"); 
+            rect2.setColor("#FF1133");
+        });
+        
+        UIEventListenerManager.addEventListener(rect3,"mouseover",function(){
+            console.log("rect3 is mouseover"); 
+            rect3.setColor("#FFFf00");
+        });
+        UIEventListenerManager.addEventListener(rect3,"mouseout",function(){
+            console.log("rect3 is mouseout"); 
+            rect3.setColor("#11FFFF");
+        });
+        //这个事件会被前面的东西挡住
+        UIEventListenerManager.addEventListener(background,"mousemove",function(e){
+            rect4.setPosition(e.x,e.y);
+        });
+        //scene事件。
+        UIEventListenerManager.addEventListener(scene,"mousemove",function(e){
+            rect5.setPosition(e.x,e.y);
+        });
+
+        var fps=document.getElementById("fps");
+        setInterval(function () {
+            fps.innerHTML=sceneUpdater.updateTimes;
+            sceneUpdater.updateTimes=0;
+        },1000);
+   </script>
+ </body>
+</html>

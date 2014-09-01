@@ -1,0 +1,73 @@
+port=8002
+
+ifndef SDK_PATH
+SDK_PATH:=./
+endif
+
+ifdef generateArchives
+ioptions:=generateArchives=$(generateArchives)
+else
+ioptions:=
+endif
+
+ooptions:=$(ioptions) $(options)
+
+## ngCore SDK Makefile usage:
+##
+## Arguments:
+##
+## Pass generateArchives=true to server targets to generate content zips.
+## Pass port=xxxx to server targets to set port used by server.
+## Pass safe=true to limit server to serving only files under cwd.
+##
+## Targets:
+##
+
+help:			## Show this help.
+	@fgrep "##" $(MAKEFILE_LIST) | fgrep -v fgrep
+
+server:			## Run server.  Set port with arg port=xxxx.
+	node $(SDK_PATH)Tools/jake/lib/jake.js -f $(SDK_PATH)Tools/prepare/ServerJakefile server $(ooptions) suppressLegacy=true serverPort=$(port) logRoot=$(logRoot)
+
+server-nocombine:	## Run server with no combine mode
+	node $(SDK_PATH)Tools/jake/lib/jake.js -f $(SDK_PATH)Tools/prepare/ServerJakefile server $(ooptions) suppressLegacy=true serverPort=$(port) logRoot=$(logRoot) combine=false
+
+server-compress:	## Run server with code minification/obfuscation.
+	node $(SDK_PATH)Tools/jake/lib/jake.js -f $(SDK_PATH)Tools/prepare/ServerJakefile server $(ooptions) suppressLegacy=true serverPort=$(port) logRoot=$(logRoot) compress=true
+
+# New server related commands.
+# These are to be moved to existing target names as the old server is switched out.
+new-server:		## Run server.  Set port with arg port=xxxx.
+	node $(SDK_PATH)Tools/jake/lib/jake.js -f $(SDK_PATH)Tools/prepare/ServerJakefile new-server $(ooptions) suppressLegacy=true serverPort=$(port) logRoot=$(logRoot)
+
+
+toggle-jp:		## Switch to JP Social implementation.
+	cd $(SDK_PATH)NGCore/Client/ && rm -f Social.js && ln -s Social/JP.js Social.js
+	cd $(SDK_PATH)NGCore/Client/ && rm -f Bank.js && ln -s Bank/JP.js Bank.js
+	cd $(SDK_PATH)Flash/ && rm -f config.json && ln -s config_JP.json config.json
+
+toggle-kr:		## Switch to KR Social implementation.
+	cd NGCore/Client/ && rm -f Social.js && ln -s Social/KR.js Social.js
+	cd NGCore/Client/ && rm -f Bank.js && ln -s Bank/KR.js Bank.js
+
+toggle-us:		## Switch to US Social implementation.
+	cd $(SDK_PATH)NGCore/Client/ && rm -f Social.js && ln -s Social/US.js Social.js
+	cd $(SDK_PATH)NGCore/Client/ && rm -f Bank.js && ln -s Bank/US.js Bank.js
+	cd $(SDK_PATH)Flash/ && rm -f config.json && ln -s config_US.json config.json
+
+arun: MYIP=$(shell ifconfig | fgrep broadcast | head -1 | sed -e s/^.\*inet\ // | sed s/\ netmask.\*// )
+arun: MYPACKAGEID=com.mobage.ww
+arun: MYPORT=8002
+arun: MYNATIVELOG=false
+arun:			## Run local Android build with given ngCore game path.
+                        ## Ex: make arun game=Samples/Launcher
+arun:           
+	adb shell 'am start -a $(MYPACKAGEID).RUN -e server http://$(MYIP):$(MYPORT) -e game $(game) -e nativeLog $(MYNATIVELOG)'
+
+                        ## Stop running ngCore activity.
+astop: MYPACKAGEID=com.mobage.ww
+astop:
+	adb shell 'am broadcast -a $(MYPACKAGEID).STOP'
+
+
+.PHONY: server server-compress toggle-jp toggle-kr toggle-us arun astop

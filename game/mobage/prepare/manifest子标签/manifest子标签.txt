@@ -1,0 +1,74 @@
+在manifest文件中加入子标签的支持。
+
+如：
+{
+	"code": [
+		"./NGCore/Client/Legacy.js",
+		"./Code/Main.js"
+	],
+	
+	"textures": [
+		"./Content/*.png"
+	],
+	//only for ios	
+	ios:{
+		"textures": [
+			"./Content/ios/*.png"
+		]
+	}
+	//only for android	
+	android:{
+		"textures": [
+			"./Content/android/*.png"
+		]
+	}
+
+}
+在每个子标签里的资源只会build到自己的里面，这样是为了减少重复资源和差异化配置等。
+可分为二个等级的支持。
+一：除了code标签外的资源标签。由于不涉及代码，这样做起来比较简单，也容易实现，对sdk的各版本兼容的比较好。
+二：支持所有标签。代码标签的支持涉及到编译，从1.6后编译方法改变。涉及到的东西比较多，需要改动的东西比较多，容易出错。
+    另外,由于分开加载代码的情况比较少，可以在代码中进行平台判断。
+
+具体做法：
+资源子标签：
+   1.4
+	在create_manifest方法里，生成主资源之后加入以下代码：
+	//sub modules
+   	var subModule=version && manifest[version];
+    if(subModule){
+       // GL Images / Textures
+       buffer = join_content(buffer, generate_content_chunk(output_dir, subModule.textures));
+       buffer = join_content(buffer, generate_content_chunk(output_dir, subModule.textures_encrypted), 1);
+
+       // music
+       buffer = join_content(buffer, generate_content_chunk(output_dir, subModule.audio));
+       buffer = join_content(buffer, generate_content_chunk(output_dir, subModule.audio_encrypted), 1);
+
+       // other
+       buffer = join_content(buffer, generate_content_chunk(output_dir, subModule.other));
+       buffer = join_content(buffer, generate_content_chunk(output_dir, subModule.other_encrypted), 1);
+    }
+
+   1.6
+	//sub modules
+   	var subModule=version && manifest[version];
+    if(subModule){
+		// GL Images / Textures
+		buffer = join_content(buffer, generate_content_chunk(output_dir, manifest.textures));
+        buffer = join_content(buffer, generate_content_chunk(output_dir, manifest.textures_encrypted), File.ENCRYPTION_XOR55_WITHHEADER());
+
+		// music
+		buffer = join_content(buffer, generate_content_chunk(output_dir, manifest.audio));
+		buffer = join_content(buffer, generate_content_chunk(output_dir, manifest.audio_encrypted), File.ENCRYPTION_XOR55_WITHHEADER());
+
+		// other
+		buffer = join_content(buffer, generate_content_chunk(output_dir, manifest.other));
+        buffer = join_content(buffer, generate_content_chunk(output_dir, manifest.other_encrypted), File.ENCRYPTION_XOR55_WITHHEADER());
+	}
+
+代码支持：
+分为二种，一种是代码里的内容不需要处理，别外是一种是需要处理主要是合并到application.js里的，1.6后还需要混合处理。
+一、代码内容不需要处理参见manifest1.js
+二。代码需要处理，并已经合并到application.js，子内容的合并不在这里处理。参见manifest2.js,combine.js的修改还没完成。
+三。未完成。

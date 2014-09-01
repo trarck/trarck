@@ -1,0 +1,33 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    　  <title>Untitled Page</title>
+    　　<script type="text/javascript">
+    function readFile(fileBrowser) {
+    　　　 if (navigator.userAgent.indexOf("MSIE")!=-1) {
+        　　　　　　　 readFileIE(fileBrowser);
+   　　　 } else　if (navigator.userAgent.indexOf("Firefox")!=-1　|| navigator.userAgent.indexOf("Mozilla")!=-1)    {
+        　　　　　　 readFileFirefox(fileBrowser);
+   　　　 } else {
+        　　　　　　　return;
+        }
+    }
+
+    function readFileFirefox(fileBrowser) {
+        try {    　　　　　　　
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        } catch (e) {
+            return;  　　　
+        }
+        var fileName=fileBrowser.value;
+  　　　alert(fileName);
+    }
+</script>
+</head>
+<body>
+　　　 <form name="form1">
+    　　　 Browse to select a file
+    　　　 <input type="file" name="fileBrowser" size="125" onchange="readFile(this)"　/>
+    　　　 </form>
+</body>
+</html>

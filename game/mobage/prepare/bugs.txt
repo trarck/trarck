@@ -1,0 +1,1 @@
+1.assets.js里的copy_asset方法中对是不是进行android的资源处理的判断有误，原方法判断方法只有当targetbuild=android才生效，显然是错误的，而应当判断当前处理的是什么target的，故加入一个参数表示，是否正正处理android相关资源。这样可以分清targetbuild=all时任然可以处理针对android的资源。

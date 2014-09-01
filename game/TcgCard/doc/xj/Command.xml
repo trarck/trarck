@@ -1,0 +1,4 @@
+<?xml-stylesheet href="Command_files/intl.css" type="text/css"?><parsererror xmlns="http://www.mozilla.org/newlayout/xml/parsererror.xml">XML Parsing Error: not well-formed
+Location: http://xj001.mengjianghu.cn/starwar_sina/public/weibo/Cn/swf/resource/cn/xml/Command.xml?ver=3.2
+Line Number 9, Column 6:<sourcetext>			--platform表示：2开心网 4新浪微游戏  1人人网  4QQ朋友  5Qzone  6联众平台  url为路径名,startTime为活动开始时间,endTime活动结束时间,时间格式统一为服务器的秒数作为基准--
+--------------------------^</sourcetext></parsererror>

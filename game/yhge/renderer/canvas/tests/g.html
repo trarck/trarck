@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> new document </title>
+ </head>
+
+ <body>
+  <script type="text/javascript">
+  <!--
+    var g=10;
+    var v=0;
+    var s=0;
+    var t=0;
+    
+    t=0;
+    v=0;
+    s=0;
+    alert(0.5*v*v+","+g*s);
+
+    
+    var dt=1/30;
+
+    var vt=0,st,st1,st2,st3=0;
+
+    var screenHeight=300;
+
+    var E0=vt*vt+g*screenHeight;
+
+    for(var i=0;i<10;i++){
+        vt=v+g*dt;
+        st=g*(t+dt)*(t+dt)*0.5;
+        st1=s+vt*dt;
+        st2=s+v*dt+0.5*g*dt*dt;//s+vt*dt-0.5*g*dt*dt;//=s+v*dt+0.5*g*dt*dt
+        st3+=(vt*vt-v*v)*0.5/g;
+        alert(0.5*vt*vt+"\n"+g*st+"\n"+g*st1+"\n"+g*st2+"\n"+st3*g);
+        var et=0.5*vt*vt+g*(screenHeight-st);
+        //alert(et+"\n"+E0);
+        v=vt;
+        t+=dt;
+        s=st2;
+    }
+
+  //-->
+  </script>
+ </body>
+</html>

@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 如果程序中需要用到变量替换功能，请统一在变量前加$符号，如：$name $money $xxx ...-->
+<!-- 描述里面有特殊字符的加 CDATA 区段开始于 "<![CDATA["，结束于 "]]>"-->
+<Root>
+	<CardItem>星界传说</CardItem>
+	
+	<Help>帮助</Help>
+	<Ok>确认</Ok>
+	<Cancel>取消</Cancel>
+	<Backpack>背包</Backpack>
+	<Store>商店</Store>
+	<MyInfo>个人信息</MyInfo>
+	<Gold>金币</Gold>
+	<Star>星币</Star>
+	<Starwar>星屑碎片</Starwar>
+	<CardNum>卡牌拥有数量</CardNum>
+	<Music>打开∕关闭音乐</Music>
+	<Audio>打开∕关闭音效</Audio>
+	<MainHelp>打开帮助信息</MainHelp>
+	<Energy>能量</Energy>
+	<Vigor>活力</Vigor>
+	<Exp>经验值</Exp>
+	<Rank>等级</Rank>
+	<Item>道具</Item>
+	<Gem>宝石</Gem>
+	<Medicine>药水</Medicine>
+	<Collect>收集品</Collect>
+	<Recharge>充值</Recharge>
+	<Buy>购买</Buy>
+	<VipCountdownTime>您的vip特权还剩{0}{1}</VipCountdownTime>
+	
+	<Dlgactivity>加分活动</Dlgactivity>
+	
+	<Day>天</Day>
+	<Hour>小时</Hour>
+	<Minute>分钟</Minute>
+	<Before>前</Before>
+	
+	<Boss>Boss关卡</Boss>
+	
+	<TaskTips>小提示:</TaskTips>
+	
+	<PayStarForVip>花费{0}星币购买{1}天vip</PayStarForVip>
+	
+	<notEnoughMove>活力不足</notEnoughMove>
+	<NotenoughCollect>收集品不足</NotenoughCollect>
+	<NoRmb>星币不足</NoRmb>
+	<NoPower>能量不足</NoPower>
+	<NoRank>等级不足</NoRank>
+	<NoGameCoins>金币不足</NoGameCoins>
+	<Open>级后开放</Open>
+	
+	
+	
+	
+	<GuessTA>是否猜{0}赢?</GuessTA>
+	
+	<FatChance>竞猜次数已用完,VIP可以押注3次哦</FatChance>
+	
+	<GetItem>恭喜你获得</GetItem>
+	
+	<NowPowerItem>没有能量药水了</NowPowerItem>
+	
+	<UseItemSuccess>使用{0}成功</UseItemSuccess>
+	
+	<NoGoodsInBag>你背包没有这种物品</NoGoodsInBag>
+	
+	<ChallengeMapstageEnergy>挑战关卡会消耗活力</ChallengeMapstageEnergy>
+	<ChallengeMapstageVigor>探索迷宫会消耗能量</ChallengeMapstageVigor>
+	<EnergyVigor>每15分钟回复1点</EnergyVigor>
+	<showNotOpenTips>打开前一难度中所有宝箱可以开放</showNotOpenTips>
+	<showNotEnterTips>重置迷宫后可以进入</showNotEnterTips>
+	
+	<cannotEnter>未解锁</cannotEnter>
+	<needResetEnter>重置后可选择</needResetEnter>
+	<userStarBuy>使用星币直接购买</userStarBuy>
+	
+	
+	<System>系统提示</System>
+	<added>这张卡已经添加过了</added>
+	<Closing>未开放</Closing>
+	<NoStarwar>星屑碎片不足</NoStarwar>
+	<MapStageGet>可在关卡中获得</MapStageGet>
+	<MaxFour>最多只能去掉四个</MaxFour>
+	<TurnTable>您已经没有抽奖机会了，赶紧去邀请好友获取更多的机会吧！</TurnTable>
+	
+	<Type>类型</Type>
+	<Property>属性</Property>
+	
+	<Buyed>已购买</Buyed>
+	
+	<MemTips>每日宝石</MemTips>
+	
+	<CollectTips>
+首次兑换主线关卡能量最大值+1
+首次兑换获得【{0}】星界牌
+逢五次兑换获得【{1}】星界牌
+逢十次兑换获得【{2}】星界牌
+每次兑换可获得1000金币和500经验
+	</CollectTips>
+	
+	<NumberHan>零一二三四五六七八九十</NumberHan>
+	
+	<FromNFinght>第{0}大关掉落</FromNFinght>
+	
+	
+	<Nothing>无</Nothing>
+	
+	<MoreTask>更多任务</MoreTask>
+	
+	<JoinSuccess>报名成功</JoinSuccess>
+	<NoCardBag>已经开完了</NoCardBag>
+	
+	
+	<LeftPage>上一页</LeftPage>
+	<RightPage>下一页</RightPage>
+	<FirstPage>首页</FirstPage>
+	<LastPage>最后一页</LastPage>
+	
+	
+	<PlayStop>播放∕暂停</PlayStop>
+	<Min>战斗减速</Min>
+	<Add>战斗加速</Add>
+	<Back>战斗重播</Back>
+	<Skip>跳过战斗</Skip>
+	
+	
+	
+	<AstralTactics>星界战术：</AstralTactics>
+	<str0>多</str0>
+	<str1>单</str1>
+	<str2>二</str2>
+	<str3>三</str3>
+	<str4>四</str4>
+	<str5>五</str5>
+	<str6>六</str6>
+	
+	
+	<monster>入侵者</monster>
+	
+	<ChangeName>改名</ChangeName>
+	<ChangeNameSave>保存改名</ChangeNameSave>
+	<TestDialogView_Close>关闭窗口</TestDialogView_Close>
+	
+	<joinRace>人参与竞猜</joinRace>
+	<raceRound>第</raceRound>
+	<due>届</due>
+	<box>宝箱</box>
+	<hidebox>隐藏宝箱</hidebox>
+	
+	<exchangeTimes>已兑换次数</exchangeTimes>
+	
+	<!--一些弹出框的文字描述-->
+	<ShopHand>商品操作</ShopHand>
+	<BuySuccess>购买成功</BuySuccess>
+	<BuyFail>购买失败</BuyFail>
+	
+	<EnterNumber>请输入数量：</EnterNumber>
+	<NoBuyByTheCoin>不能使用此币购买，请选择其他币</NoBuyByTheCoin>
+	<NotOpen>此功能暂未开放</NotOpen>
+	<ZeroNumber>数量小于1个</ZeroNumber>
+	
+	
+	<BackHand>背包操作</BackHand>
+	<NoBackNumber>数量超过限制</NoBackNumber>
+	
+	
+	
+	
+	<!--卡组操作-->
+	<CardHand>卡组操作</CardHand>
+	<SaveGroupSuccess>保存卡组成功！</SaveGroupSuccess>
+	<SaveGroupFail>保存卡组失败！</SaveGroupFail>
+	<NoCard>卡牌不够！</NoCard>
+	<NoSelctCard>当前没有选中的卡牌！</NoSelctCard>
+	<NoEnergy>星界值不够！</NoEnergy>
+	<OntoPosition>拖到对应位置</OntoPosition>
+	<NoSelctCardNum>当前选中的卡牌数量不够！</NoSelctCardNum>
+	<CardCarryFull>卡牌携带数已满！</CardCarryFull>
+	<Used>可用</Used>
+	<NotUsed>此卡牌的可用数量为0</NotUsed>
+	<NoVipCard>非VIP用户{0}不能在此页使用添加编辑功能</NoVipCard>
+	
+	
+	<CardSet>卡组操作</CardSet>
+	<CardSetFail>设置失败</CardSetFail>
+	
+		<!--卡组防御-->
+	<Edit>卡组编辑</Edit>
+	<Defense>卡组防御</Defense>
+	
+	
+	
+	
+	<CardEffort>成就系统</CardEffort>
+	
+	
+	
+	
+	
+	<UserMapStageHand>关卡操作</UserMapStageHand>
+	<ResetUserMapStageHandSuccess>关卡重置成功！</ResetUserMapStageHandSuccess>
+	<ResetUserMapStageHandFile>您的宝石不足，无法重置关卡！</ResetUserMapStageHandFile>
+	<MapstageDeatoryEnergy>每次挑战关卡会消耗1点活力</MapstageDeatoryEnergy>
+	
+	<!--战斗操作-->
+	<FightHand>战斗操作</FightHand>
+	<EnterFight>进入战斗</EnterFight>
+	<FightFail>战败</FightFail>
+	<FightSuccess>战斗胜利</FightSuccess>
+	<ClearFight>正在清除战斗信息</ClearFight>
+	<BuyVip>vip已到期,购买vip可开通此项功能</BuyVip>
+	
+	
+	<!--战斗中的群体标记-->
+	<mark201>天神下凡</mark201>
+	<mark202>群体反击</mark202>
+	<mark203>群体盾刺</mark203>
+	<mark204>血之盛宴</mark204>
+	<mark205>联防</mark205>
+	<mark206>群体回春术</mark206>
+	<mark207>连锁炸弹</mark207>
+	<mark208>血肉之舞</mark208>
+	<mark209>战争咆哮</mark209>
+	<mark210>群体反射</mark210>
+	<mark221>龙焰</mark221>
+	<mark222>群体冰甲</mark222>
+	<mark223>群体暗杀</mark223>
+	<mark224>群体纵火</mark224>
+	<mark225>群体要害</mark225>
+	<mark226>群体腐蚀</mark226>
+	<mark227>群体放逐</mark227>
+	<mark228>群体圣光</mark228>
+	<mark229>群体破甲</mark229>
+	<mark230>群体污染</mark230>
+	
+	
+	
+	<!--卡牌的一些属性配置-->
+	<pro1>火</pro1>
+	<pro2>风</pro2>
+	<pro3>冰</pro3>
+	<pro4>地</pro4>
+	<pro5>光</pro5>
+	<pro6>暗</pro6>
+	<pro7>无</pro7>
+	<pro8>全</pro8>
+	
+	
+	<type1>星界</type1>
+	<type2>宝物</type2>
+	<type3>魔法</type3>
+	<type4>人族</type4>
+	<type5>元素</type5>
+	<type6>野兽</type6>
+	<type7>亡灵</type7>
+	<type8>机械</type8>
+	<type9>植物</type9>
+	<type10>精灵</type10>
+	<type11>龙族</type11>
+	
+
+	
+	   
+	<!--排行榜中通过按钮名称显示的按钮名字-->
+	<CardCount>卡牌数量</CardCount>
+	<ContinueWin>连胜次数</ContinueWin>
+	<GameCoins>金币数量</GameCoins>
+	<Win>胜利次数</Win>
+	<Amount>合成次数</Amount>
+	
+	<!--成就-->
+	<AchievementOne>完成成就数</AchievementOne>
+	<AchievementAll>成就总数</AchievementAll>
+	
+	
+	<!--日志-->
+	<ToFightSuccess>对{0}发起进攻，并顺利击败！</ToFightSuccess>
+	<ToFightLose>对{0}发起了进攻，铩羽而归！</ToFightLose>
+	<FightedSuccsss>{0}不自量力的进攻，对你如隔靴搔痒！</FightedSuccsss>
+	<FightedLose>{0}对你发起了进攻，你只得落荒而逃！</FightedLose>
+	<SendGift>{0}送您一枚{1}！</SendGift>
+	
+	<InviteAndEnterGame>您邀请的{0}进入游戏啦！</InviteAndEnterGame>
+	<InviteFirendLevelUp>您邀请的{0}升到{1}级啦！</InviteFirendLevelUp>
+	
+	<!--全网赛-->
+	<JoinRace>您报名参加了全网赛，祝您好运！</JoinRace>
+	<OneRoundSuccsee>全网赛第1轮，轮空，晋级下一轮，</OneRoundSuccsee>
+	<NRoundSuccsee>全网赛第{0}轮，挑战{1}胜利，胜利晋级，</NRoundSuccsee>
+	<NRoundLose>全网赛第{0}轮，挑战{1}失败，黯然离场！</NRoundLose>
+	<QuarterfinalSuccess>全网赛四分之一决赛，挑战{0}胜利，晋级半决赛，</QuarterfinalSuccess>
+	<SemifinalSuccsee>全网赛半决赛，挑战{0}胜利，晋级决赛，</SemifinalSuccsee>
+	<FinalSuccess>全网赛决赛，挑战{0}胜利，夺得冠军,</FinalSuccess>
+	<QuarterfinalLose>全网赛四分之一决赛，挑战{0}失败，黯然离场！</QuarterfinalLose>
+	<SemifinalLose>全网赛半决赛，挑战{0}失败，黯然离场！</SemifinalLose>
+	<FinalLose>全网赛决赛，挑战$失败，黯然离场，</FinalLose>
+	
+	<GamblingCard>您用卡牌{0}押注了{1}的卡组，祝您好运！</GamblingCard>
+	<GamblingSuccess>由于您在竞猜中获胜，您的卡牌{0}升至{1}级！</GamblingSuccess>
+	<GamblingLoseDown>由于您在竞猜中失败，您的卡牌{0}降至{1}级！</GamblingLoseDown>
+	<GamblingLose>由于您在竞猜中失败，您失去了卡牌{0}！</GamblingLose>
+	
+	<RandomMix>您随机合成出一张{0}，感觉不错！</RandomMix>
+	<DivinableMix>您定向合成出一张{0}，感觉不错！</DivinableMix>
+	<OutburstMix>您暴击合成出一张+{0}的{1}，运气好到爆啊！</OutburstMix>
+	<ReinforcementSuccess>您成功将{0}强化至+{1}，真是好运气！</ReinforcementSuccess>
+	
+	
+	<GamblingCardSuccess>下注成功</GamblingCardSuccess>
+	<SelectCard>请选择下注的卡牌</SelectCard>
+	
+	<RaceTips>全网赛每天举行一届，当日报名，次日比赛，
+查看当日赛况您还可用自己的卡牌押注，
+猜对就能使其免费强化+1</RaceTips>
+	<GuessRaceBtnTips>查看战斗双方阵容，竞猜胜负，每天只能竞猜2次（VIP3次）</GuessRaceBtnTips>
+	<WatchRaceBtnTips>播放本场战斗的录像</WatchRaceBtnTips>
+	<GuessTARaceBtnTips>用自己的卡牌押注，猜对使其强化+1（最高到+5），猜错卡牌消失</GuessTARaceBtnTips>
+	<FightRaceBtnTips>用自己的牌与其较量一番</FightRaceBtnTips>
+	
+	<!--恢复卡牌-->
+	<remanentCount>剩余{0}次机会</remanentCount>
+	<NoRemanentCount>恢复机会已经用完</NoRemanentCount>
+	<resumeTips>您仅可恢复当天竞猜失败的卡牌。</resumeTips>
+	<resumeCardSuccess>您成功恢复了{0}级的{1}卡牌。</resumeCardSuccess>
+	<GetStarCoins>获得{0}个星屑！</GetStarCoins>
+	<GetAgBox>获得白银宝箱！</GetAgBox>
+	<GetAuBox>获得黄金宝箱！</GetAuBox>
+	<IsResumeCard>是否恢复{0}卡牌</IsResumeCard>
+	
+	
+	
+	
+	<!--合成操作-->
+	<Synthetize>合成</Synthetize>
+	<StrengthHandle>强化操作</StrengthHandle>
+	<SynthetizeHandle>合成操作</SynthetizeHandle>
+	<SynthetizeSuccess>合成成功</SynthetizeSuccess>
+	<SynthetizeFail>合成失败</SynthetizeFail>
+	<SynthetizeNoCard>合成材料不足</SynthetizeNoCard>
+	<CardIsRare>限量珍藏不能随机合成</CardIsRare>
+	<PutMainCard>请先安放主体卡牌</PutMainCard>
+	<NoVipCure>非VIP用户仅可使用3个药水槽</NoVipCure>
+	<StrengthSuccessTip>卡牌强化+1{0}材料消失</StrengthSuccessTip>
+	<StrengthFailTip>卡牌强化+1{0}材料消失</StrengthFailTip>
+	
+	
+	
+	
+	
+	<CardGroupsNotenough>请选中更多卡组,您可在主城中新建卡组</CardGroupsNotenough>
+	
+	<!--星屑商店-->
+	<showMoneyTips>星屑碎片：挑战关卡的战利品</showMoneyTips>
+	<refreshShopTips>当倒计时为零时，兑换物品刷新
+也可以消耗10个星屑碎片立即重置并刷新</refreshShopTips>.
+
+	<!--抽抽乐-->
+	<LotteryTips1>金币：可用于在商店购买卡包</LotteryTips1>
+	<LotteryTips2>宝石：重置关卡的必要道具</LotteryTips2>
+	<LotteryTips3>收集品：集齐一套可在个人资料
+收集品界面兑换奖励</LotteryTips3>
+	<LotteryTips4>BUFF药水：增加PVE时的战斗力</LotteryTips4>
+	<LotteryTips5>经验药水：增加与好友切磋获得的经验</LotteryTips5>
+	<LotteryTips6>行动力药水：增加相应的行动力</LotteryTips6>
+	
+	
+	<!--迷宫-->
+	<useStarBuy>使用星币购买药水</useStarBuy>
+
+	<LoadError>加载地址错误</LoadError>
+	
+	
+	<addPower1>增加下{0}场战斗(PVE)100点士气</addPower1>
+	<addPower2>增加下{0}场战斗(PVE)一张卡牌20点攻击</addPower2>
+	<addPower3>增加下{0}场战斗(PVE)一张卡牌20点体力</addPower3>
+	<addPower4>增加下{0}场战斗(PVE)一张卡牌20行动速度</addPower4>
+	<addPower5>增加下{0}场好友被动对战的经验</addPower5>
+	<addPower6>增加下{0}场对好友战斗的经验</addPower6>
+	
+	
+	<!--好友列表-->
+	<FriendWish>达成愿望</FriendWish>
+	<FriendWishInfo>您顺利地帮好友达成了愿望！感觉更加亲密了！</FriendWishInfo>
+	
+	<GetAward>获取奖励</GetAward>
+	<GetLianSuccess>领取奖励成功！</GetLianSuccess>
+	<GetGongSuccess>恭喜您成功领取奖励：</GetGongSuccess>	
+	<GetAwardTip>提示</GetAwardTip>
+	<GetAwardTip_0>您还没有选择宝石！</GetAwardTip_0>
+	<GetAwardTip_1>尊贵的VIP，您还可以选择一颗宝石哦.</GetAwardTip_1>
+	
+	<TipStone_1>红宝石</TipStone_1>
+	<TipStone_2>蓝宝石</TipStone_2>
+	<TipStone_3>翡翠</TipStone_3>
+	<TipStone_4>黑曜石</TipStone_4>
+	<TipStone_5>珊瑚</TipStone_5>
+	<TipStone_6>玛瑙</TipStone_6>
+	<TipStone_7>钻石</TipStone_7>
+	<TipStone_8>猫眼石</TipStone_8>
+	<TipStone_9>紫水晶</TipStone_9>
+	
+	<TipPK>小提示：与5个不同的好友切磋，如果好友数量不足，可以邀请更多好友加入。</TipPK>
+	
+	<TipGetFriend>您目前成功邀请的好友数量为：</TipGetFriend>
+	
+	<EncourageStar>星屑</EncourageStar>
+	
+	
+	<CanNotAutoStar>请先选择一个时间再开始战斗</CanNotAutoStar>
+	
+	<RankingsIntro_1>您目前的排名</RankingsIntro_1>
+	<RankingsIntro_2>您成绩欠佳</RankingsIntro_2>
+	<RankingsValue>未上榜单</RankingsValue>
+	
+	<!--buff-->
+	<Buff1>点击使用士气强化药水</Buff1>
+	<Buff2>点击使用强化士气药水</Buff2>
+	<Buff3>点击使用主动经验药水</Buff3>
+	<Buff4>点击使用被动经验药水</Buff4>
+	<Buff5>点击使用攻击强化药水</Buff5>
+	<Buff6>点击使用体力强化药水</Buff6>
+	<Buff7>点击使用行动力强化药水</Buff7>
+	
+	<VIPConcessions>VIP折扣价</VIPConcessions>
+	
+	<Intro_EnterFight_1>出战点击选中左方的卡组，然后点击下方的“战斗”按钮。</Intro_EnterFight_1>
+	
+	
+	<TurnTableAward_1>蓝宝石</TurnTableAward_1>
+	<TurnTableAward_2>IPod nano 6</TurnTableAward_2>
+	<TurnTableAward_3>专家包</TurnTableAward_3>
+	<TurnTableAward_4>大师包</TurnTableAward_4>
+	<TurnTableAward_5>IPhone 4</TurnTableAward_5>
+	<TurnTableAward_6>黄药水</TurnTableAward_6>
+	<TurnTableAward_7>红药水</TurnTableAward_7>
+	<TurnTableAward_8>IPad 2</TurnTableAward_8>
+	<TurnTableAward_9>钻石</TurnTableAward_9>
+	<TurnTableAward_10>铁宝箱</TurnTableAward_10>
+	<TurnTableAward_11>银宝箱</TurnTableAward_11>
+	<TurnTableAward_12>宝箱</TurnTableAward_12>
+	
+	<Intro_Guanka> 关卡：可以获得星界牌的地方</Intro_Guanka>
+	<Intro_Migong>迷宫：可以获得卡牌的地方</Intro_Migong>
+	<Intro_Zhucheng>主城：组建编辑卡组的场所</Intro_Zhucheng>
+	<Intro_Jingji>竞技场：与其他玩家竞技的场所</Intro_Jingji>
+	<Intro_Duihuan>星屑兑换所：兑换卡牌的地方</Intro_Duihuan>
+	
+	<PayAward_1>10</PayAward_1>
+	<PayAward_11>活力药水(小)x3</PayAward_11>
+	<PayAward_12>星屑x10</PayAward_12>
+	<PayAward_2>50</PayAward_2>
+	<PayAward_21>魔剑妖姬(蓝)</PayAward_21>
+	<PayAward_22>星屑x20</PayAward_22>
+	<PayAward_3>100</PayAward_3>
+	<PayAward_31>黄金宝箱x1</PayAward_31>
+	<PayAward_32>星屑x50</PayAward_32>
+	<PayAward_4>300</PayAward_4>
+	<PayAward_41>魔剑妖姬(红)</PayAward_41>
+	<PayAward_42>大师包x1</PayAward_42>
+	
+	<TipActivity_1>公测活动</TipActivity_1>
+	<TipActivity_2>充值活动</TipActivity_2>
+	
+	<ActivityTime_4>11月10日-11月23日</ActivityTime_4>
+	<ActivityTime_3>11月16日-11月30日</ActivityTime_3>
+	
+	<FriendTip_Achieve>查看好友成就</FriendTip_Achieve>
+	<FriendTip_GiftEn>给好友送礼</FriendTip_GiftEn>
+	<FriendTip_GiftFs>今天已经送过礼物</FriendTip_GiftFs>
+	
+	
+	<!--天梯赛日志-->
+	<LadderFightSucces>战胜{0}，积分增加{1}</LadderFightSucces>
+	<LadderFightFailure>败于{0}，积分减少{1}</LadderFightFailure>
+	 
+	
+		<!--通过卡牌等级获取卡牌名称显示的颜色值-->
+	<color1>#A5A6C0</color1>
+	<color2>#FFFFFF</color2>
+	<color3>#00FF00</color3>
+	<color4>#00FFFF</color4>
+	<color5>#FF00FF</color5>
+	<color6>#FF9900</color6>
+	<color7>#FF0000</color7>
+	
+	
+</Root>

@@ -1,0 +1,1 @@
+<?php $content=file_get_contents("./bugs1.swf");file_put_contents("./bugs11.swf",gzuncompress($content));

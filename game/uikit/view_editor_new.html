@@ -1,0 +1,335 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>View Editor</title>
+    <link rel="stylesheet" type="text/css" href="lib/renderer.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/build.css"/>
+</head>
+<body>
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/yh.js"></script>
+
+    <!-- yhge -->
+    <script type="text/javascript" src="lib/yhge.js"></script>
+
+    <!-- builder -->
+    <!--<script type="text/javascript" src="js/DataAttrConfigs.js"></script>-->
+    <script type="text/javascript" src="js/ns.js"></script>
+    <script type="text/javascript" src="js/Configs.js"></script>
+    <script type="text/javascript" src="js/DataReader.js"></script>
+    <script type="text/javascript" src="js/DataWriter.js"></script>
+
+    <script type="text/javascript" src="js/Button.js"></script>
+    <script type="text/javascript" src="js/TFButton.js"></script>
+    <script type="text/javascript" src="js/HTMLBuilder.js"></script>
+    <script type="text/javascript" src="js/AttrView.js"></script>
+    <script type="text/javascript" src="js/StructView.js"></script>
+    <script type="text/javascript" src="js/Screen.js"></script>
+
+
+    <!-- data -->
+    <script type="text/javascript" src="datas/IntroScreen.js"></script>
+	<script type="text/javascript" src="datas/InGameScreen.js"></script>
+    <div id="main">
+
+        <div class="sreen-attr">
+            <!--<input id="contentUrl" value="http://localhost:8002/Apps/Werule/build/Content/"/>-->
+            <select id="viewDataList">
+                <option value="0">请选择</option>
+            </select>
+            <input type="button" onclick="createSprite()" value="new sprite"/>
+            <input type="button" onclick="createLabel()" value="new label"/>
+            <input type="button" onclick="createButton()" value="new button"/>
+            <input type="button" onclick="saveFile(this)" value="save"/>
+
+        </div>
+        <div id="structView">
+
+        </div>
+        <div id="content">
+        </div>
+        <div id="attrView">
+            <h4>基础属性</h4>
+            <form class="fixed-attr">
+                <ul>
+                    <li>
+                        <label>name:</label><input name="name"/>
+                    </li>
+                    <li>
+                        <label>size_x:</label><input name="size_x"/>
+                    </li>
+                    <li>    
+                        <label>size_y:</label><input name="size_y"/>
+                    </li>
+                    <li>
+                        <label>pos_x:</label><input name="pos_x"/>
+                    </li>
+                    <li>
+                        <label>pos_y:</label><input name="pos_y"/>
+                    </li>
+                    <li>    
+                        <label>anchor_x:</label><input name="anchor_x"/>
+                    </li>
+                    <li>
+                        <label>anchor_y:</label><input name="anchor_y"/>
+                    </li>
+                    <li>
+                        <label>flip_x:</label><input name="flip_x"/>
+                    </li>
+                    <li>
+                        <label>flip_y:</label><input name="flip_y"/>
+                    </li>
+
+                    <li>
+                        <label>depth:</label><input name="depth"/>
+                    </li>
+                    <li>
+                        <label>scale:</label><input name="scale_x" class="small"/><input name="scale_y" class="small"/>
+                    </li>
+                    <li>
+                        <label>rotation:</label><input name="rotation"/>
+                    </li>
+                    <li>
+                        <label>color:</label><input name="color_r" class="small"/><input name="color_g" class="small"/><input name="color_b" class="small"/>
+                    </li>
+                    <li>
+                        <label>alpha:</label><input name="alpha"/>
+                    </li>
+                    <li>
+                        <label>visible:</label><input name="visible"/>
+                    </li>
+                    <li>
+                        <label>font_size:</label><input name="font_size"/>
+                    </li>
+                    <li>
+                        <label>horizontalAlign:</label><input name="horizontalAlign"/>
+                    </li>
+                    <li>
+                        <label>verticalAlign:</label><input name="verticalAlign"/>
+                    </li>
+                    <!--<li>-->
+                        <!--<label>hide_idle:</label><input name="hide_idle" />-->
+                    <!--</li>-->
+                    <li>
+                        <label>asset:</label><input name="asset"/>
+                    </li>
+                    <li>
+                        <label>text:</label><input name="text"/>
+                    </li>
+                    <li>
+                        <label>text_key:</label><input name="text_key"/>
+                    </li>
+                    <li>
+                        <label>fontType:</label><input name="fontType"/>
+                    </li>
+                    <li>
+                        <label>action:</label><input name="action"/>
+                    </li>
+                </ul>
+            </form>
+            <h4 class="extAttr">扩展属性<a href="#" class="btn btn-add" id="addExtItem">添加</a>  </h4>
+            <ul class="ext-view ext-attr">
+            </ul>
+            <h4 class="args">参数<a href="#" class="btn btn-add" id="addArgItem">添加</a>  </h4>
+            <ul class="args-view args-attr">
+            </ul>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+
+    var config={
+        contentRoot:"./",
+        viewDataRoot:"/JSON",
+        content:$("#content"),
+        attrViewElement:$("#attrView"),
+        structViewElement:$("#structView")
+    };
+
+    var Node=yhge.renderer.html.Node;
+    var Sprite=yhge.renderer.html.Sprite;
+    var Text=yhge.renderer.html.Text;
+
+    var screen;
+
+    showScreenViewDataList();
+
+//    showScreen("HomeViewDefinition.js");
+
+    //ui构建器
+    var builder=new uikit.HTMLBuilder({
+        basePath:config.contentRoot
+    });
+
+    //属性列表
+    var attrView=new uikit.AttrView($("#attrView"));
+    attrView.setupAttrView();
+
+
+
+    var structView=new uikit.StructView($("#structView"),attrView);
+
+
+
+    $(document).ready(function(){
+
+    });
+
+    function saveFile(element) {
+
+        var currentScreenData=screen.getElementDefine();
+        var data = createViewJSONSaveData();
+        currentScreenData.images=data.images;
+        currentScreenData.labels=data.labels;
+
+        data=JSON.stringify(currentScreenData,null,4);//JsonUtil.convertToString(data);
+//        console.log(data);
+//        var sub=window.open("","屏幕数据");
+//        sub.document.body.innerHTML=data;
+
+//        var href = "data:text/plain," + encodeURIComponent(data);
+//        var href="data:application/vnd.json,"+encodeURIComponent(data);
+//        var sub=window.open(href,"屏幕数据");
+
+        $.post("/saveView?filename="+screen.getDefineFilename(),data);
+//        $.post("/saveView?filename=test",data);
+//        var download = $('<a href=' + href + ' target="_blank">Download</a>').click(function() { this.innerHTML = ""; });
+//        download.insertAfter(element)
+    }
+
+    function createViewJSONSaveData(){
+        var dw=new DataWriter(screen);
+        var dataDef=dw.getScreenData();
+        console.log(dataDef);
+        return dataDef;
+    }
+
+    function showScreenViewDataList(){
+        var viewDataList=$("#viewDataList")[0];
+
+        $.get("listView",function(list){
+
+            for(var i=0,l=list.length;i<l;i++){
+                viewDataList.options.add(new Option(list[i],list[i]));
+            }
+        });
+
+        $("#viewDataList").change(function(e){
+            console.log(this.value);
+            showScreen(this.value);
+        });
+    }
+
+
+    function showScreen(screenFilename){
+
+        $.get(config.viewDataRoot+"/"+screenFilename,null,function(data){
+            showScreenWidthDefine(getViewData(data),screenFilename);
+        },"text");
+    }
+
+    function showScreenWidthDefine(define,screenFilename){
+        console.log(define);
+        //screen
+        screen=new uikit.Screen(attrView);
+        screen.setBuilder(builder);
+        screen.setStructView(structView);
+        screen.setDefineFilename(screenFilename);
+        screen.setName(screenFilename.replace(".js",""));
+        screen.loadElementsWithDefine(define);
+        //设置事件
+//        screen.setupEvents();
+
+        //加入document树
+        screen.getView().addClass("wrap");
+        $("#content")
+                .empty()
+                .append(screen.getView());
+        screen.render();
+
+        structView.setup(screen);
+    }
+
+    function getViewData(data){
+        var fun=new Function("var exports={};"+data+";return exports;");
+        var data=fun();
+        //only one key
+        for(var k in data) return data[k];
+    }
+
+    function createSprite(){
+        if(screen){
+            var sprite=builder.createImage({
+                name:"Sprite",
+                pos_x : 0,
+                pos_y : 0,
+                size_x : 256,
+                size_y: 256,
+                asset:"Content/Images8x/misc/1pxblack.png"
+            });
+            sprite.render();
+            screen.setupEvent(sprite);
+            screen.addChild(sprite);
+            var root=screen.getStructView()._tree.getNode(screen.getId());
+            root.addSubNode(screen.getStructView().createTreeNodeData(sprite));
+            screen.getStructView().setSelectNode(sprite);
+        }
+    }
+
+    function createLabel(){
+        if(screen){
+            var text=builder.createLabel({
+                name:"Text",
+                pos_x : 0,
+                pos_y : 0,
+                size_x :128,
+                size_y: 32,
+                text:"EMPTY"
+            });
+            text.render();
+            screen.setupEvent(text);
+            screen.addChild(text);
+            var root=screen.getStructView()._tree.getNode(screen.getId());
+            root.addSubNode(screen.getStructView().createTreeNodeData(text));
+            screen.getStructView().setSelectNode(text);
+        }
+    }
+
+    function createButton(){
+        if(screen){
+            var button=builder.createButton({
+                name:"Button",
+                pos_x : 0,
+                pos_y : 0,
+                size_x :128,
+                size_y: 32,
+                text:"Button"
+            });
+            button.render();
+            screen.setupEvent(button);
+            screen.addChild(button);
+            var root=screen.getStructView()._tree.getNode(screen.getId());
+            root.addSubNode(screen.getStructView().createTreeNodeData(button));
+            screen.getStructView().setSelectNode(button);
+        }
+    }
+
+
+    $("#screenDataFile").change(function(){
+        var file=this.files[0];
+        console.log(file);
+        var reader = new FileReader();
+        reader.onload =function(e){
+            console.log(e.target.result);
+        };
+        reader.readAsText(file);
+    });
+
+//    $.getJSON("datas/007.json",function(data){
+//        console.log(arguments);
+//    });
+</script>
+</html>

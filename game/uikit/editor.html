@@ -1,0 +1,188 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>View Editor</title>
+    <link rel="stylesheet" type="text/css" href="lib/renderer.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/build.css"/>
+</head>
+<body>
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/yh.js"></script>
+
+    <!-- yhge -->
+    <script type="text/javascript" src="lib/yhge.js"></script>
+
+    <!-- builder -->
+    <!--<script type="text/javascript" src="js/DataAttrConfigs.js"></script>-->
+    <script type="text/javascript" src="js/ns.js"></script>
+    <script type="text/javascript" src="js/Configs.js"></script>
+    <script type="text/javascript" src="js/DataReader.js"></script>
+    <script type="text/javascript" src="js/DataWriter.js"></script>
+
+    <script type="text/javascript" src="js/KeyCode.js"></script>
+    <script type="text/javascript" src="js/Keybord.js"></script>
+    <script type="text/javascript" src="js/SingleKeybordInput.js"></script>
+    <script type="text/javascript" src="js/MultiKeybordInput.js"></script>
+    <script type="text/javascript" src="js/Button.js"></script>
+    <script type="text/javascript" src="js/TFButton.js"></script>
+    <script type="text/javascript" src="js/Group.js"></script>
+    <script type="text/javascript" src="js/HTMLBuilder.js"></script>
+    <script type="text/javascript" src="js/AttrView.js"></script>
+    <script type="text/javascript" src="js/StructView.js"></script>
+    <script type="text/javascript" src="js/Screen.js"></script>
+    <script type="text/javascript" src="js/WorkSpace.js"></script>
+
+
+    <div id="main">
+
+        <div class="sreen-attr">
+            <!--<input id="contentUrl" value="http://localhost:8002/Apps/Werule/build/Content/"/>-->
+            <select id="viewDataList">
+                <option value="0">请选择</option>
+            </select>
+            <label for="screenName">screen name:</label><input type="text" id="screenName" value=""/>
+            <input type="button" id="createScreenBtn" value="new screen"/>
+
+            <input type="button" id="createSpriteBtn" value="new sprite"/>
+            <input type="button" id="createLabelBtn" value="new label"/>
+            <input type="button" id="createButtonBtn" value="new button"/>
+            <input type="button" id="createTFButtonBtn" value="new tfbutton"/>
+
+
+
+            <input type="button" id="saveFileBtn"  value="save"/>
+            <input type="button" id="deleteBtn"  value="delete"/>
+
+        </div>
+        <div id="structView">
+
+        </div>
+        <div id="content">
+        </div>
+        <div id="attrView">
+            <h4>基础属性</h4>
+            <form class="fixed-attr">
+                <ul>
+                    <li>
+                        <label>name:</label><input name="name"/>
+                    </li>
+                    <li>
+                        <label>size_x:</label><input name="size_x"/>
+                    </li>
+                    <li>    
+                        <label>size_y:</label><input name="size_y"/>
+                    </li>
+                    <li>
+                        <label>pos_x:</label><input name="pos_x"/>
+                    </li>
+                    <li>
+                        <label>pos_y:</label><input name="pos_y"/>
+                    </li>
+                    <li>    
+                        <label>anchor_x:</label><input name="anchor_x"/>
+                    </li>
+                    <li>
+                        <label>anchor_y:</label><input name="anchor_y"/>
+                    </li>
+                    <li>
+                        <label>flip_x:</label><input name="flip_x"/>
+                    </li>
+                    <li>
+                        <label>flip_y:</label><input name="flip_y"/>
+                    </li>
+
+                    <li>
+                        <label>depth:</label><input name="depth"/>
+                    </li>
+                    <li>
+                        <label>scale:</label><input name="scale_x" class="small"/><input name="scale_y" class="small"/>
+                    </li>
+                    <li>
+                        <label>rotation:</label><input name="rotation"/>
+                    </li>
+                    <li>
+                        <label>color:</label><input name="color_r" class="small"/><input name="color_g" class="small"/><input name="color_b" class="small"/>
+                    </li>
+                    <li>
+                        <label>alpha:</label><input name="alpha"/>
+                    </li>
+                    <li>
+                        <label>visible:</label><input name="visible"/>
+                    </li>
+                    <li>
+                        <label>font_size:</label><input name="font_size"/>
+                    </li>
+                    <li>
+                        <label>horizontalAlign:</label><input name="horizontalAlign"/>
+                    </li>
+                    <li>
+                        <label>verticalAlign:</label><input name="verticalAlign"/>
+                    </li>
+                    <li>
+                        <label>type:</label><input name="type" />
+                    </li>
+                    <li>
+                        <label>asset:</label><input name="asset"/>
+                    </li>
+                    <li>
+                        <label>text:</label><input name="text"/>
+                    </li>
+                    <li>
+                        <label>text_key:</label><input name="text_key"/>
+                    </li>
+                    <li>
+                        <label>fontType:</label><input name="fontType"/>
+                    </li>
+                    <li>
+                        <label>action:</label><input name="action"/>
+                    </li>
+                </ul>
+            </form>
+            <h4 class="extAttr">扩展属性<a href="#" class="btn btn-add" id="addExtItem">添加</a>  </h4>
+            <ul class="ext-view ext-attr">
+            </ul>
+            <h4 class="args">参数<a href="#" class="btn btn-add" id="addArgItem">添加</a>  </h4>
+            <ul class="args-view args-attr">
+            </ul>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+
+    var config={
+        contentRoot:"./",
+        viewDataRoot:"/JSON",
+        content:$("#content"),
+        attrViewElement:$("#attrView"),
+        structViewElement:$("#structView"),
+        viewDataList:$("#viewDataList"),
+
+        screenName:$("#screenName"),
+
+        actions:{
+            createSprite:$("#createSpriteBtn"),
+            createLabel:$("#createLabelBtn"),
+            createButton:$("#createButtonBtn"),
+            createTFButton:$("#createTFButtonBtn"),
+            createScreen:$("#createScreenBtn"),
+            saveFile:$("#saveFileBtn"),
+            remove:$("#deleteBtn")
+        },
+
+        Server:{
+            listView:"listView"
+        },
+        keyMoveMin:1,
+        keyMoveMax:10
+    };
+
+    var workSpace=new uikit.WorkSpace(config);
+    workSpace.setup();
+
+
+
+</script>
+</html>

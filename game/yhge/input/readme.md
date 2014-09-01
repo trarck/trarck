@@ -1,0 +1,1 @@
+event processor  跟着input在一起。而不是和scene在一起，因为processor可以用于其它地方。scene可以有自己的SceneContentManager

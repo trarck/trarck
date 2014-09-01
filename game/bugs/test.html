@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>踩虫子</title>
+ </head>
+
+ <body>
+    <div id="container">
+      <div><span id="hp">10</span><span id="score"  style="margin-left:10px;">0</span><span id="fps" style="margin-left:10px;">0</span><span id="bugCount" style="margin-left:10px;">0</span></div>
+      <canvas id="canvas" width="500" height="500"></canvas>
+      
+    </div>
+   
+   <script type="text/javascript" src="../../source/javascript/swfruntime/type.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/Interpolate.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/analyzer.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/Shape2.js"></script>
+
+
+   <script type="text/javascript" src="../yhge/ns.js"></script>
+   <script type="text/javascript" src="../yhge/core/Base.js"></script>
+   <script type="text/javascript" src="../yhge/core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../yhge/math/Geometry.js"></script>
+   <script type="text/javascript" src="../yhge/math/QuatTree.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../yhge/times/Scheduler.js"></script>
+   <script type="text/javascript" src="../yhge/times/Timer.js"></script>
+   <script type="text/javascript" src="../yhge/times/AnimationManager.js"></script>
+   
+   <script type="text/javascript" src="../yhge/animation/Animation.js"></script>
+   <script type="text/javascript" src="../yhge/animation/ActionAnimation.js"></script>
+   <script type="text/javascript" src="../yhge/animation/AnimationGroup.js"></script>
+
+   <script type="text/javascript" src="../yhge/renderer/Node.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/AnimateSprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Circle.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Path.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/MovieClip.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/MorphShape.js"></script>
+   
+   <script type="text/javascript" src="../yhge/scene/SingleSceneUpdater.js"></script>
+   <script type="text/javascript" src="../yhge/scene/Scene.js"></script>
+
+   <script type="text/javascript" src="../yhge/Engine.js"></script>
+   <script type="text/javascript">
+   <!--
+        var config={
+            width:500,
+            height:500,
+            sceneRadius:500
+        };
+        YHBug={};
+   //-->
+   </script>
+   <script type="text/javascript" src="js/util.js"></script>
+   <script type="text/javascript" src="js/player.js"></script>
+   <script type="text/javascript" src="js/monster.js"></script>
+   <script type="text/javascript" src="js/bomp.js"></script>
+   <script type="text/javascript" src="datas/data.js"></script>
+
+   <script type="text/javascript">
+    <!--
+        var Scheduler=yhge.times.Scheduler;
+        var SingleSceneUpdater=yhge.scene.SingleSceneUpdater;
+        var Scene=yhge.scene.Scene;
+        var AnimationGroup=yhge.animation.AnimationGroup;
+        var Circle=yhge.renderer.canvas.shape.Circle;
+        var Shape=yhge.renderer.canvas.swf.Shape;
+        var MovieClip=yhge.renderer.canvas.swf.MovieClip;
+        var MorphShape=yhge.renderer.canvas.swf.MorphShape;
+        var Player=YHBug.Player;
+        var Sprite=yhge.renderer.canvas.Sprite;
+       
+        
+        //初始化引擎
+        var engine=new yhge.Engine({
+            canvas:"canvas",
+            renderer:"canvas",
+            interval:5,
+            forceInterval:false
+        });
+        //可以使用
+        if(engine.enable){
+            //建立资源
+            //TODO 缓存shape。把shape画到一个canvas上，作为图片使用。
+            var resources={},animations={};
+            for(var id in datas){
+                var definition=datas[id];
+                switch (definition.className) {
+                    case "Shape":
+                        resources[id]=Shape.createShape(engine.context,definition);
+                        break;
+                    case "MovieClip":
+                        resources[id]=animations[id]=MovieClip.createMovieClip(engine.context,definition,resources);
+                        break;
+                    case "MorphShape":
+                        resources[id]=new MorphShape(definition);
+                        break;
+                }
+            }
+        }
+        var mainTimeLine=new AnimationGroup({
+            duration:1000/20,
+        });
+        engine.animationManager.add(mainTimeLine);
+
+        singleSceneUpdater=SingleSceneUpdater.getInstance(engine.scheduler,engine.context);
+        var sceneWidth=500,sceneHeight=500;
+        var scene=new Scene({
+            width:sceneWidth,
+            height:sceneHeight
+        });
+        singleSceneUpdater.setScene(scene);
+        var bgImg=new Image();
+        bgImg.src="images/bg.jpg";
+
+        var bg=new Sprite({
+            texture:bgImg,
+            width:500,
+            height:500
+        });
+        scene.addChild(bg);
+
+//        var s=resources[163].clone();
+//        s.setPosition(100,100);
+//        s.setScale(8,8);
+//        scene.addChild(s);
+//
+//        s=resources[165].clone();
+//        s.setPosition(200,100);
+//        s.setScale(8,8);
+//        scene.addChild(s);
+//
+//        s=resources[167].clone();
+//        s.setPosition(300,100);
+//        s.setScale(8,8);
+//        scene.addChild(s);
+
+//        var bug=resources[20].clone();
+//        bug.setPosition(100,100);
+//        scene.addChild(bug);
+//        mainTimeLine.add(bug);
+//
+//        var bug2=resources[80].clone();
+//        bug2.setPosition(200,100);
+//        bug2.setRotation(45-90);
+//
+//        scene.addChild(bug2);
+//        mainTimeLine.add(bug2);
+        var x=100,y=200,n=4,i=0;
+        function layout(obj) {
+            if(++i>n){
+                i=0;
+                x=100;
+                y+=100;
+            }
+            obj.setPosition(x,y);
+            x+=100;
+        }
+
+        var player=resources[137].clone();
+        player.setPosition(100,100);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        
+        //right up
+        player=resources[160].clone();
+        layout(player);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //left up
+        player=resources[160].clone();
+        layout(player);
+        player.setScale(-1,1);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //up
+        player=resources[169].clone();
+        layout(player);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //down
+        player=resources[183].clone();
+        layout(player);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //left
+        player=resources[177].clone();
+        layout(player);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //right
+        player=resources[177].clone();
+        layout(player);
+        player.setScale(-1,1);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //left down
+        player=resources[182].clone();
+        layout(player);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        //right down
+        player=resources[182].clone();
+        player.setScale(-1,1);
+        layout(player);
+        scene.addChild(player);
+        mainTimeLine.add(player);
+        
+
+        engine.timer.setInterval(function () {
+//            var sx=bug.getScaleX(),sy=bug.getScaleY();
+//            bug.setScale(sx+0.2,sy+0.2);
+        },100);
+        
+        
+        //resources[17].render(engine.context);
+        
+    //-->
+   </script>
+ </body>
+</html>

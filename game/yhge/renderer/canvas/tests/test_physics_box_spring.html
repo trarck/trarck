@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="400" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+
+   <script type="text/javascript" src="../../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Circle.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //ctx.fillStyle="#CCCCCC";
+    //ctx.fillRect(0,0,300,300);
+    var sceneWidth=400,sceneHeight=300;
+
+    var Circle=yhge.renderer.canvas.shape.Circle;
+
+    var radio=10;
+
+    var circle1=new Circle({
+        radius:radio,
+        color:"#00FF00"
+    });
+
+    var vx=5,vy=5;
+
+    var x=50,y=70;
+    setInterval(function  () {
+        ctx.fillRect(0,0,sceneWidth,sceneHeight);
+        if(x+radio>=sceneWidth || x-radio<=0) vx=-vx;
+        if(y+radio>=sceneHeight || y-radio<=0) vy=-vy;
+        x+=vx;
+        y+=vy;
+        circle1.setPosition(x,y);
+        circle1.render(ctx);
+    },30);
+    </script>
+ </body>
+</html>

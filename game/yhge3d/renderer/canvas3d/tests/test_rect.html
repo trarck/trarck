@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="300" height="300"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../../../Geometry.js"></script>
+
+   <script type="text/javascript" src="../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Rect.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.fillRect(0,0,300,300);
+    
+    var rect1=new Rect({
+        width:50,
+        height:50,
+        color:"#11FF00"
+    });
+    rect1.render(ctx);
+    
+    var rect2=new Rect({
+        width:80,
+        height:80,
+        color:"#11FF33"
+    });
+    rect2.render(ctx);
+    
+    var node1=new Node();
+    node1.setPosition(30,30);
+
+    var rect3=new Rect({
+        width:60,
+        height:60,
+        color:"#CC0000"
+    });
+    rect3.setScale(2,3);
+    node1.addChild(rect3);
+    
+    var rect4=new Rect({
+        width:60,
+        height:60,
+        color:"#CC6600"
+    });
+    rect4.setPosition(20,20);
+    rect4.setScale(2);
+    node1.addChild(rect4);
+
+    node1.render(ctx);
+    </script>
+ </body>
+</html>

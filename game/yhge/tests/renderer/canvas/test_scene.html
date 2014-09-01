@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> test scene </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/QuatTree.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../../../math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../../../times/Scheduler.js"></script>
+   <script type="text/javascript" src="../../../times/Timer.js"></script>
+   <script type="text/javascript" src="../../../times/AnimationManager.js"></script>
+
+    <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Sprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/AnimateSprite.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Circle.js"></script>
+
+   <script type="text/javascript" src="../../../scene/SingleSceneUpdater.js"></script>
+   <script type="text/javascript" src="../../../scene/Scene.js"></script>
+   
+   <script type="text/javascript" src="../../../Engine.js"></script>
+
+   <script type="text/javascript">
+
+    var engine=new yhge.Engine({
+        canvas:"canvas",
+        renderer:"canvas"
+    });
+
+    if(engine.enable){
+        //alert("engine init sucess!");
+        var Scheduler=yhge.times.Scheduler;
+        var SingleSceneUpdater=yhge.scene.SingleSceneUpdater;
+        var Scene=yhge.scene.Scene;
+        var Circle=yhge.renderer.canvas.shape.Circle;
+        singleSceneUpdater=SingleSceneUpdater.getInstance(engine.scheduler,engine.context);
+        var scene=new Scene({
+            width:640,
+            height:480
+        });
+        var circle=new Circle({color:"#00FF00",radius:50,solid:true});
+        circle.setPosition(200,200);
+        scene.addChild(circle);
+        singleSceneUpdater.setScene(scene);
+        
+        var x=200,y=200;
+        engine.scheduler.addTask(function() {
+            x+=2;
+            if(x>640-50) x=50;
+            circle.setPosition(x,y);
+        },Scheduler.Update,this);
+
+        
+    }else{
+        alert("engine init failure!");
+    }
+
+    </script>
+ </body>
+</html>

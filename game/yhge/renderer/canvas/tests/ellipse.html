@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> ellipse </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle = "#EEE";
+        ctx.fillRect(0,0,800,600);
+        
+
+
+        var bt,et,n=1;
+        
+        var x0=300,y0=300;
+        var a=100,b=50;
+        var ratea=0.551784,
+            rateb=0.551784;
+        
+
+            ctx.save();
+            ctx.translate(50,0);
+            ctx.fillStyle="#CCC";
+            ctx.strokeStyle="#F00"
+            ctx.beginPath();
+            ctx.moveTo(x0,x0+b);
+            ctx.bezierCurveTo(x0+a*ratea,y0+b,   x0+a,y0+b*rateb,    x0+a*Math.cos(45*Math.PI/180),y0+b*Math.sin(45*Math.PI/180));
+            //ctx.bezierCurveTo(x0+a,y0-b*rateb,   x0+a*ratea,y0-b,    x0,y0-b);
+            //ctx.bezierCurveTo(x0-a*ratea,y0-b,   x0-a,y0-b*rateb,    x0-a,y0);
+            //ctx.bezierCurveTo(x0-a,y0+b*rateb,   x0-a*ratea,y0+b,    x0,y0+b);
+            //ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+        bt=(new Date()).getTime();
+        for(var i=0;i<n;i++){
+            ctx.save();
+            ctx.translate(50,0);
+            ctx.fillStyle="#CCC";
+            ctx.strokeStyle="#F00"
+//            ctx.beginPath();
+//            ctx.moveTo(x0,x0+b);
+//            ctx.bezierCurveTo(x0+a*ratea,y0+b,   x0+a,y0+b*rateb,    x0+a,y0);
+//            ctx.bezierCurveTo(x0+a,y0-b*rateb,   x0+a*ratea,y0-b,    x0,y0-b);
+//            ctx.bezierCurveTo(x0-a*ratea,y0-b,   x0-a,y0-b*rateb,    x0-a,y0);
+//            ctx.bezierCurveTo(x0-a,y0+b*rateb,   x0-a*ratea,y0+b,    x0,y0+b);
+//            //ctx.fill();
+//            ctx.stroke();
+            ellipse2(ctx,x0,y0,a,b);
+            ctx.restore();
+        }
+        et=(new Date()).getTime();
+        var t1=et-bt;
+        
+        var x0=140,y0=300,x,y,ii,piDegree=Math.PI/180;
+        bt=(new Date()).getTime();
+        for(var i=0;i<n;i++){
+            ctx.save();
+            ctx.strokeStyle="#0F0";
+//            x=x0+a;
+//            y=y0;
+//            ctx.beginPath();
+//            ctx.moveTo(x,y);
+//            for (var j=0;j<=360;j++){
+//                ii=j*piDegree;
+//                x=x0+a*Math.cos(ii);
+//                y=y0-b*Math.sin(ii);
+//                ctx.lineTo(x,y);
+//            }
+//            ctx.stroke();
+            ellipse(ctx,[x0,y0],a,b);
+            ctx.restore();
+        }
+        et=(new Date()).getTime();
+        var t2=et-bt;
+        console.log(t1,t2);
+    }
+    function ellipse(ctx,O,OA,OB){
+        //画椭圆，例子：var B=new Array(150,150); DrawEllipse(hb,B,50,30);
+        var x=O[0]+OA;
+        var y=O[1];
+        ctx.beginPath();
+        ctx.moveTo(x,y);
+        for (var i=0;i<=360;i++){
+            var ii=i*Math.PI/180;
+            var x=O[0]+OA*Math.cos(ii);
+            var y=O[1]-OB*Math.sin(ii);
+            ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+      }
+      function ellipse2(ctx,x,y,a,b) {
+        var aa=a*0.5522847498307933984022516322796,
+            bb=b*0.5522847498307933984022516322796,
+            xa=x+a,
+            yb=y+b,
+            xaa=x+aa
+            ybb=y+bb;
+        ctx.beginPath();
+        ctx.moveTo(x,y+b);
+        ctx.bezierCurveTo(xaa,yb,   xa,ybb,    xa,y);
+        ctx.bezierCurveTo(xa,y-bb,   xaa,y-b,    x,y-b);
+        ctx.bezierCurveTo(x-aa,y-b,   x-a,y-bb,    x-a,y);
+        ctx.bezierCurveTo(x-a,ybb,   x-aa,y+b,    x,y+b);
+        //ctx.fill();
+        ctx.stroke();
+      } 
+      function ellipse3(ctx,x,y,a,b) {
+        var aa=a*0.5522847498307933984022516322796,
+            bb=b*0.5522847498307933984022516322796;
+        ctx.beginPath();
+        ctx.moveTo(x,y+b);
+        ctx.bezierCurveTo(x+aa,y+b,   x+a,y+bb,    x+a,y);
+        ctx.bezierCurveTo(x+a,y-bb,   x+aa,y-b,    x,y-b);
+        ctx.bezierCurveTo(x-aa,y-b,   x-a,y-bb,    x-a,y);
+        ctx.bezierCurveTo(x-a,y+bb,   x-aa,y+b,    x,y+b);
+        //ctx.fill();
+        ctx.stroke();
+      } 
+      //按像限生成clip
+      function ellipseArc(ctx,x,y,a,b,from,to) {
+         
+      }
+    </script>
+ </body>
+</html>

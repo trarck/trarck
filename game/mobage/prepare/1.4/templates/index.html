@@ -1,0 +1,67 @@
+<html>
+	<head id='h'>
+			
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		
+		<script language="JavaScript" type="text/javascript">
+		
+			var agent=navigator.userAgent.toLowerCase();
+			if (agent.match(/ios|ip(hone|[ao]d)/))
+			{
+				_NG_TARGET_IOS = true;
+			}
+			else
+			{
+				_NG_TARGET_FLASH = true;
+			}
+			
+			function goToURL(newURL)
+			{
+				window.location = newURL;
+			}
+			
+			function browserInitStage2()
+			{
+				// Do flash-specific post-loading-complete initialization here.
+				embedFlash(320, 480);
+			}
+			
+			function browserInit()
+			{
+				var h = document.getElementById("h");
+				if(h)
+				{	
+					// Add the file that has our flash-embedding APIs in it.
+					var flashEmbed = document.createElement("script");
+					flashEmbed.src = "/Flash/embed_flash.js";
+					flashEmbed.onload = browserInitStage2;
+					h.appendChild(flashEmbed);
+				}
+			}
+			
+			function injectJS(scriptToBeInjected)
+			{
+				var h = document.getElementById("h");
+				if(h)
+				{
+					var script = Base64.decode(scriptToBeInjected);
+					var jsEmbed = document.createElement("script");
+					jsEmbed.type = 'text/javascript';
+					jsEmbed.text = script;
+					h.appendChild(jsEmbed);
+				}
+			}
+			
+		</script>
+		
+		<!--!! SCRIPTS !!!-->
+
+	</head>
+	<body id="b" onload="if(_NG_TARGET_FLASH) browserInit();"> 
+		<!--	<div id="trace" style="position:fixed; right:0px;"></div> -->
+		
+	</body>
+	
+</html>

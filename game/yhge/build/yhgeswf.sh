@@ -1,0 +1,1 @@
+node compiler.js -c yhgeswf.json

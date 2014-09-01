@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>踩虫子</title>
+ </head>
+
+ <body>
+    <div id="container" style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select: none;">
+      <div>
+        <span>hp:</span><span id="hp">10</span>
+        <span style="margin-left:10px;">score:</span><span id="score"  >0</span>
+        <span style="margin-left:10px;">fps:</span><span id="fps">0</span>
+        <span style="margin-left:10px;">bugs:</span><span id="bugCount">0</span>
+      </div>
+      <canvas id="canvas" width="500" height="500"></canvas>
+      <div id="gameOverView" style="display:none;width:200px;height:100px;margin:-350px 0 0 150px;position:relative;color:#F00;">
+          <h3 style="text-align:center;">GameOver</h3>
+          <p>你已阵亡!要<button onclick="gameStart()">重新开始</button>吗?</p>
+      </div>
+    </div>
+   
+   <script type="text/javascript" src="../../source/javascript/swfruntime/type.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/Interpolate.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/analyzer.js"></script>
+   <script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/Shape2.js"></script>
+
+
+   <script type="text/javascript" src="../yhge/ns.js"></script>
+   <script type="text/javascript" src="../yhge/core/Base.js"></script>
+   <script type="text/javascript" src="../yhge/core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../yhge/math/Geometry.js"></script>
+   <script type="text/javascript" src="../yhge/math/QuatTree.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../yhge/times/Scheduler.js"></script>
+   <script type="text/javascript" src="../yhge/times/Timer.js"></script>
+   <script type="text/javascript" src="../yhge/times/Updater.js"></script>
+   <script type="text/javascript" src="../yhge/times/AnimationManager.js"></script>
+   
+    <script type="text/javascript" src="../yhge/event/EventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/MouseEventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/TouchEventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/EventListenerManager.js"></script>
+   <script type="text/javascript" src="../yhge/event/UIEventListenerManager.js"></script>
+
+   
+   <script type="text/javascript" src="../yhge/animation/Animation.js"></script>
+   <script type="text/javascript" src="../yhge/animation/ActionAnimation.js"></script>
+   <script type="text/javascript" src="../yhge/animation/AnimationGroup.js"></script>
+
+   
+   <script type="text/javascript" src="../yhge/input/Util.js"></script>
+   <script type="text/javascript" src="../yhge/input/Mouse.js"></script>
+   <script type="text/javascript" src="../yhge/input/Touch.js"></script>
+   <script type="text/javascript" src="../yhge/input/Input.js"></script>
+
+   <script type="text/javascript" src="../yhge/renderer/Node.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/AnimateSprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Circle.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Path.js"></script>
+
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/MovieClip.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/MorphShape.js"></script>
+   
+   <script type="text/javascript" src="../yhge/scene/SingleSceneUpdater.js"></script>
+   <script type="text/javascript" src="../yhge/scene/Scene.js"></script>
+
+   <script type="text/javascript" src="../yhge/Engine.js"></script>
+
+   <script type="text/javascript" src="js/global.js"></script>
+
+   <script type="text/javascript" src="js/util.js"></script>
+   <script type="text/javascript" src="js/player.js"></script>
+   <script type="text/javascript" src="js/monster.js"></script>
+   <script type="text/javascript" src="js/bomp.js"></script>
+   <script type="text/javascript" src="datas/data.js"></script>
+
+   <script type="text/javascript" src="js/game.js"></script>
+ </body>
+</html>

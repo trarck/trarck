@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> canvas </title>
+  <style type="text/css">
+    #canvas{
+        background-color: #DDD;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../yhge/ns.js"></script>
+   <script type="text/javascript" src="../yhge/core/Base.js"></script>
+   <script type="text/javascript" src="../yhge/core/Accessor.js"></script>
+   
+   <script type="text/javascript" src="../yhge/math/Geometry.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../yhge/math/QuatTree.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../yhge/times/Scheduler.js"></script>
+   
+   <script type="text/javascript" src="../yhge/event/EventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/MouseEventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/EventListenerManager.js"></script>
+   <script type="text/javascript" src="../yhge/event/UIEventListenerManager.js"></script>
+   
+   <script type="text/javascript" src="../yhge/input/Mouse.js"></script>
+   <script type="text/javascript" src="../yhge/scene/VisualEventProcessor.js"></script>
+   
+
+   <script type="text/javascript" src="../yhge/renderer/canvas/Node.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Rect.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/RoundRect.js"></script>
+   
+   <script type="text/javascript" src="../yhge/scene/Scene.js"></script>
+   <script type="text/javascript" src="../yhge/scene/SceneUpdater.js"></script>
+
+   <script type="text/javascript" src="../yhge/ui/Component.js"></script>
+   <script type="text/javascript" src="../yhge/ui/form/Button.js"></script>
+
+
+   <script type="text/javascript">
+   		//init engine.prepare canvas timer
+   		//init isometric tools fixed tile width and tile height.fixed is performace is better
+   		//init game
+   		//init map
+   		
+   
+   		
+        var Scheduler=yhge.times.Scheduler;
+        
+        var Node=yhge.renderer.canvas.Node;
+        var Sprite=yhge.renderer.canvas.Sprite;
+        var Rect=yhge.renderer.canvas.shape.Rect;
+        var RoundRect=yhge.renderer.canvas.shape.RoundRect;
+        var UIEventListenerManager=yhge.event.UIEventListenerManager;
+        var Scene=yhge.scene.CanvasScene;
+        var SceneUpdater=yhge.scene.SceneUpdater;
+        var Button=yhge.ui.Button;
+
+        var ctx = document.getElementById('canvas').getContext('2d');
+         
+        
+        var rect={
+            x:0,
+            y:0,
+            width:640,
+            height:480
+        };
+        var size={width:5,height:5};
+        var processor=new yhge.scene.VisualEventProcessor(rect,size);
+        var mouse=new yhge.input.Mouse(document.getElementById('canvas'),processor);
+        
+        
+        
+        //ctx.fillRect(0,0,640,480);
+        
+        var scene=new Scene({
+            width:640,
+            height:480
+        });
+        //背景除了做底布，还可以当全局触发器。
+        var background=new Rect({
+            width:640,
+            height:480,
+            color:"#000000",
+            solid:true,
+            zOrder:-65535
+        });
+        
+        var w=80,h=24;
+
+        var normal=new Rect({
+            width:w,
+            height:h,
+            solid:true,
+            color:"#33AA33"
+        });
+        
+        var hover=new Rect({
+            width:w,
+            height:h,
+            solid:true,
+            color:"#33EE33"
+        });
+        
+        var pressed=new Rect({
+            width:w,
+            height:h,
+            solid:true,
+            color:"#339933"
+        });
+        var disabled=new Rect({
+            width:w,
+            height:h,
+            solid:true,
+            color:"#CCCCCC"
+        });
+       
+        var button=new Button({
+            width:w,
+            height:h,
+            normal:normal,
+            hover:hover,
+            pressed:pressed,
+            disabled:disabled
+        });
+        button.on("click",function () {
+            alert("this is click event");
+        });
+        
+        var normal=new RoundRect({
+            width:w,
+            height:h,
+            solid:true,
+            radius:10,
+            color:"#33AA33"
+        });
+        
+        var hover=new RoundRect({
+            width:w,
+            height:h,
+            solid:true,
+            radius:10,
+            color:"#33EE33"
+        });
+        
+        var pressed=new RoundRect({
+            width:w,
+            height:h,
+            solid:true,
+            radius:10,
+            color:"#339933"
+        });
+        var button2=new Button({
+            width:w,
+            height:h,
+            normal:normal,
+            hover:hover,
+            pressed:pressed
+        });
+        button2.setPosition(100,20);
+        button2.on("click",function () {
+            alert("this is click event");
+        });
+        
+        scene.addChild(background);
+        scene.addChild(button);
+        scene.addChild(button2);
+        
+        processor.addObservable(background);
+        processor.addObservable(button);
+        processor.addObservable(button2);
+        
+        
+        var scheduler=new Scheduler();
+        var sceneUpdater=new SceneUpdater(scheduler,ctx);
+        
+        sceneUpdater.add(scene);
+        scheduler.run();
+        
+        
+        
+        var fps=document.getElementById("fps");
+        setInterval(function () {
+            fps.innerHTML=sceneUpdater.updateTimes;
+            sceneUpdater.updateTimes=0;
+        },1000);
+   </script>
+ </body>
+</html>

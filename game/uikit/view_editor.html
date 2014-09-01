@@ -1,0 +1,478 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>View Editor</title>
+<link rel="stylesheet" type="text/css" href="css/common.css"/>
+<style type="text/css">
+*{
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    
+}
+.Node,.Sprite,.Text{
+    position:absolute;
+}
+.Text{
+    display:table;
+    zoom:1;
+}
+.Text .cnt{
+    display:table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+
+a.btn{
+    display:inline-block;
+    zoom:1;
+    width:16px;
+    height:16px;   
+    font-size: 0;
+    vertical-align: middle;
+}
+.btn-add{
+    background: url(images/add.png);
+}
+.btn-del,.btn-cancel{
+    background: url(images/del.png);
+}
+.btn-ok{
+    background: url(images/accept.png);
+}
+
+#main{
+    margin:10px;
+}
+.sreen-attr{
+    clear:both;
+}
+#content{
+    border:1px solid #ccc;
+    float:left;
+    position: relative;
+    width:854px;
+    height:480px;
+    overflow: hidden;
+    
+    user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#content img{
+    user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#content .hover{
+    border:1px solid #F00;
+    margin:-1px 0 0 -1px;
+}
+
+#attrView{
+    float:left;
+    border:1px solid #ccc;
+    width:320px;
+}
+#attrView h4{
+    border-bottom:1px solid #ccc;
+    margin-bottom:6px;
+    padding:6px 3px;
+}
+
+.fixed-attr label,.args-attr label{
+    margin:4px 3px 4px 0;
+    width:86px;
+    text-align:right;
+    display:inline-block;
+    zoom:1;
+}
+.fixed-attr input{
+    width:80px;
+}
+.fixed-attr input[name=asset],.fixed-attr input[name=tag],.args-attr input{
+    width:160px;
+}
+#attrView h4.ext{
+    border-top:1px solid #ccc;
+    margin-top:6px;
+}
+#attrView h4.ext a{
+    margin-left:220px;
+}
+.args-attr input[name=argsKey]{
+    width:80px;
+}
+.args-attr span{
+    margin-right:3px;
+}
+.args-attr a{
+    margin-left:5px;
+}
+</style>
+</head>
+<body>
+    <div id="main">
+        <div class="sreen-attr">
+            <input id="contentUrl" value="http://localhost:8002/Apps/Werule/build/Content/"/>
+            <input type="button" onclick="createSprite()" value="new sprite"/>
+            <input type="button" onclick="createLabel()" value="new label"/>
+            <input type="button" onclick="saveFile(this)" value="save"/>
+        </div>
+        <div id="content">
+            
+        </div>
+        <div id="attrView">
+            <h4>基础属性</h4>
+            <form class="fixed-attr">
+                <ul>
+                    <li>
+                        <label>name:</label><input name="name"/>
+                    </li>
+                    <li>    
+                        <label>scaling:</label><input name="scaling"/>
+                    </li>
+                    <li> 
+                        <label>size_x:</label><input name="size_x"/>
+                    </li>
+                    <li>    
+                        <label>size_y:</label><input name="size_y"/>
+                    </li>
+                    <li>    
+                        <label>pos_origin:</label><input name="pos_origin"/>
+                    </li>
+                    <li>    
+                        <label>pos_x:</label><input name="pos_x"/>
+                    </li>
+                    <li>    
+                        <label>pos_y:</label><input name="pos_y"/>
+                    </li>
+                    <li>    
+                        <label>pos_z:</label><input name="pos_z"/>
+                    </li>
+                    <li>    
+                        <label>hide_idle:</label><input name="hide_idle" />
+                    </li>
+                    <li>    
+                        <label>tag:</label><input name="tag"/>
+                    </li>
+                    <li>    
+                        <label>asset:</label><input name="asset"/>
+                    </li>
+                    <li>
+                        <label>text:</label><input name="text"/>
+                    </li>
+                </ul>
+            </form>
+            <h4 class="ext">扩展<a href="#" class="btn btn-add" id="addArgItem">添加</a>  </h4>
+            <ul class="args-view args-attr">
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/yh.core.js"></script>
+<script type="text/javascript" src="js/Base.js"></script>
+<script type="text/javascript" src="js/Accessor.js"></script>
+<script type="text/javascript" src="js/Node.js"></script>
+<script type="text/javascript" src="js/Sprite.js"></script>
+<script type="text/javascript" src="js/AttrView.js"></script>
+<!-- <script type="text/javascript" src="datas/IntroScreen.js"></script> -->
+<script type="text/javascript" src="datas/InGameScreen.js"></script>
+<script type="text/javascript" src="datas/BuildBuyScreen.js"></script>
+<!-- <script type="text/javascript" src="datas/EventScreen.js"></script> -->
+<script type="text/javascript">
+	var config={
+		contentRoot:"http://localhost:8002/Apps/Werule/Content/"
+	};
+	var screenName="IntroScreen";
+	
+	// console.log(IntroScreen);
+	
+	
+	
+	var Node=renderer.Node;
+	var Sprite=renderer.Sprite;
+	
+	var Builder=function(){
+		this.initialize.apply(this,arguments);
+	};
+	Builder.prototype={
+	    calssname:"Builder",
+		initialize:function(attrView){
+			this._attrView=attrView;
+		},
+		/**
+         * @private
+         */
+        createElements: function( def)
+        {
+            this.data=def;
+            
+            var elem =$("<div class='Node'/>") //;this._createElement(def,);
+            //build images
+            var images=def.images;
+            if(images){
+                for(var img,i=0,l=images.length;i<l;i++){
+                    img=this.createImage(images[i]);
+                    elem.append(img);
+                }
+            }
+            //build labels
+            var labels=def.labels;
+            if(labels){
+                for(var label,i=0,l=labels.length;i<l;i++){
+                    label=this.createLabel(labels[i]);
+                    elem.append(label);
+                }
+            }
+            
+            return elem;
+        },
+        createImage:function(def){
+            var self=this;
+            def.args=def.args||{};
+
+            var name=def.name,
+                imageName=def.asset,
+                x=def.pos_x,
+                y=def.pos_y,
+                zOrder=def.pos_z,
+                width=def.size_x,
+                height=def.size_y,
+                tag=def.tag;
+            if(!imageName){
+                //TODO 使用边框
+                //return;
+            }
+            var src=config.contentRoot+imageName;
+            //if(src.indexOf("Event")>-1) src=src.replace("Content","ContentSecondary");
+            var pos_origin=def.pos_origin;
+            var anchor=this._calcAnchor(pos_origin);
+            var anchorPointInPixels=[
+                anchor[0]*width,
+                anchor[1]*height
+            ];
+
+            var sprite;
+            
+            var startPosition={x:0,y:0},startX=0,startY=0;
+            
+            var didMove=function(e){
+                var dx=e.pageX-startX;
+                var dy=e.pageY-startY;
+                sprite.css({
+                    left:startPosition.x+dx,
+                    top:startPosition.y+dy
+                });
+            }
+            sprite=$("<img class='Sprite'/>")
+                .attr({
+                    src:src
+                })
+                .css({
+                    left:x-anchorPointInPixels[0],
+                    top:y-anchorPointInPixels[1],
+                    zIndex:parseInt(zOrder*100),
+                    width:width,
+                    height:height    
+                })
+                .data("def",def).data("anchor",anchor)
+                .mousedown(function(e){
+                    self._attrView.setObj(sprite);
+                    
+                    startX=e.pageX;
+                    startY=e.pageY;
+                    startPosition.x=parseInt(sprite.css("left"));
+                    startPosition.y=parseInt(sprite.css("top"));
+                    $(document)
+                        .mousemove(didMove)
+                        .mouseup(function(e){
+                            $(document).unbind("mousemove",didMove).unbind("mouseup");
+                            //更新位置
+                            var dx=e.pageX-startX;
+                            var dy=e.pageY-startY;
+                            if(dx!=0 || dy!=0){
+                                var data=sprite.data("def");
+                                self._attrView.updatePosition(data.pos_x+dx,data.pos_y+dy);
+                            }
+                    });
+                    e.preventDefault();
+                });
+            return sprite;
+        },
+        _calcAnchor:function(anchorDef){
+            var anchor=[0.5,0.5];
+            if(anchorDef){
+                if (anchorDef.indexOf("l") >= 0){
+                    // left
+                    anchor[0]=[0];
+                }else if (anchorDef.indexOf("r") >= 0){
+                    // right
+                    anchor[0]=[1];
+                }
+                
+                if (anchorDef.indexOf("t") >= 0){
+                    // left
+                    anchor[1]=[0];
+                }else if (anchorDef.indexOf("b") >= 0) {
+                    // right
+                    anchor[1]=[1];
+                }
+            }
+            return anchor;
+        },
+        createLabel:function(def){
+            var self=this;
+            def.args=def.args||{};
+
+            var name=def.name,
+                imageName=def.asset,
+                x=def.pos_x,
+                y=def.pos_y,
+                zOrder=def.pos_z,
+                width=def.size_x,
+                height=def.size_y,
+                tag=def.tag,
+                fontSize=def.font_size,
+                r=def.color_r,
+                g=def.color_g,
+                b=def.color_b,
+                text=def.text;
+                
+            var pos_origin=def.pos_origin;
+            var anchor=this._calcAnchor(pos_origin);
+            var anchorPointInPixels=[
+                anchor[0]*width,
+                anchor[1]*height
+            ];
+            
+            var label;
+            var startPosition={x:0,y:0},startX=0,startY=0;
+            
+            var didMove=function(e){
+                var dx=e.pageX-startX;
+                var dy=e.pageY-startY;
+                label.css({
+                    left:startPosition.x+dx,
+                    top:startPosition.y+dy
+                });
+            }
+            
+            label=$("<span class='Text'/>")
+                .css({
+                    left:x-anchorPointInPixels[0],
+                    top:y-anchorPointInPixels[1],
+                    zIndex:parseInt(zOrder*100),
+                    width:width,
+                    height:height,
+                    fontSize:fontSize,
+                    color:"rgb("+r+","+g+","+b+")"    
+                })
+                .data("def",def).data("anchor",anchor)
+                //替换换行符
+                .html("<span class='cnt'>"+(text?text.replace(/\n/g,"<br/>"):"")+"</span>")
+                .mousedown(function(e){
+                    self._attrView.setObj(label);
+                    
+                    startX=e.pageX;
+                    startY=e.pageY;
+                    startPosition.x=parseInt(label.css("left"));
+                    startPosition.y=parseInt(label.css("top"));
+                    $(document)
+                        .mousemove(didMove)
+                        .mouseup(function(e){
+                            $(document).unbind("mousemove",didMove).unbind("mouseup");
+                            //更新位置
+                            var dx=e.pageX-startX;
+                            var dy=e.pageY-startY;
+                            if(dx!=0 || dy!=0){
+                                var data=label.data("def");
+                                self._attrView.updatePosition(data.pos_x+dx,data.pos_y+dy);
+                            }
+                    });
+                    e.preventDefault();
+                });
+            
+            return label;
+        }
+	};
+
+
+	var attrView=new AttrView($("#attrView"));
+    attrView.setupFixedAttrItems();
+    
+	var builder=new Builder(attrView);
+	var screen=builder.createElements(BuildBuyScreen.items.SellItemContent).css({left:400,top:200});
+
+	$("#content").append(screen);
+
+
+    function createSprite(){
+        var sprite=builder.createImage({
+            name:"",
+            asset:"CommonUI/black.png",
+            pos_x:0,
+            pos_y:0,
+            pos_z:0,
+            size_x:64,
+            size_y:64
+        });
+        screen.append(sprite);
+        attrView.setObj(sprite);
+    }
+
+    function createLabel(){
+        var label=builder.createLabel({
+            name:"",
+            text:"",
+            pos_x:0,
+            pos_y:0,
+            pos_z:0,
+            size_x:64,
+            size_y:64
+
+        });
+        screen.append(label);
+        attrView.setObj(label);
+    }
+
+    function saveFile(element) {
+        var data = createViewJSONSaveData();
+        data=JSON.stringify(data);
+        var sub=window.open("","屏幕数据");
+        sub.document.body.innerHTML=data;
+//        var href = "data:text/plain," + encodeURIComponent(data);
+//        var download = $('<a href=' + href + ' target="_blank">Download</a>').click(function() { this.innerHTML = ""; });
+//        download.insertAfter(element)
+    }
+
+    function createViewJSONSaveData(){
+        var ret={
+            screen:{
+                images:[],
+                labels:[]
+            }
+        };
+        var imgs=screen.children(".Sprite");
+        imgs.each(function(ele){
+            var data=$(this).data("def");
+            ret.screen.images.push(data);
+        });
+        var labels=screen.children(".Text");
+        labels.each(function(ele){
+            var data=$(this).data("def");
+            ret.screen.labels.push(data);
+        });
+        return ret;
+    }
+</script>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title></title>
+ </head>
+
+ <body>
+    <div id="container">
+      <canvas id="canvas" width="800" height="480"></canvas>
+    </div>
+   
+   <!--<script type="text/javascript" src="../../source/javascript/swfruntime/type.js"></script>-->
+   <!--<script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/TransformMatrix.js"></script>-->
+   <!--<script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/Interpolate.js"></script>-->
+   <!--<script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/analyzer.js"></script>-->
+   <!--<script type="text/javascript" src="../../source/javascript/swfruntime/analyzer/Shape2.js"></script>-->
+
+
+   <script type="text/javascript" src="../yhge/ns.js"></script>
+   <script type="text/javascript" src="../yhge/core/Base.js"></script>
+   <script type="text/javascript" src="../yhge/core/Accessor.js"></script>
+
+   <script type="text/javascript" src="../yhge/math/Geometry.js"></script>
+   <script type="text/javascript" src="../yhge/math/QuatTree.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../yhge/math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../yhge/times/Scheduler.js"></script>
+   <script type="text/javascript" src="../yhge/times/Timer.js"></script>
+   <script type="text/javascript" src="../yhge/times/Updater.js"></script>
+   <script type="text/javascript" src="../yhge/times/AnimationManager.js"></script>
+
+
+   <script type="text/javascript" src="../yhge/event/EventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/MouseEventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/TouchEventObject.js"></script>
+   <script type="text/javascript" src="../yhge/event/EventListenerManager.js"></script>
+   <script type="text/javascript" src="../yhge/event/UIEventListenerManager.js"></script>
+
+   
+   <script type="text/javascript" src="../yhge/animation/Animation.js"></script>
+   <script type="text/javascript" src="../yhge/animation/ActionAnimation.js"></script>
+   <script type="text/javascript" src="../yhge/animation/AnimationGroup.js"></script>
+
+   
+   <script type="text/javascript" src="../yhge/input/Util.js"></script>
+   <script type="text/javascript" src="../yhge/input/Mouse.js"></script>
+   <script type="text/javascript" src="../yhge/input/Touch.js"></script>
+   <script type="text/javascript" src="../yhge/input/Input.js"></script>
+
+
+   <script type="text/javascript" src="../yhge/renderer/Node.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/Sprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/AnimateSprite.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Rect.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Circle.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/shape/Path.js"></script>
+
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/Shape.js"></script>
+   <script type="text/javascript" src="../yhge/renderer/canvas/swf/MovieClip.js"></script>
+   <!--<script type="text/javascript" src="../yhge/renderer/canvas/swf/MorphShape.js"></script>-->
+   
+   <script type="text/javascript" src="../yhge/scene/SingleSceneUpdater.js"></script>
+   <script type="text/javascript" src="../yhge/scene/Scene.js"></script>
+   <script type="text/javascript" src="../yhge/scene/ListProcessor.js"></script>
+
+   <script type="text/javascript" src="../yhge/Engine.js"></script>
+
+   <script type="text/javascript" src="src/global.js"></script>
+   <script type="text/javascript">
+       /**
+        * Created by JetBrains WebStorm.
+        * User: yangyanhou
+        * Date: 12-7-16
+        * Time: 下午11:55
+        * To change this template use File | Settings | File Templates.
+        */
+       var engine = new yhge.Engine({
+           canvas:"canvas",
+           renderer:"canvas",
+           timeTask:yhge.Engine.TimeTaskType.All,
+           interval:30,
+           forceInterval:false
+       });
+       //可以使用
+       if (engine.enable) {
+           TcgCard.engine = engine;
+           //创建动画主时间线
+           var mainTimeLine = new AnimationGroup({
+               duration:1000 / 30
+           });
+           engine.animationManager.add(mainTimeLine);
+           TcgCard.mainTimeLine = mainTimeLine;
+           //创建场景
+           var singleSceneUpdater = SingleSceneUpdater.getInstance(engine.scheduler, engine.context);
+           var scene = new Scene({
+               width:800,
+               height:480
+           });
+           singleSceneUpdater.setScene(scene);
+
+           //大90x131
+           //小55x80
+           var bigSize={
+               width:90,
+               height:131
+           };
+           var smallSize={
+               width:55,
+               height:80
+           };
+
+           //battle area
+           var x=120,y=254,margin={left:20,top:0};
+           var n=6;
+           for(var i=0;i<n;i++){
+               var card=new Rect();
+               card.setWidth(bigSize.width);
+               card.setHeight(bigSize.height);
+               card.setColor("#00FF00");
+               card.setPosition(x,y);
+               scene.addChild(card);
+               x+=bigSize.width+margin.left;
+           }
+
+           x=60,y=395;
+           n=8;
+           //prepare area
+           for(var i=0;i<n;i++){
+               var card=new Rect();
+               card.setWidth(smallSize.width);
+               card.setHeight(smallSize.height);
+               card.setColor("#00FF00");
+               card.setPosition(x,y);
+               scene.addChild(card);
+               x+=smallSize.width+margin.left;
+           }
+
+           //
+           x=120,y=95;
+           n=6;
+           for(var i=0;i<n;i++){
+               var card=new Rect();
+               card.setWidth(bigSize.width);
+               card.setHeight(bigSize.height);
+               card.setColor("#00FF00");
+               card.setPosition(x,y);
+               scene.addChild(card);
+               x+=bigSize.width+margin.left;
+           }
+
+           x=60,y=5;
+           n=8;
+           //prepare area
+           for(var i=0;i<n;i++){
+               var card=new Rect();
+               card.setWidth(smallSize.width);
+               card.setHeight(smallSize.height);
+               card.setColor("#00FF00");
+               card.setPosition(x,y);
+               scene.addChild(card);
+               x+=smallSize.width+margin.left;
+           }
+       } else {
+           alert("engine init failure!");
+       }
+   </script>
+ </body>
+</html>

@@ -1,0 +1,190 @@
+<project name="YHJS" default="yh" basedir=".">
+
+    <!-- SETUP -->
+
+    <property name="SRC_DIR" value="src"  description="Source Folder"/>
+    <property name="BUILD_DIR" value="build" description="Files for parsing etc."/>
+    <property name="JAR" value="${BUILD_DIR}/js.jar" description="Rhino JS Engine"/>
+    <property name="compressor" value="${BUILD_DIR}/compiler.jar" description="compressor"/>
+	<loadfile property="version" srcfile="version.txt" description="Version to build"/>
+
+    <property name="DIST" value="./dist" />
+	<property name="CORE_DIR" value="src/core" description="core Folder"/>
+	<property name="UTIL_DIR" value="src/util"  description="util Folder"/>
+	<property name="DATA_DIR" value="src/data"  description="data Folder" />
+	<property name="WIDGETS_DIR" value="src/widgets"  description="widgets Folder" />
+	<property name="CSS_DIR" value="css"  description="css Folder" />
+
+	<property name="DIST_DIR" value="./dist/${version}" />	
+    <!-- final file -->
+    <property name="YH" value="${DIST_DIR}/yh.js" />
+    <property name="YH_MIN" value="${DIST_DIR}/yh.min.js" />
+    <property name="YH_PACK" value="${DIST_DIR}/yh.pack.js" />
+	<!-- subs -->
+	<property name="YH_CORE" value="${DIST_DIR}/yh.core.js" />
+    <property name="YH_CORE_MIN" value="${DIST_DIR}/yh.core.min.js" />
+    <property name="YH_CORE_PACK" value="${DIST_DIR}/yh.core.pack.js" />
+
+	<property name="YH_UTIL" value="${DIST_DIR}/yh.util.js" />
+    <property name="YH_UTIL_MIN" value="${DIST_DIR}/yh.util.min.js" />
+    <property name="YH_UTIL_PACK" value="${DIST_DIR}/yh.util.pack.js" />
+
+	<property name="YH_DATA" value="${DIST_DIR}/yh.data.js" />
+    <property name="YH_DATA_MIN" value="${DIST_DIR}/yh.data.min.js" />
+    <property name="YH_DATA_PACK" value="${DIST_DIR}/yh.data.pack.js" />
+
+	<property name="YH_WIDGETS" value="${DIST_DIR}/yh.widgets.js" />
+    <property name="YH_WIDGETS_MIN" value="${DIST_DIR}/yh.widgets.min.js" />
+    <property name="YH_WIDGETS_PACK" value="${DIST_DIR}/yh.widgets.pack.js" />
+
+	<property name="YH_CSS" value="${DIST_DIR}/yh.css" />
+    <property name="YH_CSS_MIN" value="${DIST_DIR}/yh.min.css" />
+    <property name="YH_CSS_PACK" value="${DIST_DIR}/yh.pack.css" />
+
+
+	<!-- 
+	<exec executable="svn" outputproperty="svnlog.out" >  
+		<arg line="info ."/>  
+	</exec> 
+	<propertyregex property="revision" input="${svnlog.out}" select="\1">  
+		<regexp pattern="Revision: ([0-9]*)"/>  
+	</propertyregex>
+	<propertyregex property="date" input="${svnlog.out}" select="\1">  
+		<regexp pattern="Date: (.+\))"/>  
+	</propertyregex>  
+	-->
+    <!-- MAIN -->
+
+    <target name="yh" description="Main yh build, concatenates source files and replaces @VERSION">
+        <echo message="Building ${YH}" />
+		<mkdir dir="${DIST}" />
+        <mkdir dir="${DIST_DIR}" />
+        <concat destfile="${YH_CORE}" encoding="utf-8" outputencoding="utf-8">
+            <fileset dir="${CORE_DIR}" includes="declare.js" />
+			<fileset dir="${CORE_DIR}" includes="common.js" />
+            <fileset dir="${CORE_DIR}" includes="mouse.js" />
+            <fileset dir="${CORE_DIR}" includes="dragDrop.js" />
+            <fileset dir="${CORE_DIR}" includes="resize.js" />
+            <fileset dir="${CORE_DIR}" includes="select.js" />
+        </concat>
+		<concat destfile="${YH_UTIL}" encoding="utf-8" outputencoding="utf-8">
+			<fileset dir="${UTIL_DIR}" includes="string.js" />
+            <fileset dir="${UTIL_DIR}" includes="date.js" />
+            <fileset dir="${UTIL_DIR}" includes="phpdate.js" />
+            <fileset dir="${UTIL_DIR}" includes="extend.js" />
+            <fileset dir="${UTIL_DIR}" includes="form.js" />
+			<fileset dir="${UTIL_DIR}" includes="cookie.js" />
+        </concat>
+		<concat destfile="${YH_DATA}" encoding="utf-8" outputencoding="utf-8">
+            <fileset dir="${DATA_DIR}" includes="data.js" />
+			<fileset dir="${DATA_DIR}" includes="iframe.js" />
+        </concat>
+		<concat destfile="${YH_WIDGETS}" encoding="utf-8" outputencoding="utf-8">
+			<fileset dir="${WIDGETS_DIR}" includes="Template.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="Component.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="Container.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="panel/panel.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="calendar/calendar.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="paging/page.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="paging/paging.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="paging/simplePaging.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="paging/JsonPaging.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="paging/StorePaging.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="grid/SelectModel.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="grid/grid.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="tabs/tabs.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="tip/tip.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="tree/tree.js" />
+            <fileset dir="${WIDGETS_DIR}" includes="window/window.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="window/iframeWindow.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="window/innerWindow.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="window/simpleWindow.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="menu/menu.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="form/button.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="form/Combox.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="form/input.js" />
+			<fileset dir="${WIDGETS_DIR}" includes="form/validation.js" />
+        </concat>
+		<concat destfile="${YH}" encoding="utf-8" outputencoding="utf-8">
+            <fileset dir="${DIST_DIR}" includes="*.js" />
+        </concat>
+		<concat destfile="${YH_CSS}" encoding="utf-8" outputencoding="utf-8">
+			<fileset dir="${CSS_DIR}" includes="common.css" />
+			<fileset dir="${CSS_DIR}" includes="icon.css" />
+			<fileset dir="${CSS_DIR}" includes="container.css" />
+			<fileset dir="${CSS_DIR}" includes="panel.css" />
+			<fileset dir="${CSS_DIR}" includes="window.css" />
+            <fileset dir="${CSS_DIR}" includes="tip.css" />
+			<fileset dir="${CSS_DIR}" includes="toolbar.css" />
+            <fileset dir="${CSS_DIR}" includes="button.css" />
+			<fileset dir="${CSS_DIR}" includes="form.css" />
+			<fileset dir="${CSS_DIR}" includes="validation.css" />
+            <fileset dir="${CSS_DIR}" includes="menu.css" />
+			<fileset dir="${CSS_DIR}" includes="tree.css" />
+			<fileset dir="${CSS_DIR}" includes="paging.css" />
+			<fileset dir="${CSS_DIR}" includes="tabs.css" />
+			<fileset dir="${CSS_DIR}" includes="grid.css" />
+            <!-- <fileset dir="${CSS_DIR}" includes="layout.css" /> -->
+            <fileset dir="${CSS_DIR}" includes="accordiong.css" />
+            <fileset dir="${CSS_DIR}" includes="marquee.css" />
+        </concat>
+        <echo message="${YH} built success." />
+    </target>
+	<target name="min" depends="yh"  description="replace header and footer ">
+		<replaceregexp  match="(\(function\s*\(\$\)\s*\{)|(\}\)\s*\(jQuery\)\s*;*)" replace="" encoding="utf-8" flags="g">
+			  <fileset dir="${DIST_DIR}" includes="*.js" />
+		</replaceregexp>
+		<move todir="${DIST_DIR}">
+			<fileset dir="${DIST_DIR}" includes="*.js"/>
+			<globmapper from="*" to="*.bak"/>
+	    </move>
+		<concat destfile="${YH}" encoding="utf-8" outputencoding="utf-8">
+			<string>(function($){</string>
+			<fileset dir="${DIST_DIR}" file="${YH}.bak" />
+			<string>})(jQuery);</string>
+        </concat>
+		<concat destfile="${YH_CORE}" encoding="utf-8" outputencoding="utf-8">
+			<string>(function($){</string>
+			<fileset dir="${DIST_DIR}" file="${YH_CORE}.bak" />
+			<string>})(jQuery);</string>
+        </concat>
+		<concat destfile="${YH_UTIL}" encoding="utf-8" outputencoding="utf-8">
+			<string>(function($){</string>
+			<fileset dir="${DIST_DIR}" file="${YH_UTIL}.bak" />
+			<string>})(jQuery);</string>
+        </concat>
+		<concat destfile="${YH_DATA}" encoding="utf-8" outputencoding="utf-8">
+            <string>(function($){</string>
+			<fileset dir="${DIST_DIR}" file="${YH_DATA}.bak" />
+			<string>})(jQuery);</string>
+        </concat>
+		<concat destfile="${YH_WIDGETS}" encoding="utf-8" outputencoding="utf-8">
+			<string>(function($){</string>
+			<fileset dir="${DIST_DIR}" file="${YH_WIDGETS}.bak" />
+			<string>})(jQuery);</string>
+        </concat>
+		<java jar="${compressor}" fork="true">
+             <arg line="--js ${YH}  --js_output_file ${YH_MIN}" />
+        </java>
+		<java jar="${compressor}" fork="true">
+             <arg line="--js ${YH_CORE}  --js_output_file ${YH_CORE_MIN}" />
+        </java>
+		<java jar="${compressor}" fork="true">
+             <arg line="--js ${YH_UTIL}  --js_output_file ${YH_UTIL_MIN}" />
+        </java>
+		<java jar="${compressor}" fork="true">
+             <arg line="--js ${YH_DATA}  --js_output_file ${YH_DATA_MIN}" />
+        </java>
+		<java jar="${compressor}" fork="true">
+             <arg line="--js ${YH_WIDGETS}  --js_output_file ${YH_WIDGETS_MIN}" />
+        </java>
+		<delete>
+			<fileset dir="${DIST_DIR}" includes="*.bak"/>
+	    </delete>
+
+	</target>
+
+	<target name="clean" description="clean up" >
+		<delete dir="${DIST_DIR}"/>
+	</target>
+</project>

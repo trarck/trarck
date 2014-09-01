@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+    #map{
+        position: absolute;
+        top:40px;
+        left:20px;
+        width: 800px;
+        height: 400px;
+        background: #CCC url(images/grid/coord_bg.png) -32px 0;
+    }
+    .shandows{
+        position: absolute;
+        z-index:1;
+    }
+    .units{
+        position: absolute;
+        z-index:2;
+    }
+    #map img{
+        position: absolute;
+        opacity:0.2;
+    }
+  </style>
+ </head>
+
+ <body>
+  <button onclick="actionType(1)">create</button>
+  <button onclick="actionType(2)">move</button>  
+  <button onclick="actionType(3)">delete</button>
+  <!-- 非tile base 背景用图片 -->
+  <div id="map">
+      <!-- word space -->
+      <div class="word">
+        <div class="background"></div><!-- 静态图片 墙，石头-->
+        <div class="intermediate"></div><!-- 动态 水面，动画的草地 -->
+        <div class="foreground"></div><!-- 精灵 角色，NPC，怪物 -->
+      </div>
+      <div class="interface"></div>
+  </div>
+  <script type="text/javascript" src="../js/jquery.js"></script>
+  <script type="text/javascript" src="js/angle45.js"></script>
+  <script type="text/javascript">
+      <!--
+     
+     // -->
+  </script>
+ </body>
+</html>

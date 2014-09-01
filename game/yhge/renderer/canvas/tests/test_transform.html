@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+
+   <script type="text/javascript" src="../../Node.js"></script>
+
+   <script type="text/javascript" src="../shape/Shape.js"></script>
+   <script type="text/javascript" src="../shape/Rect.js"></script>
+   <script type="text/javascript" src="../shape/RoundRect.js"></script>
+   <script type="text/javascript" src="../shape/Arc.js"></script>
+   <script type="text/javascript" src="../shape/Circle.js"></script>
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.fillRect(0,0,800,600);
+    
+
+    var shape=yhge.renderer.canvas.shape;
+    
+    
+    var Rect=shape.Rect;
+    var Arc=shape.Arc;
+    var RoundRect=shape.RoundRect;
+    var Circle=shape.Circle;
+
+    var rect=new Rect({
+        width:200,
+        height:100,
+        color:"#FF0000"
+    });
+    rect.setPosition(200,200);
+    rect.setRotation(45);
+    rect.setAnchorPoint(100,0);
+    rect.render(ctx);
+    console.log(rect);
+
+    var rect1=new Rect({
+        width:200,
+        height:100,
+        color:"#FF00FF"
+    });
+    rect1.setPosition(200,200);
+    rect1.setRotation(45);
+    rect1.setScale(-1,1);
+    rect1.setAnchorPoint(100,0);
+    rect1.render(ctx);
+
+    var rect2=new Rect({
+        width:200,
+        height:100,
+        color:"#00FF00"
+    });
+    rect2.setPosition(200,200);
+    rect2.setAnchorPoint(100,0);
+    rect2.render(ctx);
+
+    var rect3=new Rect({
+        width:200,
+        height:200,
+        color:"#0000FF"
+    });
+    rect3.setPosition(0,0);
+    rect3.render(ctx);
+    </script>
+ </body>
+</html>

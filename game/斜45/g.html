@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+  #mapGround{
+        position: absolute;
+        top:100px;
+        left:100px;
+  }
+    #mapGround img{
+        position: absolute;
+    }
+   
+    #box1{
+        position: absolute;
+        top:48px;
+        left:140px;
+    }
+  </style>
+ </head>
+
+ <body>
+  <div id="mapGround">
+   <img id="box1" src="box.gif" />
+  </div>
+  <script type="text/javascript" src="../js/jquery.js"></script>
+  <script type="text/javascript">
+      <!--
+      var COL=10,ROW=10,
+          titles=[];
+      var mapGround=document.getElementById("mapGround");
+     createTitle(COL,ROW);
+     initTitle(COL,ROW);
+
+     var $box1=$("#box1");
+
+     setBoxPosition(getScreenPos(1,1));
+     mapGround.onclick=function (e) {
+        e=e||window.event;
+        var x=e.pageX||e.x,y=e.pageY||e.y;
+        x-=100+14;
+        y-=100;
+        var crd=screen2MapCoord(x,y);
+        setBoxPosition(getScreenPos(Math.floor(crd.x),Math.floor(crd.y)));
+       
+     }
+     
+     function createTitle(c,r) {
+        for(var j=0;j<r;j++){
+            titles[j]=[];
+            for(var i=0;i<c;i++){
+                var oImg=document.createElement("img");
+                oImg.src="g.gif";
+                titles[j][i]=oImg;
+                mapGround.appendChild(oImg);
+               
+            }
+        }
+      }
+      function initTitle(c,r) {
+        for(var j=0;j<r;j++){
+            for(var i=0;i<c;i++){
+                $(titles[j][i]).css({top:j*16,left:i*28});
+            }
+        }
+      }
+      function screen2MapCoord(x,y){
+         x=x/14;
+         y=y/8;
+         return {x:(x+y)/2,y:(y-x)/2};
+      }
+
+      function map2ScreenCoord(x,y){
+        return {x:x-y,y:x+y}
+      }
+      function getScreenPos(x,y){
+        var crd=map2ScreenCoord(x,y);
+        return {left:crd.x*14,top:crd.y*8}
+      }
+      function setBoxPosition(pos) {
+        //left的值已经被减过
+        //pos.left+=14;
+        //对齐点距离上部正好一个菱形
+        pos.top-=16;
+        $box1.animate(pos);
+      }
+     // -->
+  </script>
+ </body>
+</html>

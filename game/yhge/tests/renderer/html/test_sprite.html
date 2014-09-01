@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> sprite </title>
+  <link rel="stylesheet" type="text/css" href="../../../renderer/html/renderer.css"/>
+  <style type="text/css">
+    #canvas{
+        float:left;
+        width:800px;
+        height:600px;
+        position:relative;
+
+    }
+    #conf{
+        float:left;
+    }
+    #conf input{
+        width:3em;
+    }
+  </style>
+ </head>
+
+ <body>
+   <div id="canvas"></div>
+   <form id="conf">
+        <p>position x:<input name="px" value="0"/> y:<input name="py" value="0"/></p>
+        <p>rotation <input name="r" value="0"/></p>
+        <p>scale x:<input name="sx" value="0"/> y:<input name="sy" value="0"/></p>
+        <p><input id="changeAttr" type="button" value="do"/></p>
+   </form>
+   <div id="fps"></div>
+   <script type="text/javascript" src="jquery.js"></script>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+    
+   <script type="text/javascript" src="../../../animation/Animation.js"></script>
+   <script type="text/javascript" src="../../../animation/Frame.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/Sprite.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/html/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/html/Sprite2.js"></script>
+
+   
+
+   <script type="application/x-javascript">
+
+    var ctx = document.getElementById('canvas');
+    //ctx.fillStyle="#CCCCCC";
+    //ctx.fillRect(0,0,300,300);
+    
+    var Sprite=yhge.renderer.html.Sprite;
+
+
+
+    var texture=new Image();
+    texture.src="../../resource/1.png";
+
+    var sprite=new Sprite();
+    
+    sprite.setContentSize({
+        width:160,
+        height:184,
+    });
+    sprite.setTexture(texture);
+    sprite.setAnchorPoint(80,92);
+    sprite.setPosition(160,184);
+    sprite.setRotation(45);
+    sprite.setFlipX(true);
+//    sprite.setScale(0.5,0.5);
+    sprite.render(ctx);
+    ctx.appendChild(sprite.getView()[0]);
+
+    var spr1=new Sprite();
+    spr1.setImageFile("../../resource/1.png");
+    spr1.setPosition(160,184);
+//    spr1.setAnchorPoint(80,92);
+    spr1.render(ctx);
+    ctx.appendChild(spr1.getView()[0]);
+    </script>
+ </body>
+</html>

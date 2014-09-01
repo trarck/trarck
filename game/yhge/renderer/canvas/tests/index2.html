@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle = "#EEE";
+        ctx.fillRect(0,0,800,600);
+
+        var w=80,h=80,ax=w/4,ay=h/4;
+        //ctx.translate(100,100);//=====================position 100,100
+        ctx.save();
+        ctx.fillStyle = "#E00";
+        ctx.translate(50,50);
+        ctx.fillRect(0,0,100,100);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.fillStyle = "#0E0";
+        ctx.beginPath();
+        ctx.moveTo(100,100);
+        //ctx.lineTo(150,100);
+        ctx.arc(150,120,20,-Math.PI/2,0);
+        ctx.lineTo(170,150);
+        ctx.arc(150,150,20,0,Math.PI/2,false);
+        ctx.lineTo(100,170);
+        ctx.lineTo(100,100);
+        ctx.stroke();
+//        ctx.globalCompositeOperation="copy";
+//        ellipse(ctx,[100,100],50,30);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.lineWidth=20;
+        ctx.beginPath();
+        ctx.arc(300,300,200,-Math.PI*2,0);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(100,100);
+        ctx.fillStyle = "#0E0";
+        ctx.beginPath();
+        ctx.moveTo(100,100);
+        //ctx.lineTo(150,100);
+        ctx.arc(150,120,20,-Math.PI/2,0);
+        ctx.lineTo(170,150);
+        ctx.arc(150,150,20,0,Math.PI/2,false);
+        ctx.lineTo(100,170);
+        ctx.lineTo(100,100);
+        
+        
+        ctx.stroke();
+        //ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(50,50);
+        ctx.fillStyle = "#0E0";
+        ctx.beginPath();
+        ctx.moveTo(100,100);
+        ctx.lineTo(150,100);
+        ctx.arc(150,120,20,-Math.PI/2,0);
+        ctx.lineTo(170,150);
+        ctx.arc(150,150,20,0,Math.PI/2);
+        ctx.lineTo(100,170);
+        //ctx.lineTo(100,100);
+        ctx.stroke();
+        ctx.restore();
+
+//        ctx.save();
+//        ctx.fillStyle="#CCC";
+//        ctx.beginPath();
+//        ctx.moveTo(300,400);
+//        ctx.bezierCurveTo(300+100*0.55228475,400,   400,300+100*0.55228475,    400,300);
+//        ctx.bezierCurveTo(400,300-100*0.55228475,   300+100*0.55228475,200,    300,200);
+//        ctx.bezierCurveTo(300-100*0.55228475,200,   200,300-100*0.55228475,    200,300);
+//        ctx.bezierCurveTo(200,300+100*0.55228475,   300-100*0.55228475,400,    300,400);
+//        //ctx.fill();
+//        ctx.stroke();
+//        ctx.restore();
+
+//        ctx.save();
+//        ctx.globalAlpha=0.1;
+//        ctx.strokeStyle="#F00";
+//        ctx.beginPath();
+//        ctx.moveTo(400,300);
+//        ctx.arc(300,300,100,0,2*Math.PI);
+//        ctx.stroke();
+//        ctx.restore();
+        
+        var bt,et,n=1;
+        
+        var x0=300,y0=300;
+        var a=100,b=50;
+        var ratea=0.551784,
+            rateb=0.551784;
+
+        bt=(new Date()).getTime();
+        for(var i=0;i<n;i++){
+            ctx.save();
+            ctx.translate(50,0);
+            ctx.fillStyle="#CCC";
+            ctx.strokeStyle="#F00"
+//            ctx.beginPath();
+//            ctx.moveTo(x0,x0+b);
+//            ctx.bezierCurveTo(x0+a*ratea,y0+b,   x0+a,y0+b*rateb,    x0+a,y0);
+//            ctx.bezierCurveTo(x0+a,y0-b*rateb,   x0+a*ratea,y0-b,    x0,y0-b);
+//            ctx.bezierCurveTo(x0-a*ratea,y0-b,   x0-a,y0-b*rateb,    x0-a,y0);
+//            ctx.bezierCurveTo(x0-a,y0+b*rateb,   x0-a*ratea,y0+b,    x0,y0+b);
+//            //ctx.fill();
+//            ctx.stroke();
+            ellipse2(ctx,x0,y0,a,b);
+            ctx.restore();
+        }
+        et=(new Date()).getTime();
+        var t1=et-bt;
+        
+        var x0=140,y0=300,x,y,ii,piDegree=Math.PI/180;
+        bt=(new Date()).getTime();
+        for(var i=0;i<n;i++){
+            ctx.save();
+            ctx.strokeStyle="#0F0";
+//            x=x0+a;
+//            y=y0;
+//            ctx.beginPath();
+//            ctx.moveTo(x,y);
+//            for (var j=0;j<=360;j++){
+//                ii=j*piDegree;
+//                x=x0+a*Math.cos(ii);
+//                y=y0-b*Math.sin(ii);
+//                ctx.lineTo(x,y);
+//            }
+//            ctx.stroke();
+            ellipse(ctx,[x0,y0],a,b);
+            ctx.restore();
+        }
+        et=(new Date()).getTime();
+        var t2=et-bt;
+        console.log(t1,t2);
+////        ctx.strokeStyle = "#9CFF00";
+////        ctx.translate(50,50);
+////        ctx.strokeRect(0,0,50,50);
+////        ctx.save();
+//        ctx.strokeStyle = "#FF0000";
+//        ctx.translate(50,50);//=====================position 50,50
+//        //ctx.rotate(-45*Math.PI/180);
+//        //ctx.scale(1,1);
+//        ctx.strokeRect(0,0,w,h);
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FF0000";
+//        ctx.translate(ax,ay);
+//        ctx.strokeRect(0,0,w/2,h/2);
+//        ctx.restore();
+//
+//        ctx.restore();
+//        
+//
+//
+//      
+//        ctx.save();
+//        ctx.strokeStyle = "#00FF00";
+//        ctx.translate(50,50);//=====================position 50,50
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-ax,-ay);//=====================position 50,50
+//        ctx.strokeRect(0,0,w,h);
+//        //sub
+//        ctx.save();
+//        ctx.strokeStyle = "#00FF00";
+//        ctx.translate(ax,ay);
+//        ctx.strokeRect(0,0,w/2,h/2);
+//        ctx.restore();
+//
+//        ctx.restore();
+//        
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(50,50);//=====================position 50,50
+//        ctx.translate(ax,ay);//=====================position 50,50
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-ax,-ay);//=====================position 50,50
+//        ctx.strokeRect(0,0,w,h);
+//
+//        //sub
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(ax,ay);
+//        ctx.strokeRect(0,0,w/2,h/2);
+//
+//        ctx.fillStyle="#0000FF";
+//        ctx.fillRect(0,0,w/2,h/2);
+//
+//        ctx.restore();
+//
+//        ctx.restore();
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FFFF00";
+//        ctx.translate(10,10);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.restore();
+//
+//        ctx.restore();
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(100,100);//=====================position 50,100
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-50,-50);
+//        ctx.strokeRect(0,0,50,50);
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FFFF00";
+//        ctx.translate(10,10);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.restore();
+//        
+//        ctx.restore();
+//        var img=new Image();
+//        img.src="resource/1.png";
+//        ctx.drawImage(img,0,0,160,184,0,0,160,184/2);
+
+//
+//        ctx.strokeStyle = "#00FF00";
+//        ctx.fillStyle="#0000FF";
+//        ctx.beginPath();
+//        ctx.arc(75,75,50,0,Math.PI*2,true); // Outer circle
+//        ctx.fill();
+//        ctx.beginPath();
+//        ctx.moveTo(110,75);
+//        ctx.arc(75,75,35,0,Math.PI,false);   // Mouth (clockwise)
+//        ctx.fillStyle="#00FFFF";
+//        ctx.fill();
+//        ctx.beginPath();
+//        ctx.moveTo(65,65);
+//        ctx.arc(60,65,5,0,Math.PI*2,true);  // Left eye
+//        ctx.fillStyle="#FF00FF";
+//        ctx.fill();
+//        ctx.beginPath();
+//        ctx.moveTo(95,65);
+//        ctx.arc(90,65,5,0,Math.PI*2,true);  // Right eye
+//        ctx.fillStyle="#FF0000";
+//        ctx.fill();
+//        //ctx.stroke();
+//        //ctx.fill();
+
+
+//        // Create gradients
+//          var lingrad = ctx.createLinearGradient(0,0,0,150);
+//          //lingrad.addColorStop(1, '#000');
+//          
+//          lingrad.addColorStop(1, '#F00');
+//          lingrad.addColorStop(0.9, '#0F0');
+//          lingrad.addColorStop(0.8, '#FF0');
+//          lingrad.addColorStop(0, '#CCC');
+//          lingrad.addColorStop(0.5, '#0FF');
+//
+//
+//          var lingrad2 = ctx.createLinearGradient(0,50,0,95);
+//          lingrad2.addColorStop(0, '#eee');
+//          lingrad2.addColorStop(1, '#fff');
+//            
+////          ctx.fillStyle="#1878CF";
+////          ctx.fillRect(10,10,60,30)
+//          // assign gradients to fill and stroke styles
+//          ctx.fillStyle = lingrad;
+//          ctx.strokeStyle = lingrad2;
+//          
+//          // draw shapes
+//          ctx.fillRect(10,10,130,230);
+//          ctx.strokeRect(50,50,50,50);
+
+//          var radgrad = ctx.createRadialGradient(50,50,50,50,50,0);
+//          radgrad.addColorStop(0, '#000');
+//          radgrad.addColorStop(1, '#FFFF00');
+//          ctx.fillStyle = radgrad;
+//          ctx.fillRect(0,0,100,100);
+      }
+
+      function rect(ctx,strokeStyle,translate,rotate,afterTranslate){
+        ctx.save();
+        ctx.strokeStyle =strokeStyle;
+        ctx.translate(translate[0],translate[1]);
+        ctx.rotate(rotate*Math.PI/180);
+        afterTranslate && ctx.translate(afterTranslate[0],afterTranslate[1]);
+        ctx.restore();
+      }
+      function ellipsePath(ctx,x,y,a,b){
+            var aa=a*0.5522847498307933984022516322796,
+                bb=b*0.5522847498307933984022516322796;
+            ctx.beginPath();
+            ctx.moveTo(x,y+b);
+            ctx.bezierCurveTo(x+aa,y+b,   x+a,y+bb,    x+a,y);
+            ctx.bezierCurveTo(x+a,y-bb,   x+aa,y-b,    x,y-b);
+            ctx.bezierCurveTo(x-aa,y-b,   x-a,y-bb,    x-a,y);
+            ctx.bezierCurveTo(x-a,y+bb,   x-aa,y+b,    x,y+b);
+            //ctx.fill();
+            ctx.stroke();
+      }
+
+      function ellipse(ctx,O,OA,OB){
+        //画椭圆，例子：var B=new Array(150,150); DrawEllipse(hb,B,50,30);
+        var x=O[0]+OA;
+        var y=O[1];
+        ctx.beginPath();
+        ctx.moveTo(x,y);
+        for (var i=0;i<=360;i++){
+            var ii=i*Math.PI/180;
+            var x=O[0]+OA*Math.cos(ii);
+            var y=O[1]-OB*Math.sin(ii);
+            ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+      }
+      function ellipse3(ctx,x,y,a,b) {
+        var aa=a*0.5522847498307933984022516322796,
+            bb=b*0.5522847498307933984022516322796;
+        ctx.beginPath();
+        ctx.moveTo(x,y+b);
+        ctx.bezierCurveTo(x+aa,y+b,   x+a,y+bb,    x+a,y);
+        ctx.bezierCurveTo(x+a,y-bb,   x+aa,y-b,    x,y-b);
+        ctx.bezierCurveTo(x-aa,y-b,   x-a,y-bb,    x-a,y);
+        ctx.bezierCurveTo(x-a,y+bb,   x-aa,y+b,    x,y+b);
+        //ctx.fill();
+        ctx.stroke();
+      } 
+      function ellipse2(ctx,x,y,a,b) {
+        var aa=a*0.5522847498307933984022516322796,
+            bb=b*0.5522847498307933984022516322796,
+            xa=x+a,
+            yb=y+b,
+            xaa=x+aa
+            ybb=y+bb;
+        ctx.beginPath();
+        ctx.moveTo(x,y+b);
+        ctx.bezierCurveTo(xaa,yb,   xa,ybb,    xa,y);
+        ctx.bezierCurveTo(xa,y-bb,   xaa,y-b,    x,y-b);
+        ctx.bezierCurveTo(x-aa,y-b,   x-a,y-bb,    x-a,y);
+        ctx.bezierCurveTo(x-a,ybb,   x-aa,y+b,    x,y+b);
+        //ctx.fill();
+        ctx.stroke();
+      } 
+    </script>
+ </body>
+</html>

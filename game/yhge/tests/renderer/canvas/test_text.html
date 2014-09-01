@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> sprite </title>
+  <style type="text/css">
+    #canvas{
+        float:left;
+    }
+    #conf{
+        float:left;
+    }
+    #conf input{
+        width:3em;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <form id="conf">
+        <p>position x:<input name="px" value="0"/> y:<input name="py" value="0"/></p>
+        <p>rotation <input name="r" value="0"/></p>
+        <p>scale x:<input name="sx" value="0"/> y:<input name="sy" value="0"/></p>
+        <p><input type="button" value="do"/></p>
+   </form>
+   <div id="fps"></div>
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+    
+   <script type="text/javascript" src="../../../animation/Animation.js"></script>
+   <script type="text/javascript" src="../../../animation/Frame.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/Text.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/canvas/Text.js"></script>
+
+   <script type="text/javascript">
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.fillStyle="#CCCCCC";
+    ctx.fillRect(0,0,300,300);
+    
+    var Text=yhge.renderer.canvas.Text;
+
+    var txt1=new Text();
+    txt1.setText("hello world");
+    txt1.setPosition(50,0);
+    txt1.setVerticalAlign("middle");
+    txt1.render(ctx);
+
+    var txt2=new Text();
+    txt2.setText("hello world");
+    txt2.setPosition(70,20);
+    txt2.setColor("#00FF00");
+    txt2.setVerticalAlign("middle");
+    txt2.render(ctx);
+    
+    </script>
+ </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+      var img=new Image();
+      img.src="resource/1.png";
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        //ctx.fillStyle = "#EEE";
+        //ctx.fillRect(0,0,800,600);
+        
+        ctx.drawImage(img,0,0);
+        //ctx.globalCompositeOperation="destination-in";
+        //ctx.fillStyle="#F00";
+        //ctx.fillRect(0,0,180,184)
+        var imgData=ctx.getImageData(0,0,160,184);
+        var data=imgData.data;
+        var t=0;
+        for(var i=0;i<184;i++){
+            for(var j=0;j<160;j++){
+                var n=(i*160+j)*4;
+                data[n]=data[n]*0.8;
+                data[n+1]=data[n+1]*0;
+                data[n+2]=data[n+2]*0;
+            }
+        }
+        ctx.putImageData(imgData,200,0);
+      }
+
+      function ColorTransform(colorTransform,yv_) {
+        if(!colorTransform||colorTransform.length==0) {
+            return yv_;
+        }
+        var w=yv_.width;
+        var h=yv_.height;
+        var yw_=document.createElement("canvas");
+        yw_.width=w;
+        yw_.height=h;
+        var yx_=yw_.getContext("2d");
+        var yg_=["rgba(255,0,0,1)","rgba(0,255,0,1)","rgba(0,0,255,1)"];
+        var yy_=["mr","mg","mb"];
+        var yz_=["ar","ag","ab"];
+        var za_=document.createElement("canvas");
+        za_.width=w;
+        za_.height=h;
+        var zb_=za_.getContext("2d");
+        zb_.drawImage(yv_,0,0);
+        zb_.globalCompositeOperation="source-atop";
+        zb_.fillStyle="rgba(255,255,255,1)";
+        zb_.fillRect(0,0,w,h);
+        for(var j=colorTransform.length-1;j>=0;j--) {
+            zb_.globalCompositeOperation="destination-in";
+            zb_.globalAlpha=colorTransform[j]["ma"];
+            zb_.fillRect(0,0,w,h);
+            zb_.globalCompositeOperation="lighter";
+            zb_.fillStyle="rgba(255,255,255,1)";
+            zb_.globalAlpha=colorTransform[j]["aa"]/255;
+            zb_.fillRect(0,0,w,h);
+            if(colorTransform[j]["aa"]) {
+            }
+        }
+        var zc_=true;
+        for(var j=colorTransform.length-1;j>=0;j--) {
+            var add=colorTransform[j]["ar"];
+            var sv_=colorTransform[j]["mr"];
+            if(add!=colorTransform[j]["ag"]||add!=colorTransform[j]["ab"]||sv_!=colorTransform[j]["mg"]||sv_!=colorTransform[j]["mb"]) {
+                zc_=false;
+                break;
+            }
+        }
+        if(zc_) {
+            yx_.drawImage(yv_,0,0);
+            for(var j=colorTransform.length-1;j>=0;j--) {
+                yx_.globalCompositeOperation="source-over";
+                yx_.fillStyle="rgb(0,0,0)";
+                yx_.globalAlpha=1-colorTransform[j]["mr"];
+                yx_.fillRect(0,0,w,h);
+                var zd_=colorTransform[j]["ar"]/255;
+                if(zd_<0) {
+                    yx_.globalCompositeOperation="darker";
+                    yx_.fillStyle="rgb(0,0,0)";
+                    zd_=-zd_;
+                } else {
+                    yx_.globalCompositeOperation="lighter";
+                    yx_.fillStyle="rgb(255,255,255)";
+                }
+                yx_.globalAlpha=zd_;
+                yx_.fillRect(0,0,w,h);
+            }
+        } else {
+            var ze_=[];
+            var zf_=[];
+            for(var i=0;i<3;i++) {
+                var zg_=document.createElement("canvas");
+                zg_.width=w;
+                zg_.height=h;
+                var zh_=zg_.getContext("2d");
+                zh_.drawImage(yv_,0,0);
+                zh_.globalCompositeOperation="darker";
+                zh_.fillStyle=yg_[i];
+                zh_.fillRect(0,0,w,h);
+                ze_.push(zh_);
+                zf_.push(zg_);
+            }
+            yx_.globalCompositeOperation="lighter";
+            for(var i=0;i<3;i++) {
+                var zh_=ze_[i];
+                for(var j=colorTransform.length-1;j>=0;j--) {
+                    zh_.globalCompositeOperation="source-over";
+                    zh_.fillStyle="rgb(0,0,0)";
+                    zh_.globalAlpha=1-colorTransform[j][yy_[i]];
+                    zh_.fillRect(0,0,w,h);
+                    var zd_=colorTransform[j][yz_[i]]/255;
+                    if(zd_<0) {
+                        zh_.globalCompositeOperation="darker";
+                        zh_.fillStyle="rgb(0,0,0)";
+                        zd_=-zd_;
+                    } else {
+                        zh_.globalCompositeOperation="lighter";
+                        zh_.fillStyle=yg_[i];
+                    }
+                    zh_.globalAlpha=zd_;
+                    zh_.fillRect(0,0,w,h);
+                }
+                yx_.drawImage(zf_[i],0,0);
+            }
+        }
+        yx_.globalCompositeOperation="destination-in";
+        yx_.globalAlpha=1;
+        yx_.drawImage(za_,0,0);
+        return yw_;
+    }
+    </script>
+ </body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="300" height="300"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        //ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0,0,300,300);
+
+        var w=40,h=80,ax=w/4,ay=h/4;
+        //ctx.translate(100,100);//=====================position 100,100
+
+        ctx.save();
+//        ctx.strokeStyle = "#9CFF00";
+//        ctx.translate(50,50);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.save();
+        ctx.strokeStyle = "#FF0000";
+        ctx.translate(50,50);//=====================position 50,50
+        //ctx.rotate(-45*Math.PI/180);
+        //ctx.scale(1,1);
+        ctx.strokeRect(0,0,w,h);
+
+        ctx.save();
+        ctx.strokeStyle = "#FF0000";
+        ctx.translate(ax,ay);
+        ctx.strokeRect(0,0,w/2,h/2);
+        ctx.restore();
+
+        ctx.restore();
+        
+
+
+      
+        ctx.save();
+        ctx.strokeStyle = "#00FF00";
+        ctx.translate(50,50);//=====================position 50,50
+        ctx.rotate(-45*Math.PI/180);
+        ctx.translate(-ax,-ay);//=====================position 50,50
+        ctx.strokeRect(0,0,w,h);
+        //sub
+        ctx.save();
+        ctx.strokeStyle = "#00FF00";
+        ctx.translate(ax,ay);
+        ctx.strokeRect(0,0,w/2,h/2);
+        ctx.restore();
+
+        ctx.restore();
+        
+        ctx.save();
+        ctx.strokeStyle = "#0000FF";
+        ctx.translate(50,50);//=====================position 50,50
+        ctx.translate(ax,ay);//=====================position 50,50
+        ctx.rotate(-45*Math.PI/180);
+        ctx.translate(-ax,-ay);//=====================position 50,50
+        ctx.strokeRect(0,0,w,h);
+
+        //sub
+        ctx.save();
+        ctx.strokeStyle = "#0000FF";
+        ctx.translate(ax,ay);
+        ctx.strokeRect(0,0,w/2,h/2);
+        ctx.restore();
+
+        ctx.restore();
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FFFF00";
+//        ctx.translate(10,10);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.restore();
+//
+//        ctx.restore();
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(100,100);//=====================position 50,100
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-50,-50);
+//        ctx.strokeRect(0,0,50,50);
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FFFF00";
+//        ctx.translate(10,10);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.restore();
+//        
+//        ctx.restore();
+      }
+
+      function rect(ctx,strokeStyle,translate,rotate,afterTranslate){
+        ctx.save();
+        ctx.strokeStyle =strokeStyle;
+        ctx.translate(translate[0],translate[1]);
+        ctx.rotate(rotate*Math.PI/180);
+        afterTranslate && ctx.translate(afterTranslate[0],afterTranslate[1]);
+        ctx.restore();
+      }
+    </script>
+ </body>
+</html>

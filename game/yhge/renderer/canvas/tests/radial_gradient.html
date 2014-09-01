@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> gradient </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle = "#FFF";
+        ctx.fillRect(0,0,800,600);
+        ctx.save();
+     
+        ctx.translate(400,100);
+        var grad=ctx.createRadialGradient(200,50,0,200,50,200);
+        grad.addColorStop(0,"#FF0");
+        grad.addColorStop(1,"#000");
+        ctx.fillStyle=grad;
+        ctx.fillRect(0,0,400,100);
+        //ctx.strokeStyle="#0F0";
+        //ctx.strokeRect(0,0,200,200);
+       
+       ctx.translate(200,160);
+        
+        ctx.save();
+        var r=100,scale=1,rate=0.5;//0.2059326171875/0.1278533935546875;
+        var w1=100,h1=100;
+        var grad2=ctx.createRadialGradient(0,0,0,0,0,r);
+        grad2.addColorStop(0,"#FF0");
+        grad2.addColorStop(1,"#000");
+        ctx.fillStyle=grad2;
+        ctx.scale(scale,scale*rate);
+        ctx.beginPath();
+        ctx.moveTo(-w1/scale,-h1/scale/rate);
+        ctx.lineTo(w1/scale,-h1/scale/rate);
+        ctx.lineTo(w1/scale,h1/scale/rate);
+        ctx.lineTo(-w1/scale,h1/scale/rate);
+        ctx.lineTo(-w1/scale,-h1/scale/rate);
+        ctx.fill();
+        
+        ctx.restore();
+
+        ctx.translate(2,205);
+//        var grad4=ctx.createRadialGradient(0,0,0,0,0,16384/20);
+//        grad4.addColorStop(0,"#FF0");
+//        grad4.addColorStop(1,"#000");
+//        ctx.fillStyle=grad4;
+//        ctx.transform(0.1278533935546875,0, 0, 0.2059326171875, -2, 0);//209.475,337.4
+//        ctx.beginPath();
+////        ctx.moveTo(-100,-50);
+////        ctx.lineTo(100,-50);
+////        ctx.lineTo(100,50);
+////        ctx.lineTo(-100,50);
+////        ctx.lineTo(-100,-50);
+//
+//        ctx.moveTo(-100/0.1278533935546875,-50/0.2059326171875);
+//        ctx.lineTo(100/0.1278533935546875,-50/0.2059326171875);
+//        ctx.lineTo(100/0.1278533935546875,50/0.2059326171875);
+//        ctx.lineTo(-100/0.1278533935546875,50/0.2059326171875);
+//        ctx.lineTo(-100/0.1278533935546875,-50/0.2059326171875);
+        
+        var rate=1/0.1278533935546875;
+        //var r2=16384/20,scale2=0.1278533935546875,scale22=0.2059326171875;
+
+        var r2=16384/20/rate,scale2=1,scale22=0.2059326171875*rate;
+        var grad4=ctx.createRadialGradient(0,0,0,0,0,r2);
+        grad4.addColorStop(0,"#FF0");
+        grad4.addColorStop(1,"#000");
+        ctx.fillStyle=grad4;
+        ctx.transform(scale2,0, 0, scale22, -2, 0);//209.475,337.4
+        ctx.beginPath();
+//        ctx.moveTo(-100,-50);
+//        ctx.lineTo(100,-50);
+//        ctx.lineTo(100,50);
+//        ctx.lineTo(-100,50);
+//        ctx.lineTo(-100,-50);
+
+        ctx.moveTo(-100/scale2,-50/scale22);
+        ctx.lineTo(100/scale2,-50/scale22);
+        ctx.lineTo(100/scale2,50/scale22);
+        ctx.lineTo(-100/scale2,50/scale22);
+        ctx.lineTo(-100/scale2,-50/scale22);
+
+//        ctx.moveTo(781.9503043322592,242.79786603438055);
+//        ctx.lineTo(781.9503043322592,-242.79786603438055);
+//        ctx.lineTo(-782.3413772526554,-242.79786603438055);
+//        ctx.lineTo(-782.3413772526554,242.7978660343805);
+//        ctx.lineTo(781.9503043322592,242.79786603438055);
+
+        ctx.fill();
+       // ctx.transform(7.821458407924573,0, 0, 4.85595732068761, 0, 0);
+
+//        ctx.translate(0,100);
+//        var grad3=ctx.createRadialGradient(0,0,0,0,0,100);
+//        grad3.addColorStop(0,"#FF0");
+//        grad3.addColorStop(1,"#000");
+//        ctx.fillStyle=grad3;
+//        ctx.beginPath();
+//        ctx.arc(0,0,100,0,Math.PI*2,true);
+//        ctx.fill();
+
+
+//        
+//        ctx.translate(-200,100);
+//        var linegrad2=ctx.createLinearGradient(-16384/20,0,16384/20,0);
+//        linegrad2.addColorStop(0,"#FF0");
+//        linegrad2.addColorStop(1,"#000");
+//        ctx.fillStyle=linegrad2;
+//        ctx.transform(0.244140625,0, 0, 0.06103515625, 200, 40);
+//        ctx.fillRect(0,0,400/0.244140625,100/0.06103515625);
+//
+//        ctx.restore();
+        
+
+
+//        var linegrad3=ctx.createLinearGradient(0,0,16384/10,0);
+//        linegrad3.addColorStop(0,"#FF0");
+//        linegrad3.addColorStop(1,"#000");
+//        ctx.fillStyle=linegrad3;
+//        ctx.transform(0.244140625,0, 0, 0.06103515625, 5359/20, 1900/20);
+//        ctx.fillRect(0,0,400/0.244140625,100/0.06103515625);
+      }
+    </script>
+ </body>
+</html>

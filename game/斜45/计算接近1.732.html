@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> new document </title>
+ </head>
+
+ <body>
+  <script type="text/javascript">
+      <!--
+      var a=[];
+      for(var i=0;i<100;i++){
+        //console.log(i,i*1.732,parseInt(i*1.732)/i);
+        var n=i*1.732;
+        var p=parseInt(n);
+        var f=Math.floor(n);
+        var c=Math.ceil(n);
+        var pr=p/i
+        var fr=f/i
+        var cr=c/i
+        
+        var o={i:i,n:n,p:p,f:f,c:c,pr:pr,fr:fr,cr:cr}
+        if(Math.abs(pr-1.732000)<0.002||Math.abs(fr-1.732000)<0.002||Math.abs(cr-1.732000)<0.002){
+            a.push(o);
+        }
+      }
+      for(var i=0;i<a.length;i++){
+          var out="";
+          for(var j in a[i]){
+            out+=j+"="+a[i][j]+"\t"
+          }
+            console.log(out);
+      }
+     // -->
+  </script>
+ </body>
+</html>

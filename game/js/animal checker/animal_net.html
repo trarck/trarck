@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> ddd </title>
+  <style type="text/css">
+      /*
+斗兽棋
+*/
+      .animalChecker{
+          position:relative;
+          width:522px;
+          height:522px;
+      }
+      .animalChecker .background{
+          width:100%;
+          height:100%;
+          background:#999;
+      }
+      .animalContent{
+          position:absolute;
+          top:0;
+          left:0;
+          width:522px;
+          height:522px;
+      }
+      .animalContent img{
+          position:absolute;
+          border:0 node;
+          width:128px;
+          height:128px;
+          background:#FF0;
+      }
+      #animalChecker{
+          position: absolute;
+          top:300px;
+          left:300px;
+      }
+      #animalChecker1{
+          position: absolute;
+          left:10px;
+          top:10px
+      }
+      #animalChecker2{
+          position: absolute;
+          right:10px;
+          top:10px
+      }
+  </style>
+ </head>
+
+ <body>
+  <div id="animalChecker" class="animalChecker">
+      <div class="background">
+        
+      </div>
+      <div id="animalContent" class="animalContent">
+          
+      </div>
+  </div>
+  <div id="animalChecker1" class="animalChecker">
+      <div class="background">
+        
+      </div>
+      <div id="animalContent1" class="animalContent">
+          
+      </div>
+  </div>
+  <div id="animalChecker2" class="animalChecker">
+      <div class="background">
+        
+      </div>
+      <div id="animalContent2" class="animalContent">
+          
+      </div>
+  </div>
+  <button onclick="cmd()" style="position:absolute;top:30px;left:630px;">cmd</button>
+  <button onclick="getLog()" style="position:absolute;top:30px;left:680px;">get</button>
+  <script type="text/javascript" src="../jquery.js"></script>
+  <script type="text/javascript" src="AnimalChecker_net.js"></script>
+  <script type="text/javascript">
+      var server=new AnimalChecker({side:0,view:document.getElementById("animalChecker"),content:document.getElementById("animalContent")});
+      var player1=new AnimalCheckerClient({side:0,user:"duan",view:document.getElementById("animalChecker1"),content:document.getElementById("animalContent1")});
+      var player2=new AnimalCheckerClient({side:1,user:"trarck",view:document.getElementById("animalChecker2"),content:document.getElementById("animalContent2")});
+      var ticket=0;
+    
+      player1.connect();
+      player2.connect();
+        
+      //getData();
+      var i=0,steps=[[0, 3], [0, 2], [1, 3], [0, 3], [1, 2], [1, 3], [0, 3], [2, 3], [1, 3], [2, 1], [2, 2], [0, 3], [0, 2], [3, 1], [3, 2], [3, 3], [2, 3], [2, 2], [2, 1], [0, 2], [0, 1], [2, 1], [1, 1], [0, 1], [0, 0], [3, 2], [2, 2], [2, 3], [2, 2], [1, 1], [2, 0], [2, 1], [1, 3], [1, 2], [2, 1], [1, 1], [0, 1], [0, 0], [1, 0], [2, 1], [2, 2], [3, 0], [3, 1], [0, 1], [0, 0], [1, 0], [2, 0], [0, 0], [1, 0], [2, 0], [2, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 0], [2, 1], [3, 1], [3, 0], [2, 1], [3, 1], [1, 2], [1, 1], [3, 1], [3, 0], [1, 1], [2, 1], [3, 0], [3, 1], [2, 1], [3, 1]];
+      function cmd() {
+        if(i<steps.length){
+            animal.cmd(steps[i++]);
+        }
+      }
+      function getLog() {
+        console.log(animal.logs);
+      }
+      function getData() {
+        $.ajax({
+            url:"get.php?user=tra",
+            dataType:"json",
+            data:{ticket:ticket},
+            success:function (data) {
+                  ticket=data.ticket;
+                  if (data.items){
+                     animal.parseBack(data.items);
+                  }
+                  getData();
+            },
+            error:function(){
+                getData();
+            }
+            
+        });
+       
+    }
+  </script>
+ </body>
+</html>

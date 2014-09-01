@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> gradient </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle = "#FFF";
+        ctx.fillRect(0,0,800,600);
+        ctx.save();
+     
+        ctx.translate(400,100);
+        var linegrad=ctx.createLinearGradient(0,0,400,0);
+        linegrad.addColorStop(0,"#FF0");
+        linegrad.addColorStop(1,"#000");
+        ctx.fillStyle=linegrad;
+        ctx.fillRect(0,0,400,100);
+        //ctx.strokeStyle="#0F0";
+        //ctx.strokeRect(0,0,200,200);
+       
+       ctx.translate(0,150);
+
+        var linegrad4=ctx.createLinearGradient(-200,0,200,0);
+        linegrad4.addColorStop(0,"#FF0");
+        linegrad4.addColorStop(1,"#000");
+        ctx.fillStyle=linegrad4;
+        ctx.beginPath();
+        ctx.moveTo(-200,-50);
+        ctx.lineTo(200,-50);
+        ctx.lineTo(200,50);
+        ctx.lineTo(-200,50);
+        ctx.lineTo(-200,-50);
+        ctx.fill();
+        
+        ctx.translate(-200,100);
+        var linegrad2=ctx.createLinearGradient(-16384/20,0,16384/20,0);
+        linegrad2.addColorStop(0,"#FF0");
+        linegrad2.addColorStop(1,"#000");
+        ctx.fillStyle=linegrad2;
+        ctx.transform(0.244140625,0, 0, 0.06103515625, 200, 40);
+        ctx.fillRect(0,0,400/0.244140625,100/0.06103515625);
+
+        ctx.restore();
+        
+
+
+//        var linegrad3=ctx.createLinearGradient(0,0,16384/10,0);
+//        linegrad3.addColorStop(0,"#FF0");
+//        linegrad3.addColorStop(1,"#000");
+//        ctx.fillStyle=linegrad3;
+//        ctx.transform(0.244140625,0, 0, 0.06103515625, 5359/20, 1900/20);
+//        ctx.fillRect(0,0,400/0.244140625,100/0.06103515625);
+      }
+    </script>
+ </body>
+</html>

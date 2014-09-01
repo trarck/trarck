@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> canvas </title>
+  <style type="text/css">
+    #canvas{
+        background-color: #DDD;
+    }
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="640" height="480"></canvas>
+   <div id="fps"></div>
+   <textarea rows="10" cols="80" id="log"></textarea>
+
+   <script type="text/javascript" src="../../../ns.js"></script>
+   <script type="text/javascript" src="../../../core/Base.js"></script>
+   <script type="text/javascript" src="../../../core/Accessor.js"></script>
+   <script type="text/javascript" src="../../../core/Util.js"></script>
+
+   <script type="text/javascript" src="../../../math/Geometry.js"></script>
+   <script type="text/javascript" src="../../../math/TransformMatrix.js"></script>
+   <script type="text/javascript" src="../../../math/QuatTree.js"></script>
+   <script type="text/javascript" src="../../../math/TransformQuatTree.js"></script>
+
+   <script type="text/javascript" src="../../../times/Scheduler.js"></script>
+   
+   <script type="text/javascript" src="../../../event/EventObject.js"></script>
+   <script type="text/javascript" src="../../../event/MouseEventObject.js"></script>
+   <script type="text/javascript" src="../../../event/TouchEventObject.js"></script>
+   <script type="text/javascript" src="../../../event/EventListenerManager.js"></script>
+   <script type="text/javascript" src="../../../event/UIEventListenerManager.js"></script>
+   
+   <script type="text/javascript" src="../../../input/Util.js"></script>
+   <script type="text/javascript" src="../../../input/Mouse.js"></script>
+   <script type="text/javascript" src="../../../input/Touch.js"></script>
+   <script type="text/javascript" src="../../../input/Input.js"></script>
+
+   <script type="text/javascript" src="../../../scene/VisualEventProcessor.js"></script>
+   
+
+   <script type="text/javascript" src="../../../renderer/Node.js"></script>
+   <script type="text/javascript" src="../../../renderer/ColorPrototype.js"></script>
+   <script type="text/javascript" src="../../../renderer/Sprite.js"></script>
+
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Shape.js"></script>
+   <script type="text/javascript" src="../../../renderer/canvas/shape/Rect.js"></script>
+   
+   <script type="text/javascript" src="../../../scene/Scene.js"></script>
+   <script type="text/javascript" src="../../../scene/SingleSceneUpdater.js"></script>
+
+   <script type="text/javascript">
+        var Scheduler=yhge.times.Scheduler;
+
+        var Node=yhge.renderer.Node;
+        var Rect=yhge.renderer.canvas.shape.Rect;
+        var UIEventListenerManager=yhge.event.UIEventListenerManager;
+        var Scene=yhge.scene.Scene;
+        var SingleSceneUpdater=yhge.scene.SingleSceneUpdater;
+
+        var canvas=document.getElementById("canvas");
+        var ctx = canvas.getContext('2d');
+
+
+        var rect={
+            x:0,
+            y:0,
+            width:640,
+            height:480
+        };
+        var size={width:5,height:5};
+
+        //ctx.fillRect(0,0,640,480);
+
+        var scene=new Scene({
+            width:640,
+            height:480,
+            background:"#666"
+        });
+
+        var rect1=new Rect({
+            width:50,
+            height:50,
+            color:"#11FF00",
+            zOrder:1
+        });
+//
+//
+//
+//        scene.addChild(rect1);
+//
+//
+//
+        var scheduler=new Scheduler();
+        var sceneUpdater=SingleSceneUpdater.getInstance(scheduler,ctx);
+//
+        sceneUpdater.setScene(scene);
+        scheduler.run();
+//
+//        //测试事件
+//        var input=new yhge.input.Input(canvas);
+//
+//        var moveable=false;
+//
+        var log=document.getElementById("log");
+        function L(msg){
+            log.value+=msg+"\n";
+        }
+
+//        input.setupMouseEventWithProcessor({
+//            didMouseDown:function (x,y) {
+//                moveable=true;
+//                L("didMouseDown");
+//            },
+//            didMouseUp:function (x,y) {
+//                moveable=false;
+//                L("didMouseUp");
+//            },
+//            didMouseMove:function (x,y) {
+//                L("didMouseMove");
+//                moveable && rect1.setPosition(x,y);
+//            }
+//        });
+
+        canvas.addEventListener("touchstart",function(e){
+            L("didTouchStart");
+        });
+        canvas.addEventListener("touchend",function(e){
+            L("didTouchEnd");
+        });
+
+//        input.setupTouchEventWithProcessor({
+//            didTouchStart:function (x,y) {
+//                //moveable=true;
+//                L("didTouchStart");
+//            },
+//            didTouchEnd:function (x,y) {
+//                //moveable=false;
+//                L("didTouchEnd");
+//            }
+////            ,
+////            didTouchMove:function (x,y) {
+////                rect1.setPosition(x,y);
+////                L("didTouchMove");
+////            }
+//        });
+
+//        var fps=document.getElementById("fps");
+//        setInterval(function () {
+//            fps.innerHTML=sceneUpdater.updateTimes;
+//            sceneUpdater.updateTimes=0;
+//        },1000);
+   </script>
+ </body>
+</html>

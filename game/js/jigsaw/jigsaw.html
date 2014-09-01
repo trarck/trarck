@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>new document </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <style type="text/css">
+             #wrap {
+                width:816px;
+                overflow: hidden;
+                float: left;
+            } 
+            #snap {
+                float: right;
+                margin-left: 20px;
+            } 
+            #snap img {
+                width: 200px;
+                height: 300px;
+            } 
+            #result {
+                float: left;
+                width: 200px;
+                height: 200px;
+                text-align: center;
+                margin-left: 60px;
+                border: 1px solid #c4c4c4;
+            } 
+            .fix{
+                clear: both;
+            }
+            
+        </style>
+    </head>
+
+    <body>
+        <div id="wrap">
+        </div>
+        <div id="result">
+            <button onclick="beginGame()">
+                开始
+            </button>
+            <div>
+                用时：<span id="usetime">0</span>
+            </div>
+        </div>
+        <div id="snap">
+            <img src="1226547806x2NQ.jpg" />
+        </div>
+         <div class="fix"/>
+    </body>
+    <script type="text/javascript" src="jigsaw.js"></script>
+    <script type="text/javascript">
+          picture="1226547806x2NQ.jpg";
+          COL=4;
+          ROW =4;
+          WIDTH = 200;
+          HEIGHT =150;
+          N=COL * ROW;
+          RANDOMTIME=64*30;
+          init(); 
+    </script>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title> grid </title>
+  <style type="text/css">
+   
+  </style>
+ </head>
+
+ <body>
+   <canvas id="canvas" width="800" height="600"></canvas>
+   <script type="application/x-javascript">
+
+      draw();
+
+      function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.fillStyle = "#EEE";
+        ctx.fillRect(0,0,300,300);
+
+        var w=80,h=80,ax=w/4,ay=h/4;
+        //ctx.translate(100,100);//=====================position 100,100
+        ctx.save();
+        ctx.fillStyle = "#E00";
+        ctx.translate(50,50);
+        //ctx.rotate(-45*Math.PI/180);
+        //ctx.scale(1,0.5);
+        ctx.fillRect(0,0,160,160);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.beginpath
+        ctx.restore();
+
+        //ctx.mozImageSmoothingEnabled = false; 
+        var img=new Image();
+        img.src="resource/1.png";
+        img.onload=function () {
+              ctx.scale(4,4);
+             ctx.drawImage(img,0,0,160,184);
+        }
+       
+////        ctx.strokeStyle = "#9CFF00";
+////        ctx.translate(50,50);
+////        ctx.strokeRect(0,0,50,50);
+////        ctx.save();
+//        ctx.strokeStyle = "#FF0000";
+//        ctx.translate(50,50);//=====================position 50,50
+//        //ctx.rotate(-45*Math.PI/180);
+//        //ctx.scale(1,1);
+//        ctx.strokeRect(0,0,w,h);
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FF0000";
+//        ctx.translate(ax,ay);
+//        ctx.strokeRect(0,0,w/2,h/2);
+//        ctx.restore();
+//
+//        ctx.restore();
+//        
+//
+//
+//      
+//        ctx.save();
+//        ctx.strokeStyle = "#00FF00";
+//        ctx.translate(50,50);//=====================position 50,50
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-ax,-ay);//=====================position 50,50
+//        ctx.strokeRect(0,0,w,h);
+//        //sub
+//        ctx.save();
+//        ctx.strokeStyle = "#00FF00";
+//        ctx.translate(ax,ay);
+//        ctx.strokeRect(0,0,w/2,h/2);
+//        ctx.restore();
+//
+//        ctx.restore();
+//        
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(50,50);//=====================position 50,50
+//        ctx.translate(ax,ay);//=====================position 50,50
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-ax,-ay);//=====================position 50,50
+//        ctx.strokeRect(0,0,w,h);
+//
+//        //sub
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(ax,ay);
+//        ctx.strokeRect(0,0,w/2,h/2);
+//
+//        ctx.fillStyle="#0000FF";
+//        ctx.fillRect(0,0,w/2,h/2);
+//
+//        ctx.restore();
+//
+//        ctx.restore();
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FFFF00";
+//        ctx.translate(10,10);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.restore();
+//
+//        ctx.restore();
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#0000FF";
+//        ctx.translate(100,100);//=====================position 50,100
+//        ctx.rotate(-45*Math.PI/180);
+//        ctx.translate(-50,-50);
+//        ctx.strokeRect(0,0,50,50);
+//
+//        ctx.save();
+//        ctx.strokeStyle = "#FFFF00";
+//        ctx.translate(10,10);
+//        ctx.strokeRect(0,0,50,50);
+//        ctx.restore();
+//        
+//        ctx.restore();
+//        var img=new Image();
+//        img.src="resource/1.png";
+//        ctx.drawImage(img,0,0,160,184,0,0,160,184/2);
+
+//
+//        ctx.strokeStyle = "#00FF00";
+//        ctx.fillStyle="#0000FF";
+//        ctx.beginPath();
+//        ctx.arc(75,75,50,0,Math.PI*2,true); // Outer circle
+//        ctx.fill();
+//        ctx.beginPath();
+//        ctx.moveTo(110,75);
+//        ctx.arc(75,75,35,0,Math.PI,false);   // Mouth (clockwise)
+//        ctx.fillStyle="#00FFFF";
+//        ctx.fill();
+//        ctx.beginPath();
+//        ctx.moveTo(65,65);
+//        ctx.arc(60,65,5,0,Math.PI*2,true);  // Left eye
+//        ctx.fillStyle="#FF00FF";
+//        ctx.fill();
+//        ctx.beginPath();
+//        ctx.moveTo(95,65);
+//        ctx.arc(90,65,5,0,Math.PI*2,true);  // Right eye
+//        ctx.fillStyle="#FF0000";
+//        ctx.fill();
+//        //ctx.stroke();
+//        //ctx.fill();
+
+
+//        // Create gradients
+//          var lingrad = ctx.createLinearGradient(0,0,0,150);
+//          //lingrad.addColorStop(1, '#000');
+//          
+//          lingrad.addColorStop(1, '#F00');
+//          lingrad.addColorStop(0.9, '#0F0');
+//          lingrad.addColorStop(0.8, '#FF0');
+//          lingrad.addColorStop(0, '#CCC');
+//          lingrad.addColorStop(0.5, '#0FF');
+//
+//
+//          var lingrad2 = ctx.createLinearGradient(0,50,0,95);
+//          lingrad2.addColorStop(0, '#eee');
+//          lingrad2.addColorStop(1, '#fff');
+//            
+////          ctx.fillStyle="#1878CF";
+////          ctx.fillRect(10,10,60,30)
+//          // assign gradients to fill and stroke styles
+//          ctx.fillStyle = lingrad;
+//          ctx.strokeStyle = lingrad2;
+//          
+//          // draw shapes
+//          ctx.fillRect(10,10,130,230);
+//          ctx.strokeRect(50,50,50,50);
+
+//          var radgrad = ctx.createRadialGradient(50,50,50,50,50,0);
+//          radgrad.addColorStop(0, '#000');
+//          radgrad.addColorStop(1, '#FFFF00');
+//          ctx.fillStyle = radgrad;
+//          ctx.fillRect(0,0,100,100);
+      }
+
+      function rect(ctx,strokeStyle,translate,rotate,afterTranslate){
+        ctx.save();
+        ctx.strokeStyle =strokeStyle;
+        ctx.translate(translate[0],translate[1]);
+        ctx.rotate(rotate*Math.PI/180);
+        afterTranslate && ctx.translate(afterTranslate[0],afterTranslate[1]);
+        ctx.restore();
+      }
+    </script>
+ </body>
+</html>

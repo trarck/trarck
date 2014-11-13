@@ -32,7 +32,9 @@
    <script type="text/javascript">
 
     var A=function(){
-        this.initialize();
+		console.log(A.prototype.tt);
+        A.prototype.initialize();
+		console.log(A.prototype.tt);
     };
     A.prototype.initialize=function(){
         console.log("A this.constructor=",this.constructor);
@@ -42,6 +44,7 @@
         //子类初始化时，初始化父类一般会使用apply否则就没有意义。
         console.log("A this.constructor=A ",this.constructor==A);
         console.log("A this.constructor._super_=A._super_",this.constructor._super_==A._super_);
+		this.tt=4;
     };
 
     A.prototype.md=function(){
@@ -57,12 +60,14 @@
         classname:"B",
 
         initialize:function(props){
-            B._super_.initialize.apply(this,arguments);
+            // B._super_.initialize.apply(this,arguments);
             console.log("B this.constructor=",this.constructor);
             console.log("B this.constructor._super_",this.constructor._super_);
             console.log("B B._super_",B._super_);
             console.log("B this.constructor=B ",this.constructor==B);
             console.log("B this.constructor._super_=B._super_",this.constructor._super_==B._super_);
+			
+			console.log("tt:",this.tt);
         },
         md:function(){
             console.log("before B md ");
@@ -82,7 +87,7 @@
         classname:"C",
 
         initialize:function(props){
-            C._super_.initialize.apply(this,arguments);
+            // C._super_.initialize.apply(this,arguments);
             console.log("C this.constructor=",this.constructor);
             console.log("C this.constructor._super_",this.constructor._super_);
             console.log("C C._super_",C._super_);
@@ -101,20 +106,20 @@
             console.log("after C md");
         }
     });
-    console.log("before new A");
-    var a=new A();
-    console.log("after new A");
-    console.log("before new B");
-    var b=new B(33);
-    console.log("after new B");
-    console.log("before new C");
+    // console.log("before new A");
+    // var a=new A();
+    // console.log("after new A");
+    // console.log("before new B");
+    // var b=new B(33);
+    // console.log("after new B");
+    // console.log("before new C");
     var c=new C(44);
-    console.log("after new C");
+    console.log("after new C",c);
 
     console.log("--------------");
-    c.md();
-    a.md();
-    b.md();
+    // c.md();
+    // a.md();
+    // b.md();
     </script>
  </body>
 </html>

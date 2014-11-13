@@ -96,7 +96,10 @@
                     var cName = yhge.ucfirst(nsc.cName);
                     Class=nsc.ns[cName] = hasPrent?function(){
                         Class._superclass_.apply(this,arguments);
-                    }:function(){this.initialize.apply(this,arguments);};
+						Class.prototype.initialize && Class.prototype.initialize.apply(Class.prototype,arguments);
+                    }:function(){
+						Class.prototype.initialize && Class.prototype.initialize.apply(Class.prototype,arguments);
+					};
                     //命名空间
                     Class.namespace = nsc.ns;
                     //名称
@@ -105,8 +108,10 @@
                 case "undefined":
                     Class= hasPrent?function(){
                         Class._superclass_.apply(this,arguments);
+						// console.log("proto:",Class.prototype);
+						Class.prototype.initialize && Class.prototype.initialize.apply(Class.prototype,arguments);
                     }:function(){
-                        this.initialize.apply(this,arguments);
+                        Class.prototype.initialize && Class.prototype.initialize.apply(Class.prototype,arguments);
                     };
                     break;
                 default:
@@ -171,14 +176,14 @@
                 //prototype=this.mixinIf(prototype,subclass.prototype);
                 //content=this.mixinIf(content,subclass);
                 //主继承
-                superclass=extend[0];
+                var superclass=extend[0];
                 
                 var F = function() {},
                 subclassProto, superclassProto = superclass.prototype;
                 F.prototype = superclassProto;
-                
+
                 superclassProto =   new F();
-                
+
                 //扩展原型
                 var prototypes = [superclassProto];//[true,superclassProto];
 

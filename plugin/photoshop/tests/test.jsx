@@ -55,4 +55,20 @@ function getActiveLayerRotation()
     return 0;
 }
 
-alert(getActiveLayerRotation());
+//alert(getActiveLayerRotation());
+
+function openFileList( specList ){
+	var keyfileList		    = app.stringIDToTypeID( "fileList" );
+	var keyAddLayerFromFile	    = app.stringIDToTypeID( "addLayerFromFile" );
+
+	var myFileList = new ActionList();
+	for (var i = 0; i < specList.length; i++)
+		myFileList.putPath(new File(specList[i]));
+
+	var myOpenDescriptor = new ActionDescriptor();
+	myOpenDescriptor.putList(keyfileList, myFileList);
+
+	executeAction( keyAddLayerFromFile, myOpenDescriptor, DialogModes.NO );
+}
+
+openFileList(["/e/lua/dtcqtool/fca/temp/hero/AM/6t767.png"]);

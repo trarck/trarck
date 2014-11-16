@@ -9,5 +9,7 @@ var sourceFolder = Folder.selectDialog('Please select the folder to be imported:
 
 alert(sourceFolder);
 
-var files = sourceFolder.getFiles();
-alert(files)
+//var files = sourceFolder.getFiles();
+//alert(files)
+
+alert(sourceFolder.name+","+sourceFolder.fullName);

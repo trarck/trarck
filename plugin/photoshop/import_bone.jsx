@@ -1,4 +1,9 @@
-var g_LibsScriptFolderPath = "/Users/duanhouhai/development/trarck/trarck/plugin/photoshop/libs/";
+//var g_LibsScriptFolderPath = "/Users/duanhouhai/development/trarck/trarck/plugin/photoshop/libs/";
+//var texgtureFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/AM/";
+var g_LibsScriptFolderPath = "/d/trarck/plugin/photoshop/libs/";
+var texgtureFolderPath = "/e/lua/dtcqtool/fca/temp/hero/";
+var jsonFolderPath="/e/lua/dtcqtool/fca/temp/json/"
+var psdFolderPath = "/e/lua/dtcqtool/fca/temp/psd/";
 
 $.evalFile(g_LibsScriptFolderPath + "math/Terminology.jsx");
 $.evalFile(g_LibsScriptFolderPath + "math/Geometry.jsx");
@@ -8,19 +13,19 @@ $.evalFile(g_LibsScriptFolderPath + "math/TransformMatrix.jsx");
 $.evalFile(g_LibsScriptFolderPath + "json2.jsx");
 $.evalFile(g_LibsScriptFolderPath + "utils/LayerUtil.jsx");
 
-var texgtureFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/AM/";
-var fcaScale=0.111;
-var canvasWidth=2048;
-var canvasHeight=2048;
 
-function getInfoData() {
-	var file = new File(g_LibsScriptFolderPath+"../tests/cha.json");//File.openDialog("choose dialog");
-	file.encoding="BINARY";
-	if(file.open()){
-		var data=file.read();
+var fcaScale=0.111;
+var canvasWidth=1500;
+var canvasHeight=1200;
+
+function getInfoData(infoFile) {
+	//var file = new File(g_LibsScriptFolderPath+"../tests/cha.json");//File.openDialog("choose dialog");
+	infoFile.encoding="BINARY";
+	if(infoFile.open()){
+		var data=infoFile.read();
 		var jsonObj=JSON.parse(data);
 
-		file.close();
+		infoFile.close();
 		
 		return jsonObj;
 	}
@@ -28,14 +33,17 @@ function getInfoData() {
 	return null;
 }
 
-function importPart(part){
-	var file=texgtureFolderPath+part.texture+".png";
+function importPart(part,texturePath){
+	var file=texturePath+part.texture+".png";
 	
-	// alert(file);
+//	alert(file);
 	
 	LayerUtil.openFileList([file]);
 	
 	var currLayer=app.activeDocument.activeLayer;
+//
+//	alert(currLayer);
+//	return;
 	
 	//fix matrix	
 	var bounds = currLayer.bounds;
@@ -57,10 +65,13 @@ function importPart(part){
 	
 	var transformMatrix=new TransformMatrix(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
 		
+//	alert(transformMatrix.a+","+transformMatrix.b+","+transformMatrix.c+","+transformMatrix.d+","+transformMatrix.tx+","+transformMatrix.ty);
+
+//	alert(currLayer);
+
 	transformLayer(currLayer,transformMatrix);
 	
 }
-
 
 function getCornersFromLayerBounds( layer )
 {
@@ -152,23 +163,58 @@ function transformLayer(layer,matrix){
 	transformActiveLayerWithCorners(corners);
 }
 
-function main(){
+function importFromFileAndTexturePath(file,texturePath,name){
+	
+	var currentDoc=app.documents.add(canvasWidth, canvasHeight,72, "boneDoc", NewDocumentMode.RGB,DocumentFill.TRANSPARENT);
 
-	var data=getInfoData();
+	var data=getInfoData(file);
 	
 	if(!data){
 		alert("false");
 		return;
 	}
-
-	// importPart(data["Hair"]);
-	//
-	// importPart(data["TorsoBottom"]);
 	
 	for(var k in data){
-		importPart(data[k]);
+		importPart(data[k],texturePath);
 	}
-		
+
+	currentDoc.saveAs(new File(psdFolderPath+name+".psd"));
+	currentDoc.close();
+}
+
+function importFromFileAndName(file,name){
+	file=file instanceof File ?file:new File(file);
+	var texturePath=texgtureFolderPath+name+"/";
+	importFromFileAndTexturePath(file,texturePath,name);
+}
+
+function importFromChaFolder(){
+	var jsonFolder = Folder.selectDialog('Please select the folder to be imported:', Folder(jsonFolderPath));
+	var boneFolders=jsonFolder.getFiles();
+
+	for(var i in boneFolders){
+		var boneFolder=boneFolders[i];
+		importFromFileAndName((boneFolder.getFiles())[0],boneFolder.name);
+	}
+}
+
+function selectChaFileAndTexturePath(){
+	var chaFile=File.openDialog("choose a cha file");
+	var textureFolder = Folder.selectDialog('Please select the folder of texture:',Folder(texgtureFolderPath+"Troll"));
+	importFromFileAndTexturePath(chaFile,textureFolder.fullName+"/",textureFolder.name);
+}
+
+function main(){
+
+//	//create a new doc if no document
+//	if(app.documents.length){
+//		currentDoc=app.activeDocument;
+//	}else{
+//		currentDoc=app.documents.add(canvasWidth, canvasHeight,72, "boneDoc", NewDocumentMode.RGB,DocumentFill.TRANSPARENT);
+//	}
+
+	importFromChaFolder();
+//	selectChaFileAndTexturePath();
 }
 
 main();

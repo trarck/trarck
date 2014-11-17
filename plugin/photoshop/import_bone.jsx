@@ -1,9 +1,18 @@
-//var g_LibsScriptFolderPath = "/Users/duanhouhai/development/trarck/trarck/plugin/photoshop/libs/";
-//var texgtureFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/AM/";
-var g_LibsScriptFolderPath = "/d/trarck/plugin/photoshop/libs/";
-var texgtureFolderPath = "/e/lua/dtcqtool/fca/temp/hero/";
-var jsonFolderPath="/e/lua/dtcqtool/fca/temp/json/"
-var psdFolderPath = "/e/lua/dtcqtool/fca/temp/psd/";
+
+if($.os.indexOf("Macintosh OS")>-1){
+	//mac os
+	var g_LibsScriptFolderPath = "/Users/duanhouhai/development/trarck/trarck/plugin/photoshop/libs/";
+	var texgtureFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/hero/";
+	var jsonFolderPath="/Users/duanhouhai/development/trarck/dtcq/fca/temp/json/"
+	var psdFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/psd/";
+}else{
+	//windows
+	var g_LibsScriptFolderPath = "/d/trarck/plugin/photoshop/libs/";
+	var texgtureFolderPath = "/e/lua/dtcqtool/fca/temp/hero/";
+	var jsonFolderPath="/e/lua/dtcqtool/fca/temp/json/"
+	var psdFolderPath = "/e/lua/dtcqtool/fca/temp/psd/";
+}
+
 
 $.evalFile(g_LibsScriptFolderPath + "math/Terminology.jsx");
 $.evalFile(g_LibsScriptFolderPath + "math/Geometry.jsx");
@@ -214,7 +223,7 @@ function main(){
 //	}
 
 	importFromChaFolder();
-//	selectChaFileAndTexturePath();
+	// selectChaFileAndTexturePath();
 }
 
 main();

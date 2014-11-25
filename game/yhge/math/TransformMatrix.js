@@ -1,10 +1,23 @@
 (function  () {
     //坐标原点在左下角
 
+	/* 
+	列向量。游戏一般使用列向量。列向量是右乘。
+	[	a	c	tx	]
+	[	b	d	ty	]
+	[	0	0	1	]
+	
+	行向量。行向量使用左乘。不太常用。
+	[	a	b	0	]
+	[	c	d	0	]
+	[	tx	ty	1	]
+	*/
+	
     //使用a,b,c,d,tx,ty,行、列向量都适用。
     var TransformMatrix=function (){
         this.initialize.apply(this,arguments);
     };
+	
     TransformMatrix.prototype={
         /**
          * @class

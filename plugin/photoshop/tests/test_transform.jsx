@@ -41,14 +41,17 @@ function transformActiveLayer( newCorners )
 	quadRect.putUnitDouble( unitPixels, pxToNumber( layerBounds[3] ) );
 	
 	var quadCorners = new ActionList();
+	var str="";
 	for (i = 0; i < 4; ++i)
 	{
+		str+=newCorners[i].fX +","+newCorners[i].fY+":";
 		quadCorners.putUnitDouble( unitPixels, newCorners[i].fX );
 		quadCorners.putUnitDouble( unitPixels, newCorners[i].fY );
 	}
+	alert(str);
 	args.putList( krectangleStr, quadRect );
 	args.putList( kquadrilateralStr, quadCorners );
-	executeAction( eventTransform, args );
+	executeAction( eventTransform, args , DialogModes.ALL);
 	
 	// Deselect
 	deselArgs = new ActionDescriptor();
@@ -60,6 +63,15 @@ function transformActiveLayer( newCorners )
 	app.preferences.rulerUnits = saveUnits;
 }
 
+function test1()
+{
+    var desc = new ActionDescriptor();
+    var ref = new ActionReference();
+    ref.putProperty(app.charIDToTypeID("Chnl"), app.charIDToTypeID("fsel"));
+    desc.putReference(app.charIDToTypeID("null"), ref);
+    executeAction(app.charIDToTypeID("Trnf"), desc, DialogModes.ALL);
+}
+
 var canvasWidth=2048,canvasHeight=2048;
 
 var width=1379,height=681;
@@ -69,7 +81,7 @@ var fCorners = [new TPoint(0,0), new TPoint(width, 0),
 						
 var matrix=TransformMatrix.getIdentity();
 
-matrix.setTranslate(canvasWidth/2,canvasHeight/2);
+// matrix.setTranslate(canvasWidth/2,canvasHeight/2);
 
 matrix.setScale(0.5);
 
@@ -81,4 +93,8 @@ for(var i=0;i<4;++i){
 	fCorners[i].fY=p.y;
 }
 						
-transformActiveLayer(fCorners);	
+transformActiveLayer(fCorners);
+
+// test1();
+
+

@@ -86,6 +86,28 @@
             this.d*=sy;
             return this;
         },
+
+		/**
+		 * Skew a transform matrix
+		 *
+		 * @param {Float} skewX X skew factor in radians
+		 * @param {Float} [skewY=skewX] Y skew factor in radians
+		 * @returns {geometry.TransformMatrix} A new TransformMatrix
+		 */
+		setSkew: function (skewX, skewY) {
+			if (skewY === undefined) {
+				skewY = skewX;
+			}
+			var tanX=Math.tan(skewX),
+				tanY=Math.tan(skewY);
+			var a=this.a,b=this.b,c=this.c,d=this.d;
+			this.a=a+c*tanY;
+			this.b=b+d*tanY;
+			this.c=c+a*tanX;
+			this.d=d+b*tanX;
+			return this;
+		},
+
         pointApply:function(x,y){
             return {x:this.a * x + this.c * y + this.tx,y:this.b * x + this.d * y + this.ty};
         },

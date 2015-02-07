@@ -190,6 +190,7 @@
             );
         }
     };
+
     TransformMatrix.getIdentity= function () {
         return new TransformMatrix(1, 0, 0, 1, 0, 0);
     };
@@ -204,9 +205,134 @@
 		}
         return new TransformMatrix(1, 0, 0, 1, 0, 0);
     };
+
     TransformMatrix.equal= function (matrixa,matrixb) {
         return matrixa.a==matrixb.a && matrixa.b==matrixb.b && matrixa.c==matrixb.c
             && matrixa.d==matrixb.d && matrixa.tx==matrixb.tx && matrixa.ty==matrixb.ty;
     };
+
+	/**
+	 * 把矩阵拆成translate,scale,rotaion,skew
+	 * 公式
+		Sx*cos(a)    - Sy*Ty*sin(a) = a;
+		Sx*sin(a)	 + Sy*Ty*cos(a) = b;
+		Sx*Ty*cos(a) - Sy*sin(a)    = c;
+		Sx*Ty*sin(a) + Sy*cos(a)	= d;
+	   这里假设 skew的y轴为零，既Ty=0;
+	 */
+	TransformMatrix.decomposing= function (matrix) {
+        var a=matrix.a,b=matrix.b,c=matrix.c,d=matrix.d;
+
+		//直接取得偏移
+		var translate={};
+		translate.x = matrix.tx;
+		translate.y = matrix.ty;
+	
+
+		var scale={};
+		//得到x缩放
+		scale.x = Math.sqrt(a * a + b * b);
+
+		if(scale.x==0) return false;
+
+		//得到旋转
+		var angle = Math.atan2(b, a); 
+
+		var cos=a/scale.x;
+		var sin=b/scale.x;
+
+		//得到y缩放
+		scale.y=d*cos-c*sin;
+
+		var skew={};
+		//得到x倾斜
+		skew.x=Math.atan((d*sin+c*cos)/scale.x);
+		skew.y=0;
+
+		//转换成弧度
+//		angle = rad2deg(angle);
+//		skew.x= rad2deg(skew.x);
+
+		return {
+			translate:translate,
+			scale:scale,
+			angle:angle,
+			skew:skew
+		};
+    };
+
     yhge.math.TransformMatrix=TransformMatrix;
+
+	//w3c的一个分析算法http://www.w3.org/TR/css3-transforms/
+	function decomposing(matrix){
+		var row0x = matrix.a;
+		var row0y = matrix.b;
+		var row1x = matrix.c;
+		var row1y = matrix.d;
+
+		var translate={};
+
+		translate.x = matrix.tx;
+		translate.y = matrix.ty;
+
+		var scale={};
+		scale.x = Math.sqrt(row0x * row0x + row0y * row0y);
+		scale.y = Math.sqrt(row1x * row1x + row1y * row1y);
+
+
+
+		// If determinant is negative, one axis was flipped.
+		var determinant = row0x * row1y - row0y * row1x;
+		if (determinant < 0){
+			// Flip axis with minimum unit vector dot product.
+			if (row0x < row1y)
+				scale.x = -scale.x;
+			else
+				scale.y = -scale.y;
+		}
+		// Renormalize matrix to remove scale. 
+		if (scale.x){
+			row0x *= 1 / scale.x;
+			row0y *= 1 / scale.x;
+		}
+		if (scale.y){
+			row1x *= 1 / scale.y;
+			row1y *= 1 / scale.y;
+		}
+		// Compute rotation and renormalize matrix. 
+		var angle = Math.atan2(row0y, row0x); 
+
+		var m11 = row0x;
+		var m12 = row0y;
+		var m21 = row1x;
+		var m22 = row1y;
+
+		if (angle){
+			// Rotate(-angle) = [cos(angle), sin(angle), -sin(angle), cos(angle)]
+			//                = [row0x, -row0y, row0y, row0x]
+			// Thanks to the normalization above.
+			var sn = -row0y;
+			var cs = row0x;
+			
+			row0x = cs * m11 + sn * m21;
+			row0y = cs * m12 + sn * m22;
+			row1x = -sn * m11 + cs * m21;
+			row1y = -sn * m12 + cs * m22;
+
+			m11 = row0x;
+			m12 = row0y;
+			m21 = row1x;
+			m22 = row1y;
+		}
+
+		// Convert into degrees because our rotation functions expect it.
+	//	angle = rad2deg(angle);
+
+		return {
+			translate:translate,
+			scale:scale,
+			angle:angle,
+			matrix:new TransformMatrix(m11,m12,m21,m22,0,0)
+		};
+	}
 })();

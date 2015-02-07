@@ -107,6 +107,22 @@
 			this.d=d+b*tanX;
 			return this;
 		},
+		
+		setSkewX: function (skew) {
+			var tan=Math.tan(skew);
+			var a=this.a,b=this.b,c=this.c,d=this.d;
+			this.c=c+a*tan;
+			this.d=d+b*tan;
+			return this;
+		},
+		
+		setSkewY: function (skew) {
+			var tan=Math.tan(skew);
+			var a=this.a,b=this.b,c=this.c,d=this.d;
+			this.a=a+c*tan;
+			this.b=b+d*tan;
+			return this;
+		},
 
         pointApply:function(x,y){
             return {x:this.a * x + this.c * y + this.tx,y:this.b * x + this.d * y + this.ty};

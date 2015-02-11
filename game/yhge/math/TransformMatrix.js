@@ -212,13 +212,14 @@
     };
 
 	/**
-	 * 把矩阵拆成translate,scale,rotaion,skew
+	 * 把矩阵拆成translate,rotaion,skew,scale
+	 *	TxRxSK*S
 	 * 公式
-		Sx*cos(a)    - Sy*Ty*sin(a) = a;
-		Sx*sin(a)	 + Sy*Ty*cos(a) = b;
-		Sx*Ty*cos(a) - Sy*sin(a)    = c;
-		Sx*Ty*sin(a) + Sy*cos(a)	= d;
-	   这里假设 skew的y轴为零，既Ty=0;
+		Sx*( cos(a)-tan(y)*sin(a) )	= a;
+		Sx*( sin(a)+tan(y)*cos(a) ) = b;
+		Sy*( tan(x)*cos(a)-sin(a) ) = c;
+		Sy*( tan(x)*sin(a)+cos(a) ) = d;
+	   这里假设 skew的y轴为零，既tan(y)=0;
 	 */
 	TransformMatrix.decomposing= function (matrix) {
         var a=matrix.a,b=matrix.b,c=matrix.c,d=matrix.d;
@@ -227,7 +228,7 @@
 		var translate={};
 		translate.x = matrix.tx;
 		translate.y = matrix.ty;
-	
+
 
 		var scale={};
 		//得到x缩放
@@ -246,12 +247,12 @@
 
 		var skew={};
 		//得到x倾斜
-		skew.x=Math.atan((d*sin+c*cos)/scale.x);
+		skew.x=Math.atan((d*sin+c*cos)/scale.y);
 		skew.y=0;
 
 		//转换成弧度
-//		angle = rad2deg(angle);
-//		skew.x= rad2deg(skew.x);
+	//		angle = rad2deg(angle);
+	//		skew.x= rad2deg(skew.x);
 
 		return {
 			translate:translate,

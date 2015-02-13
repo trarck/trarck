@@ -1,7 +1,5 @@
-var MatrixTransformer={};
-
-(function  () {
-
+var yh;
+(function(yh){
 	function getScaleX(matrix)	{
 		return Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b);
 	}
@@ -97,6 +95,10 @@ var MatrixTransformer={};
 		setRotationRadians(matrix, rotation * (Math.PI / 180));
 	}
 
+	var geom=yh.geom||(yh.geom={});
+
+	var MatrixTransformer=geom.MatrixTransformer={};
+
 	MatrixTransformer.getScaleX=getScaleX;
 	MatrixTransformer.setScaleX=setScaleX;
 	MatrixTransformer.getScaleY=getScaleY;
@@ -114,4 +116,4 @@ var MatrixTransformer={};
 	MatrixTransformer.getRotation=getRotation;
 	MatrixTransformer.setRotation=setRotation;
 
-})();
+})(yh || (yh={}));

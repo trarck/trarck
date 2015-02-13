@@ -1,16 +1,18 @@
 ﻿var doc=fl.getDocumentDOM();
 var lib=doc.library;
 
-doc.importFile("file:///D|/temp/CW/Image/Head.png",true);
+//doc.importFile("file:///D|/temp/CW/Image/Head.png",true);
 
-showLib();
-lib.selectItem("Head.png");
-lib.moveToFolder("images");
-showLib();
+//showLib();
+//lib.selectItem("Head.png");
+//lib.moveToFolder("images");
+//showLib();
+//
+//lib.selectItem("LArm.png");
+//lib.addItemToDocument({x:0, y:0});
+//doc.convertToSymbol('movie clip', "test2", "center");
 
-lib.selectItem("Head.png");
-lib.addItemToDocument({x:0, y:0});
-doc.convertToSymbol('movie clip', "test", "center");
+lib.addNewItem('movie clip',"abc/ttt");
 
 function showLib(){
     var items=lib.items;

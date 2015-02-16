@@ -4,9 +4,7 @@ function MovieClip(doc,timeline){
     this.timeline=timeline;
 }
 
-MovieClip.prototype.createAnimationContent=function(animationTimeline,data){
-    this.timeline=animationTimeline;
-    //
+MovieClip.prototype.createContent=function(data){
     var layers=data.layers;
     for(var i in layers){
         //first is exists,not need create
@@ -14,16 +12,14 @@ MovieClip.prototype.createAnimationContent=function(animationTimeline,data){
             //create layer on top
             this.timeline.addNewLayer();
         }
-
-        this.createAnimationLayer(layers[i]);
+        //新创建的layer在最上面
+        this.createLayer(0,layers[i]);
     }
 };
 
 //one layer only on element
-MovieClip.prototype.createAnimationLayer=function(data){
+MovieClip.prototype.createLayer=function(layerIndex,data){
     var timeline=this.timeline;
-    //top layer
-    var layerIndex=0;
 
     var layerObj=timeline.layers[layerIndex];
 
@@ -35,10 +31,28 @@ MovieClip.prototype.createAnimationLayer=function(data){
     this.placeElement(layerIndex,0,elementName);
 
     var frames = data.frames;
+
+    //先创建关键帧
     for(var i in frames){
         var frame=frames[i];
+        var startFrame=frame.startFrame;
+        if(!this.isKeyFrame(layerObj,startFrame)){
+            this.timeline.convertToBlankKeyframes(frame);
+        }
+        //设置属性
+        this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
+    }
 
+    //创建补间
+    for(var i in frames){
+        var frame=frames[i];
+        var startFrame=frame.startFrame;
 
+        if(frame.tweenType=="motion"){
+            //create a motion
+            var duration=frame.duration;
+            timeline.createMotionTween(startFrame,startFrame+duration);
+        }
     }
 };
 
@@ -65,7 +79,7 @@ MovieClip.prototype.placeElement=function(layer,frame,elementName){
     ////后面放置的会在上面，depth值就越小。也就是elements的第一个元素。
     //var addedElement=this.timeline.layers[layer].frames[frame].elements[0];
     //this.setElementProperty(addedElement,property);
-    return this.timeline.layers[layer].frames[frame].elements[0];
+    //return this.timeline.layers[layer].frames[frame].elements[0];
 };
 
 MovieClip.prototype.setElementProperty=function(element,property){

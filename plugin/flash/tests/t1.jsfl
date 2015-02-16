@@ -12,7 +12,9 @@ var lib=doc.library;
 //lib.addItemToDocument({x:0, y:0});
 //doc.convertToSymbol('movie clip', "test2", "center");
 
-lib.addNewItem('movie clip',"abc/ttt");
+//lib.addNewItem('movie clip',"abc/ttt");
+
+fl.getDocumentDOM().library.addNewItem("folder","ttest/ttdd");
 
 function showLib(){
     var items=lib.items;

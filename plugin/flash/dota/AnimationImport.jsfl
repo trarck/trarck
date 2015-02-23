@@ -7,36 +7,31 @@ function AnimationImport(doc){
     this.animationGroupName="animations"
 }
 
-AnimationImport.prototype.start=function(configFile){
+AnimationImport.prototype.start=function(configFile,imageFolder){
     var data=this.getConfigData(configFile);
 
-    this.importElementToLibs(this.textureGroupName,data.elements);
+    //this.importImagesToLibsFromFolder(this.textureGroupName,imageFolder);
+    this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
 
-    this.convertToSymbols(this.symbolGroupName,data.elements)
-
+//    this.createAnimation(this.animationGroupName,data.actions[0]);
 };
 
-AnimationImport.prototype.getConfigData=function(configFilePath) {
-    var configFile = new File(configFilePath);//File.openDialog("choose dialog");
-    configFile.encoding="BINARY";
-    if(configFile.open()){
-        var data=configFile.read();
+AnimationImport.prototype.getConfigData=function(configFile) {
+    if(FLfile.exists(configFile)){
+        var data=FLfile.read(configFile);
         var jsonObj=JSON.parse(data);
-
-        configFile.close();
 
         return jsonObj;
     }
-
     return null;
 };
 
 /**
- * 导入图片到库
- * @param group
- * @param elements
- * @param parentPath
- */
+*
+* @param group
+* @param elements
+* @param parentPath
+*/
 AnimationImport.prototype.importImagesToLibs=function(group,imagePath,elements){
     if(!this.lib.itemExists(group)){
         //create new one
@@ -62,38 +57,40 @@ AnimationImport.prototype.importImagesToLibs=function(group,imagePath,elements){
 };
 
 AnimationImport.prototype.importImagesToLibsFromFolder=function(group,folder){
-    if(!this.lib.itemExists(group)){
+    if(!this.lib.itemExists(group)) {
         //create new one
-        this.lib.addNewItem("folder",group);
+        this.lib.addNewItem("folder", group);
     }
 
-    folder=typeof(folder)=="string"?new Folder(folder):folder;
-    var files=folder.getFiles();
+    folder=yh.Path.checkDirPath(folder);
+
+    var files=FLfile.listFolder(folder,"files");
 
     for(var i in files){
         var file=files[i];
+        var path= folder+file;
 
-        if(file instanceof File){
+        var name=yh.Path.basename(path);
 
-            var path= file.fullName;
+        this.doc.importFile(path,true);
+        this.lib.selectItem(name);
+        this.lib.moveToFolder(group);
 
-            var name=yh.Path.basename(path);
+    }
 
-            this.doc.importFile(path,true);
-            this.lib.selectItem(name);
-            this.lib.moveToFolder(group);
-        }else if(file instanceof Folder){
-            this.importImagesToLibsFromFolder(group+"/"+file.name);
-        }
+    var dirs=FLfile.listFolder(folder,"directories");
+    for(var i in dirs){
+        var file=dirs[i];
+        this.importImagesToLibsFromFolder(group+"/"+file,folder+file);
     }
 };
 
 /**
- * 导入的图片转成元件
- * @param group
- * @param elements
- * @param elementGroup
- */
+*
+* @param group
+* @param elements
+* @param elementGroup
+*/
 AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup){
     if(!this.lib.itemExists(group)){
         //create new one
@@ -101,12 +98,12 @@ AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup)
     }
 
     textureGroup=textureGroup||"";
-    textureGroup=yh.Path.textureGroup(elementGroup);
+    textureGroup=yh.Path.checkDirPath(textureGroup);
 
     for(var i in elements){
         var element=elements[i];
 
-        var textureName= element.path?yh.Path.basename(element.path):element.texture;
+        var textureName= element.path?yh.Path.basename(element.path):(element.texture.indexOf(".png")!=-1?element.texture:(element.texture+".png"));
         var texturePath=textureGroup+textureName;
 
         var symbolName= element.name || yh.Path.basename(element.texture,this.getExtName(element.texture));
@@ -115,23 +112,38 @@ AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup)
         this.lib.addItemToDocument({x:0, y:0});
         this.doc.convertToSymbol('movie clip', symbolName, "center");
         this.lib.moveToFolder(group);
+        this.doc.deleteSelection();
     }
 };
 
-AnimationImport.prototype.createAnimation=function(group,name,data){
-    var timeline=this.createAnimationInLib(group,name);
+AnimationImport.prototype.createAnimations=function(actions){
+    for(var i in actions){
+        this.createAnimation(this.animationGroupName,actions[i]);
+    }
+};
+
+AnimationImport.prototype.createAnimation=function(group,action){
+    var timeline=this.createAnimationInLib(group,action.name);
+
+    //add group name to layer element
+    var layers=action.layers;
+    for(var i in layers){
+        layers[i].element=this.symbolGroupName+"/"+layers[i].element;
+    }
     //create animation content
     var movieClip=new MovieClip(this.doc,timeline);
-    movieClip.createContent(data);
+    movieClip.createContent(layers);
 };
 
 AnimationImport.prototype.createAnimationInLib=function(group,name){
     var lib=this.lib;
 
     var namePath=yh.Path.checkDirPath(group)+name;
-    lib.deleteItem(namePath);
-    lib.addNewItem('movie clip',namePath);
-    lib.editItem(namePath);
+    if(lib.itemExists(namePath)){
+        lib.deleteItem(namePath);
+    }
+    //lib.addNewItem('movie clip',namePath);
+    //lib.editItem(namePath);
 
     return this.doc.getTimeline();
 };

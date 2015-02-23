@@ -1,108 +1,143 @@
-function MovieClip(doc,timeline){
-    this.doc=doc;
-    this.lib=doc.library;
-    this.timeline=timeline;
-}
+﻿
 
-MovieClip.prototype.createContent=function(data){
-    var layers=data.layers;
-    for(var i in layers){
-        //first is exists,not need create
-        if(i!=0){
-            //create layer on top
-            this.timeline.addNewLayer();
+var MovieClip;
+
+(function () {
+    MovieClip=function (doc,timeline){
+        this.doc=doc;
+        this.lib=doc.library;
+        this.timeline=timeline;
+    };
+
+
+    MovieClip.prototype.createContent=function(layers){
+        for(var i in layers){
+            //first is exists,not need create
+            if(i!=0){
+                //create layer on top
+                this.timeline.addNewLayer();
+            }
+            //the new is on the top
+            this.createLayer(0,layers[i]);
         }
-        //新创建的layer在最上面
-        this.createLayer(0,layers[i]);
-    }
-};
+    };
 
 //one layer only on element
-MovieClip.prototype.createLayer=function(layerIndex,data){
-    var timeline=this.timeline;
+    MovieClip.prototype.createLayer=function(layerIndex,data){
+        var timeline=this.timeline;
 
-    var layerObj=timeline.layers[layerIndex];
+        var layerObj=timeline.layers[layerIndex];
 
-    var elementName=data.element;
+        var elementName=data.element;
 
-    layerObj.name=data.layerName|| elementName;
+        layerObj.name=data.name|| yh.Path.basename(elementName);
 
-    //place element in first frame
-    this.placeElement(layerIndex,0,elementName);
+        var frames = data.frames;
+        //place element in first frame
+        var firstFrame=frames[0];
 
-    var frames = data.frames;
+        this.placeElement(layerIndex,firstFrame.startFrame,elementName);
 
-    //先创建关键帧
-    for(var i in frames){
-        var frame=frames[i];
-        var startFrame=frame.startFrame;
-        if(!this.isKeyFrame(layerObj,startFrame)){
+        fl.trace("startFrame:"+firstFrame.startFrame+","+layerObj.frames[firstFrame.startFrame].elements[0]);
+        this.setElementProperty(layerObj.frames[firstFrame.startFrame].elements[0],firstFrame);
+
+        //other key frame
+        for(var i=1;i<frames.length;++i){
+            var frame=frames[i];
+            var startFrame=frame.startFrame;
+            fl.trace(layerObj.name+" is key frame["+startFrame+"] "+ (this.isKeyFrame(layerObj,startFrame)?"true":"false"));
+            if(!this.isKeyFrame(layerObj,startFrame)){
+                //由于一个层的元素是一样的，这里直接使用前一个关键帧的数据。
+                this.timeline.convertToKeyframes(startFrame);
+            }
+            //set property
+            this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
+        }
+
+        //create tween
+        for(var i in frames){
+            var frame=frames[i];
+            var startFrame=frame.startFrame;
+
+            if(frame.tweenType=="motion"){
+                //create a motion
+                var duration=frame.duration;
+                timeline.createMotionTween(startFrame,startFrame+duration);
+            }
+        }
+    };
+
+    MovieClip.prototype.placeElement=function(layer,frame,elementName){
+        if(!this.lib.selectItem(elementName)){
+            fl.trace("can't select element "+elementName);
+            return;
+        }
+
+        this.timeline.currentLayer=layer;
+        this.timeline.currentFrame=frame;
+
+        //check is key frame
+        var layerObj=this.timeline.layers[layer];
+
+        if(this.isKeyFrame(layerObj,frame)){
+            //clear frame data
+            this.timeline.clearKeyframes(frame);
+        }else{
+            //convert to key frame
             this.timeline.convertToBlankKeyframes(frame);
         }
-        //设置属性
-        this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
-    }
 
-    //创建补间
-    for(var i in frames){
-        var frame=frames[i];
-        var startFrame=frame.startFrame;
+        this.lib.addItemToDocument({x:0,y:0});
+    };
 
-        if(frame.tweenType=="motion"){
-            //create a motion
-            var duration=frame.duration;
-            timeline.createMotionTween(startFrame,startFrame+duration);
+    MovieClip.prototype.cloneObject=function(obj){
+        var ret={};
+        for(var k in obj){
+            ret[k]=obj[k];
         }
-    }
-};
+        return ret;
+    },
 
-MovieClip.prototype.placeElement=function(layer,frame,elementName){
-    if(!this.lib.selectItem(elementName)){
-        return;
-    }
+    MovieClip.prototype.setElementProperty=function(element,property){
+        var doc=this.doc;
 
-    this.timeline.currentLayer=layer;
-    this.timeline.currentFrame=frame;
+        var haveSelected=false;
 
-    //check is key frame
-    var layerObj=this.timeline.layers[layer];
+        fl.trace("element:"+element);
 
-    if(this.isKeyFrame(layerObj,frame)){
-        //clear frame data
-        this.timeline.clearFrames(frame);
-    }else{
-        //convert to key frame
-        this.timeline.convertToBlankKeyframes(frame);
-    }
+        if(property.matrix){
+            var fcaScale=0.111;
+            var matrix=property.matrix;
+            var width=element.width;
+            var height=element.height;
 
-    this.lib.addItemToDocument({x:0,y:0});
-    ////后面放置的会在上面，depth值就越小。也就是elements的第一个元素。
-    //var addedElement=this.timeline.layers[layer].frames[frame].elements[0];
-    //this.setElementProperty(addedElement,property);
-    //return this.timeline.layers[layer].frames[frame].elements[0];
-};
+//            var tx=-0.5*matrix.c*height - 0.5*matrix.a*width + matrix.tx*fcaScale;
+//            var ty=-0.5*matrix.d*height - 0.5*matrix.b*width + matrix.ty*fcaScale;
 
-MovieClip.prototype.setElementProperty=function(element,property){
+            matrix=this.cloneObject(matrix);
+//            matrix.tx=tx;
+//            matrix.ty=ty;
 
-    var haveSelected=false;
+            matrix.tx*=fcaScale;
+            matrix.ty*=fcaScale;
 
-    if(property.matrix){
-        element.matrix=property.matrix;
+            element.matrix=matrix;
 
-        doc.selection = [element];
-        doc.setTransformationPoint({x:0, y:0});
-        haveSelected=true;
-    }
-
-    if(typeof(property.alpha)!="undefined"){
-        if(!haveSelected){
-            doc.selection=[element];
+            doc.selection = [element];
+            doc.setTransformationPoint({x:0, y:0});
             haveSelected=true;
         }
-        doc.setInstanceAlpha(property.alpha);
-    }
-};
 
-MovieClip.prototype.isKeyFrame=function(layerObject,frameIndex){
-   return layerObject.frameCount>frameIndex && layerObject.frames[frameIndex].startFrame==frameIndex;
-};
+        if(typeof(property.alpha)!="undefined"){
+            if(!haveSelected){
+                doc.selection=[element];
+                haveSelected=true;
+            }
+            doc.setInstanceAlpha(property.alpha);
+        }
+    };
+
+    MovieClip.prototype.isKeyFrame=function(layerObject,frameIndex){
+        return layerObject.frameCount>frameIndex && layerObject.frames[frameIndex].startFrame==frameIndex;
+    };
+})();

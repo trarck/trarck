@@ -48,7 +48,6 @@ ConvertFca.prototype={
                         layer.frames.push(layerFrame);
                     }
                 }else{
-                    console.log("can't find element "+baseLayers[i],action.name,k);
                     //the frame is not visible
                     if(layerFrame){
                         layerFrame=null;

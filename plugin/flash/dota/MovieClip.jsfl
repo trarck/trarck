@@ -32,8 +32,6 @@ var MovieClip;
 
         layerObj.name=data.name|| yh.Path.basename(elementName);
 
-//        if(layerObj.name!="weaponx2") return ;
-
         var frames = data.frames;
 
         //place element in first frame

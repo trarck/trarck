@@ -11,9 +11,10 @@ AnimationImport.prototype.start=function(configFile,imageFolder){
     var data=this.getConfigData(configFile);
 
     //this.importImagesToLibsFromFolder(this.textureGroupName,imageFolder);
-    this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
+//    this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
 
-//    this.createAnimation(this.animationGroupName,data.actions[0]);
+    this.createAnimation(this.animationGroupName,data.actions[8]);
+//    this.createAnimations(data.actions);
 };
 
 AnimationImport.prototype.getConfigData=function(configFile) {
@@ -139,11 +140,11 @@ AnimationImport.prototype.createAnimationInLib=function(group,name){
     var lib=this.lib;
 
     var namePath=yh.Path.checkDirPath(group)+name;
-    if(lib.itemExists(namePath)){
-        lib.deleteItem(namePath);
-    }
-    //lib.addNewItem('movie clip',namePath);
-    //lib.editItem(namePath);
+//    if(lib.itemExists(namePath)){
+//        lib.deleteItem(namePath);
+//    }
+//    lib.addNewItem('movie clip',namePath);
+//    lib.editItem(namePath);
 
     return this.doc.getTimeline();
 };

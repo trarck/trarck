@@ -37,11 +37,11 @@ ConvertFca.prototype={
                 if(ele){
                     //check the property.now is alpha and matrix;
                     if(layerFrame && this.isFramePropertySame(layerFrame,ele)){
-                        ++layerFrame.same;
+                        ++layerFrame.continueCount;
                     }else{
                         layerFrame={
                             startFrame:k,
-                            same:1,
+                            continueCount:1,
                             alpha:ele.alpha,
                             matrix:ele.matrix
                         };
@@ -60,6 +60,7 @@ ConvertFca.prototype={
 
         return {
             name:action.name,
+            frameCount:action.frames.length,
             layers:layers
         };
     },

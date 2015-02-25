@@ -22,7 +22,7 @@ var MovieClip;
         }
     };
 
-//one layer only on element
+    //one layer only on element
     MovieClip.prototype.createLayer=function(layerIndex,data){
         var timeline=this.timeline;
 
@@ -32,26 +32,48 @@ var MovieClip;
 
         layerObj.name=data.name|| yh.Path.basename(elementName);
 
+//        if(layerObj.name!="weaponx2") return ;
+
         var frames = data.frames;
+
         //place element in first frame
         var firstFrame=frames[0];
 
         this.placeElement(layerIndex,firstFrame.startFrame,elementName);
 
-        fl.trace("startFrame:"+firstFrame.startFrame+","+layerObj.frames[firstFrame.startFrame].elements[0]);
-        this.setElementProperty(layerObj.frames[firstFrame.startFrame].elements[0],firstFrame);
+//        fl.trace("startFrame:"+firstFrame.startFrame+","+layerObj.frames[firstFrame.startFrame].elements[0]);
+        this.setElementProperty(layerObj.frames[firstFrame.startFrame].elements[0],firstFrame,layerObj.name);
 
         //other key frame
         for(var i=1;i<frames.length;++i){
             var frame=frames[i];
             var startFrame=frame.startFrame;
-            fl.trace(layerObj.name+" is key frame["+startFrame+"] "+ (this.isKeyFrame(layerObj,startFrame)?"true":"false"));
+//            fl.trace(layerObj.name+" is key frame["+startFrame+"] "+ (this.isKeyFrame(layerObj,startFrame)?"true":"false"));
             if(!this.isKeyFrame(layerObj,startFrame)){
                 //由于一个层的元素是一样的，这里直接使用前一个关键帧的数据。
                 this.timeline.convertToKeyframes(startFrame);
             }
+//            this.timeline.currentFrame=startFrame;
+
             //set property
-            this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
+            this.setElementProperty(layerObj.frames[startFrame].elements[0],frame,layerObj.name);
+
+            //检查是否是空帧，如果是空帧，则删除
+            if(i<frames.length-1){
+                var nextFrame=frames[i+1];
+                if(nextFrame.startFrame>startFrame+frame.continueCount){
+//                    fl.trace("remove ["+layerObj.name+"] from:"+(startFrame+frame.continueCount)+"-"+nextFrame.startFrame);
+                    timeline.clearFrames(startFrame+frame.continueCount,nextFrame.startFrame);
+                }
+            }
+        }
+
+        //remove the last not visible frame
+        var lastFrame=frames[frames.length-1];
+        var removeFrom=lastFrame.startFrame+lastFrame.continueCount;
+//        fl.trace("remove ["+layerObj.name+"] from:"+removeFrom+","+lastFrame.startFrame+","+lastFrame.continueCount+",fc:"+layerObj.frameCount);
+        if(removeFrom<layerObj.frameCount){
+            timeline.removeFrames(removeFrom,layerObj.frameCount);
         }
 
         //create tween
@@ -65,6 +87,8 @@ var MovieClip;
                 timeline.createMotionTween(startFrame,startFrame+duration);
             }
         }
+
+
     };
 
     MovieClip.prototype.placeElement=function(layer,frame,elementName){
@@ -98,12 +122,12 @@ var MovieClip;
         return ret;
     },
 
-    MovieClip.prototype.setElementProperty=function(element,property){
+    MovieClip.prototype.setElementProperty=function(element,property,name){
         var doc=this.doc;
 
         var haveSelected=false;
 
-        fl.trace("element:"+element);
+//        fl.trace("element:"+element);
 
         if(property.matrix){
             var fcaScale=0.111;
@@ -128,13 +152,19 @@ var MovieClip;
             haveSelected=true;
         }
 
-        if(typeof(property.alpha)!="undefined"){
+        if(typeof(property.alpha)!="undefined" ){
             if(!haveSelected){
                 doc.selection=[element];
                 haveSelected=true;
             }
-            doc.setInstanceAlpha(property.alpha);
+
+            if(property.alpha!=255){
+                fl.trace("alpha ["+name+"],"+property.startFrame+","+property.alpha+","+(Math.round(property.alpha*100/255)));
+                doc.setInstanceAlpha(Math.round(property.alpha*100/255));
+            }
         }
+
+        doc.selectNone();
     };
 
     MovieClip.prototype.isKeyFrame=function(layerObject,frameIndex){

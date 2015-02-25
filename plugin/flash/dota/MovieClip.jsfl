@@ -40,7 +40,7 @@ var MovieClip;
         this.placeElement(layerIndex,firstFrame.startFrame,elementName);
 
 //        fl.trace("startFrame:"+firstFrame.startFrame+","+layerObj.frames[firstFrame.startFrame].elements[0]);
-        this.setElementProperty(layerObj.frames[firstFrame.startFrame].elements[0],firstFrame,layerObj.name);
+        this.setElementProperty(layerObj.frames[firstFrame.startFrame].elements[0],firstFrame);
 
         //other key frame
         for(var i=1;i<frames.length;++i){
@@ -54,7 +54,7 @@ var MovieClip;
 //            this.timeline.currentFrame=startFrame;
 
             //set property
-            this.setElementProperty(layerObj.frames[startFrame].elements[0],frame,layerObj.name);
+            this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
 
             //检查是否是空帧，如果是空帧，则删除
             if(i<frames.length-1){
@@ -85,8 +85,6 @@ var MovieClip;
                 timeline.createMotionTween(startFrame,startFrame+duration);
             }
         }
-
-
     };
 
     MovieClip.prototype.placeElement=function(layer,frame,elementName){
@@ -120,7 +118,7 @@ var MovieClip;
         return ret;
     },
 
-    MovieClip.prototype.setElementProperty=function(element,property,name){
+    MovieClip.prototype.setElementProperty=function(element,property){
         var doc=this.doc;
 
         var haveSelected=false;
@@ -157,13 +155,33 @@ var MovieClip;
             }
 
             if(property.alpha!=255){
-                fl.trace("alpha ["+name+"],"+property.startFrame+","+property.alpha+","+(Math.round(property.alpha*100/255)));
                 doc.setInstanceAlpha(Math.round(property.alpha*100/255));
             }
         }
 
         doc.selectNone();
     };
+
+    MovieClip.prototype.getFrameData=function(){
+        //按帧的方式把层中的元素导出
+        var timeline=this.timeline;
+        var frames=[];
+        var elements;
+        var layerObj;
+        var frame;
+        for(var i=0;i<timeline.frameCount;++i){
+            elements=[];
+            for(var j=0;j<timeline.layerCount;++j){
+                layerObj=timeline.layers[j];
+                frame=layerObj.frames[i];
+                if(frame && frame.elements.length){
+                    elements.push()
+                }
+            }
+        }
+    };
+
+
 
     MovieClip.prototype.isKeyFrame=function(layerObject,frameIndex){
         return layerObject.frameCount>frameIndex && layerObject.frames[frameIndex].startFrame==frameIndex;

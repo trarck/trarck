@@ -8,6 +8,10 @@ function AnimationExport(doc){
 }
 
 AnimationExport.prototype.start=function(outFile,outImageFolder,name){
+    var docName=yh.Path.basename(this.doc.name,yh.Path.extname(this.doc.name));
+
+    //some error
+    //this.exportImagesAsSpriteSheet(this.textureGroupName,outImageFolder+"/tts/a");
 
     this.exportImagesToFolder(this.textureGroupName,outImageFolder);
 
@@ -16,7 +20,7 @@ AnimationExport.prototype.start=function(outFile,outImageFolder,name){
     var actions=this.generateAnimations(this.animationGroupName);
 
     this.writeExportData(outFile,{
-        name:name||this.doc.name,
+        name:name|| docName,
         elements:characters,
         actions:actions
     });
@@ -46,6 +50,28 @@ AnimationExport.prototype.exportImagesAsSpriteSheet=function(group,spriteSheetFi
         //create new one
         return;
     }
+
+    var exporter=fl.spriteSheetExporter;
+
+    //exporter.algorithm="maxRects";
+    //exporter.allowRotate=true;
+    //exporter.allowTrimming=true;
+    //exporter.autoSize=true;
+    //exporter.borderPadding=1;
+    exporter.layoutFormat="cocos2dv3";
+
+    var items=this.getItemsOfGroup(group);
+    for(var i in items){
+        exporter.addBitmap(items[i]);
+    }
+
+    var data=exporter.exportSpriteSheet(spriteSheetFile,{
+        format:"png",
+        bitDepth:32,
+        backgroundColor:"#00000000"
+    },true);
+
+    fl.trace("back:"+data);
 };
 
 AnimationExport.prototype.exportImagesToFolder=function(group,folder){

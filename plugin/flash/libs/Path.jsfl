@@ -39,7 +39,7 @@ var yh;
 
         },
 
-        checkDirPath:function(dirPath){
+        adjustDirPath:function(dirPath){
             if(!dirPath) return "";
 
             var lastChar=dirPath.charAt(dirPath.length-1);

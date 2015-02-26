@@ -1,17 +1,34 @@
-function AnimationImport(doc){
+function AnimationImport(doc,fcaScale,registrationPoint){
     this.doc=doc;
     this.lib=doc.library;
 
-    this.textureGroupName="images"
-    this.symbolGroupName="bones"
-    this.animationGroupName="animations"
+    this.textureGroupName="images";
+    this.symbolGroupName="bones";
+    this.animationGroupName="animations";
+    this.fcaScale=fcaScale;
+    //"top left"  "top center" "top right" "center left" "center" "center right" "bottom left" "bottom center" "bottom right"
+    this.registrationPoint=registrationPoint||"center";
 }
 
-AnimationImport.prototype.start=function(configFile,imageFolder){
-    var data=this.getConfigData(configFile);
+AnimationImport.prototype.setRegistrationPoint=function(registrationPoint){
+    this.registrationPoint=registrationPoint;
+    return this;
+};
 
-    //this.importImagesToLibsFromFolder(this.textureGroupName,imageFolder);
-//    this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
+AnimationImport.prototype.getRegistrationPoint=function(){
+    return this.registrationPoint;
+};
+
+AnimationImport.prototype.start=function(configFile,imageFolder,configIsConvert){
+    var data=this.getConfigData(configFile);
+    if(!configIsConvert){
+        var convertFca=new ConvertFca(data);
+        var actions=convertFca.convertActions();
+        data.actions=actions;
+    }
+
+    this.importImagesToLibsFromFolder(this.textureGroupName,imageFolder);
+    this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
 
 //    this.createAnimation(this.animationGroupName,data.actions[8]);
     this.createAnimations(data.actions);
@@ -39,7 +56,7 @@ AnimationImport.prototype.importImagesToLibs=function(group,imagePath,elements){
         this.lib.addNewItem("folder",group);
     }
 
-    imagePath=yh.Path.checkDirPath(imagePath||"");
+    imagePath=yh.Path.adjustDirPath(imagePath||"");
 
     for(var i in elements){
         var element=elements[i];
@@ -63,20 +80,22 @@ AnimationImport.prototype.importImagesToLibsFromFolder=function(group,folder){
         this.lib.addNewItem("folder", group);
     }
 
-    folder=yh.Path.checkDirPath(folder);
+    folder=yh.Path.adjustDirPath(folder);
 
     var files=FLfile.listFolder(folder,"files");
 
     for(var i in files){
         var file=files[i];
-        var path= folder+file;
 
-        var name=yh.Path.basename(path);
+        if(this.isImage(file)){
+            var path= folder+file;
 
-        this.doc.importFile(path,true);
-        this.lib.selectItem(name);
-        this.lib.moveToFolder(group);
+            var name=file;//yh.Path.basename(path);
 
+            this.doc.importFile(path,true);
+            this.lib.selectItem(name);
+            this.lib.moveToFolder(group);
+        }
     }
 
     var dirs=FLfile.listFolder(folder,"directories");
@@ -84,6 +103,11 @@ AnimationImport.prototype.importImagesToLibsFromFolder=function(group,folder){
         var file=dirs[i];
         this.importImagesToLibsFromFolder(group+"/"+file,folder+file);
     }
+};
+
+AnimationImport.prototype.isImage=function(file){
+    var ext=yh.Path.extname(file);
+    return ext==".png" || ext==".jpg" || ext==".bmp";
 };
 
 /**
@@ -99,7 +123,7 @@ AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup)
     }
 
     textureGroup=textureGroup||"";
-    textureGroup=yh.Path.checkDirPath(textureGroup);
+    textureGroup=yh.Path.adjustDirPath(textureGroup);
 
     for(var i in elements){
         var element=elements[i];
@@ -111,7 +135,7 @@ AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup)
 
         this.lib.selectItem(texturePath);
         this.lib.addItemToDocument({x:0, y:0});
-        this.doc.convertToSymbol('movie clip', symbolName, "center");
+        this.doc.convertToSymbol('movie clip', symbolName, this.registrationPoint);
         this.lib.moveToFolder(group);
         this.doc.deleteSelection();
     }
@@ -132,14 +156,14 @@ AnimationImport.prototype.createAnimation=function(group,action){
         layers[i].element=this.symbolGroupName+"/"+layers[i].element;
     }
     //create animation content
-    var movieClip=new MovieClip(this.doc,timeline);
+    var movieClip=new MovieClip(this.doc,timeline,this.fcaScale);
     movieClip.createContent(layers);
 };
 
 AnimationImport.prototype.createAnimationInLib=function(group,name){
     var lib=this.lib;
 
-    var namePath=yh.Path.checkDirPath(group)+name;
+    var namePath=yh.Path.adjustDirPath(group)+name;
     if(lib.itemExists(namePath)){
         lib.deleteItem(namePath);
     }

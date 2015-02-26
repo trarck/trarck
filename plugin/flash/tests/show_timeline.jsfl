@@ -44,24 +44,27 @@
 
 				var transformationPoint=element.getTransformationPoint();
 				var matrix=element.matrix;
-				var elementInfo="name:"+element.name+","
-						+"deep:"+element.depth+","
-						+"elementType:"+element.elementType+","
-						+"width:"+element.width+","
-						+"height:"+element.height+","
-						+"scaleX:"+element.scaleX+","
-						+"scaleY:"+element.scaleY+","
-						+"rotation:"+element.rotation+","
-						+"skewX:"+element.skewX+","
-						+"skewY:"+element.skewY+","
-						+"x:"+element.x+","
-						+"y:"+element.y+","
-						+"transformX:"+element.transformX+","
-						+"transformY:"+element.transformY+","
-						+"transformationPoint:("+transformationPoint.x+","+transformationPoint.y+"),"
-						+"matrix:("+matrix.a+","+matrix.b+","+matrix.c+","+matrix.d+","+matrix.tx+","+matrix.ty+"),"
-					    +"\n";
-
+				//var elementInfo="name:"+element.name+","
+				//		+"deep:"+element.depth+","
+				//		+"elementType:"+element.elementType+","
+				//		+"width:"+element.width+","
+				//		+"height:"+element.height+","
+				//		+"scaleX:"+element.scaleX+","
+				//		+"scaleY:"+element.scaleY+","
+				//		+"rotation:"+element.rotation+","
+				//		+"skewX:"+element.skewX+","
+				//		+"skewY:"+element.skewY+","
+				//		+"x:"+element.x+","
+				//		+"y:"+element.y+","
+				//		+"transformX:"+element.transformX+","
+				//		+"transformY:"+element.transformY+","
+				//		+"transformationPoint:("+transformationPoint.x+","+transformationPoint.y+"),"
+				//		+"matrix:("+matrix.a+","+matrix.b+","+matrix.c+","+matrix.d+","+matrix.tx+","+matrix.ty+"),"
+				//	    +"\n";
+				var elementInfo="";
+				for(var k in element){
+					elementInfo+=k+":"+element[k]+",";
+				}
 				fl.trace(elementInfo);
 			}
 		}

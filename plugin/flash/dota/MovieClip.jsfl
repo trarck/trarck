@@ -3,12 +3,21 @@
 var MovieClip;
 
 (function () {
-    MovieClip=function (doc,timeline){
+    MovieClip=function (doc,timeline,fcaScale,alignType){
         this.doc=doc;
         this.lib=doc.library;
         this.timeline=timeline;
+        this.fcaScale=fcaScale||0.111;
     };
 
+    MovieClip.prototype.setFcaScale=function(fcaScale){
+        this.fcaScale=fcaScale;
+        return this;
+    };
+
+    MovieClip.prototype.getFcaScale=function(){
+        return this.fcaScale;
+    };
 
     MovieClip.prototype.createContent=function(layers){
         for(var i in layers){
@@ -126,7 +135,6 @@ var MovieClip;
 //        fl.trace("element:"+element);
 
         if(property.matrix){
-            var fcaScale=0.111;
             var matrix=property.matrix;
             var width=element.width;
             var height=element.height;
@@ -138,8 +146,8 @@ var MovieClip;
 //            matrix.tx=tx;
 //            matrix.ty=ty;
 
-            matrix.tx*=fcaScale;
-            matrix.ty*=fcaScale;
+            matrix.tx*=this.fcaScale;
+            matrix.ty*=this.fcaScale;
 
             element.matrix=matrix;
 
@@ -168,17 +176,51 @@ var MovieClip;
         var frames=[];
         var elements;
         var layerObj;
-        var frame;
+        var frameObj;
+        var eleData;
+
+        //convert layer tween frame to key frame
+        for(var j=0;j<timeline.layerCount;++j){
+            layerObj=timeline.layers[j];
+
+            timeline.currentLayer=j;
+            timeline.currentFrame=0;
+            timeline.convertToKeyframes(0,layerObj.frameCount);
+        }
+
         for(var i=0;i<timeline.frameCount;++i){
+            //generate base element
             elements=[];
             for(var j=0;j<timeline.layerCount;++j){
                 layerObj=timeline.layers[j];
-                frame=layerObj.frames[i];
-                if(frame && frame.elements.length){
-                    elements.push()
+
+
+                frameObj=layerObj.frames[i];
+                if(frameObj && frameObj.elements.length){
+                    eleData=this.getElementData(frameObj.elements[0]);
+                    if(eleData.name==""){
+                        eleData.name=layerObj.name;
+                    }
+                    elements.push(eleData);
                 }
             }
+
+            //TODO generate events
+            frames.push({
+                elements:elements,
+                events:[]
+            });
         }
+        return frames;
+    };
+
+    MovieClip.prototype.getElementData=function(element){
+        var name=element.libraryItem? yh.Path.basename(element.libraryItem.name):"";
+        return {
+            matrix:element.matrix,
+            alpha:element.colorAlphaPercent,
+            name:name
+        };
     };
 
 

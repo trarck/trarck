@@ -1,4 +1,4 @@
-function AnimationExport(doc){
+﻿function AnimationExport(doc){
     this.doc=doc;
     this.lib=doc.library;
 
@@ -10,8 +10,7 @@ function AnimationExport(doc){
 AnimationExport.prototype.start=function(outFile,outImageFolder,name){
     var docName=yh.Path.basename(this.doc.name,yh.Path.extname(this.doc.name));
 
-    //some error
-    //this.exportImagesAsSpriteSheet(this.textureGroupName,outImageFolder+"/tts/a");
+//    this.exportImagesAsSpriteSheet(this.textureGroupName,outImageFolder+"/tts/a");
 
     this.exportImagesToFolder(this.textureGroupName,outImageFolder);
 
@@ -51,14 +50,15 @@ AnimationExport.prototype.exportImagesAsSpriteSheet=function(group,spriteSheetFi
         return;
     }
 
-    var exporter=fl.spriteSheetExporter;
+    var exporter=new SpriteSheetExporter();
 
-    //exporter.algorithm="maxRects";
-    //exporter.allowRotate=true;
-    //exporter.allowTrimming=true;
-    //exporter.autoSize=true;
-    //exporter.borderPadding=1;
-    exporter.layoutFormat="cocos2dv3";
+    exporter.algorithm="maxRects";
+    exporter.allowRotate=true;
+    exporter.allowTrimming=true;
+    exporter.autoSize=true;
+    exporter.borderPadding=1;
+    //格式有问题 要把flashroot/Common/Configuration/Sprite Sheet Plugins下的相就文件里的id和name一致才可以导出
+    exporter.layoutFormat="cocos2Dv2";
 
     var items=this.getItemsOfGroup(group);
     for(var i in items){
@@ -70,8 +70,6 @@ AnimationExport.prototype.exportImagesAsSpriteSheet=function(group,spriteSheetFi
         bitDepth:32,
         backgroundColor:"#00000000"
     },true);
-
-    fl.trace("back:"+data);
 };
 
 AnimationExport.prototype.exportImagesToFolder=function(group,folder){

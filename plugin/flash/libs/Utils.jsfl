@@ -1,4 +1,4 @@
-var __extends = this.__extends || function (d, b) 
+﻿var __extends = this.__extends || function (d, b) 
 {
     for (var p in b)
     {

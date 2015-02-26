@@ -1,4 +1,4 @@
-function AnimationImport(doc,fcaScale,registrationPoint){
+﻿function AnimationImport(doc,fcaScale,registrationPoint){
     this.doc=doc;
     this.lib=doc.library;
 

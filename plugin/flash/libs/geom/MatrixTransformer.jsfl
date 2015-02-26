@@ -1,4 +1,4 @@
-var yh;
+﻿var yh;
 (function(yh){
 	function getScaleX(matrix)	{
 		return Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b);

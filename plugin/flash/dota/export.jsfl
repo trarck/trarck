@@ -1,4 +1,4 @@
-var currentFolder=getFolder(fl.scriptURI);
+﻿var currentFolder=getFolder(fl.scriptURI);
 var libFolder=currentFolder+"/../libs/";
 
 fl.runScript(libFolder+"json2.jsfl");

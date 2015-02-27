@@ -5,14 +5,16 @@
     this.textureGroupName="images";
     this.symbolGroupName="bones";
     this.animationGroupName="am";//"animations";
+    this.soundGroupName="sounds";
 }
 
-AnimationExport.prototype.start=function(outFile,outImageFolder,name){
+AnimationExport.prototype.start=function(outFile,outImageFolder,outSoundFolder,name){
     var docName=yh.Path.basename(this.doc.name,yh.Path.extname(this.doc.name));
 
 //    this.exportImagesAsSpriteSheet(this.textureGroupName,outImageFolder+"/tts/a");
 
     this.exportImagesToFolder(this.textureGroupName,outImageFolder);
+    this.exportSoundsToFolder(this.soundGroupName,outSoundFolder||outImageFolder);
 
     var characters=this.generateCharacters(this.symbolGroupName);
     this._charactersMap=this.generateCharactersMap(characters);
@@ -91,6 +93,29 @@ AnimationExport.prototype.exportImagesToFolder=function(group,folder){
             }
         }else{
             fl.trace(item.name+" is not a image");
+        }
+    }
+};
+
+AnimationExport.prototype.exportSoundsToFolder=function(group,folder){
+    if(!this.lib.itemExists(group)) {
+        return;
+    }
+
+    folder=yh.Path.adjustDirPath(folder);
+
+    var items=this.getItemsOfGroup(group);
+
+    for(var i in items){
+        var item=items[i];
+        var exportPath= folder+ yh.Path.basename(item.name);
+
+        if(item.itemType=="sound"){
+            if(!item.exportToFile(exportPath,100)){
+                fl.trace("export "+item.name+" to "+exportPath +" fail");
+            }
+        }else{
+            fl.trace(item.name+" is not a sound");
         }
     }
 };

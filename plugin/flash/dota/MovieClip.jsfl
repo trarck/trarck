@@ -19,20 +19,28 @@ var MovieClip;
         return this.fcaScale;
     };
 
-    MovieClip.prototype.createContent=function(layers){
+    MovieClip.prototype.createContent=function(layers,eventLayers){
+        //由于timeline创建的时候会自动生成一个layer.第一个layer可以不用创建
+        this.createElementLayers(layers,false);
+        this.createEventLayers(eventLayers,true);
+    };
+
+    MovieClip.prototype.createElementLayers=function(layers,needCreateFirst){
+        //create elements layer
         for(var i in layers){
             //first is exists,not need create
-            if(i!=0){
+            if(i!=0 || needCreateFirst){
                 //create layer on top
                 this.timeline.addNewLayer();
             }
+
             //the new is on the top
-            this.createLayer(0,layers[i]);
+            this.createElementLayer(0,layers[i]);
         }
     };
 
     //one layer only on element
-    MovieClip.prototype.createLayer=function(layerIndex,data){
+    MovieClip.prototype.createElementLayer=function(layerIndex,data){
         var timeline=this.timeline;
 
         var layerObj=timeline.layers[layerIndex];
@@ -170,11 +178,53 @@ var MovieClip;
         doc.selectNone();
     };
 
+
+    MovieClip.prototype.createEventLayers=function(eventLayers,needCreateFirst){
+        //create elements layer
+        for(var i in eventLayers){
+            //first is exists,not need create
+            if(i!=0 || needCreateFirst){
+                //create layer on top
+                this.timeline.addNewLayer();
+            }
+
+            //the new is on the top
+            this.createEventLayer(0,eventLayers[i]);
+        }
+    };
+
+    MovieClip.prototype.createEventLayer=function(layerIndex,data){
+        var timeline=this.timeline;
+
+        var layerObj=timeline.layers[layerIndex];
+
+        if(data.name.indexOf(EventLayerPrefix)==0){
+            layerObj.name=data.name;
+        }else{
+            layerObj.name=EventLayerPrefix+data.name;
+        }
+
+        var frames = data.frames;
+
+        for(var f=0;f<frames.length;++f){
+            var frame=frames[f];
+            var startFrame=frame.startFrame;
+            if(!this.isKeyFrame(layerObj,startFrame)){
+                this.timeline.convertToKeyframes(startFrame);
+            }
+
+            //设置声音
+            var soundItemIndex=this.lib.findItemIndex(frame.soundName);
+            if(soundItemIndex!=""){
+                layerObj.frames[startFrame].soundLibraryItem=this.lib.items[soundItemIndex];
+            }
+        }
+    };
+
     MovieClip.prototype.getFrameData=function(){
         //按帧的方式把层中的元素导出
         var timeline=this.timeline;
         var frames=[];
-        var elements;
         var layerObj;
         var frameObj;
         var eleData;
@@ -182,36 +232,81 @@ var MovieClip;
         //convert layer tween frame to key frame
         for(var j=0;j<timeline.layerCount;++j){
             layerObj=timeline.layers[j];
-
-            timeline.currentLayer=j;
-            timeline.currentFrame=0;
-            timeline.convertToKeyframes(0,layerObj.frameCount);
+            if(!this.isEventLayer(layerObj)){
+                timeline.currentLayer=j;
+                timeline.currentFrame=0;
+                timeline.convertToKeyframes(0,layerObj.frameCount);
+            }
         }
 
         for(var i=0;i<timeline.frameCount;++i){
             //generate base element
-            elements=[];
-            for(var j=0;j<timeline.layerCount;++j){
-                layerObj=timeline.layers[j];
+            var elements=this.getElementLayerFrameData(i);
 
 
-                frameObj=layerObj.frames[i];
-                if(frameObj && frameObj.elements.length){
-                    eleData=this.getElementData(frameObj.elements[0]);
-                    if(eleData.name==""){
-                        eleData.name=layerObj.name;
+            //generate events
+            var events=this.getEventLayerFrameData(i);
+
+            frames.push({
+                elements:elements,
+                events:events
+            });
+        }
+        return frames;
+    };
+
+    MovieClip.prototype.getElementLayerFrameData=function(frameIndex){
+        //按帧的方式把层中的元素导出
+        var timeline=this.timeline;
+        var layerObj;
+        var frameObj;
+        var eleData;
+
+        var elements=[];
+        for(var i=0;i<timeline.layerCount;++i){
+            layerObj=timeline.layers[i];
+
+            if(!this.isEventLayer(layerObj)) {
+                frameObj = layerObj.frames[frameIndex];
+                if (frameObj && frameObj.elements.length) {
+                    eleData = this.getElementData(frameObj.elements[0]);
+                    if (eleData.name == "") {
+                        eleData.name = layerObj.name;
                     }
                     elements.push(eleData);
                 }
             }
-
-            //TODO generate events
-            frames.push({
-                elements:elements,
-                events:[]
-            });
         }
-        return frames;
+
+        return elements;
+    };
+
+    MovieClip.prototype.getEventLayerFrameData=function(frameIndex){
+        //按帧的方式把层中的元素导出
+        var timeline=this.timeline;
+        var layerObj;
+        var frameObj;
+
+        var events=[];
+        for(var i=0;i<timeline.layerCount;++i){
+            layerObj=timeline.layers[i];
+
+            if(this.isEventLayer(layerObj)) {
+                frameObj = layerObj.frames[frameIndex];
+                if (frameObj && frameObj.startFrame==frameIndex){
+                    switch (this.getEventLayerType(layerObj)){
+                        case EventType.Sound:
+                            events.push(this.getSoundEventData(frameObj));
+                            break;
+                        case EventType.AddEffect:
+                            break;
+                        case EventType.RemoveEffect:
+                            break;
+                    }
+                }
+            }
+        }
+        return events;
     };
 
     MovieClip.prototype.getElementData=function(element){
@@ -223,9 +318,26 @@ var MovieClip;
         };
     };
 
-
+    MovieClip.prototype.getSoundEventData=function(frameObj){
+        return {
+            type:EventType.Sound,
+            arg:frameObj.soundName,
+            anchor:{x:0,y:0},
+            matrix:{a:1,b:0,c:0,d:1,tx:0,ty:0},
+            zOrder:1
+        };
+    };
 
     MovieClip.prototype.isKeyFrame=function(layerObject,frameIndex){
         return layerObject.frameCount>frameIndex && layerObject.frames[frameIndex].startFrame==frameIndex;
+    };
+
+    MovieClip.prototype.isEventLayer=function(layerObject){
+        return layerObject.name.indexOf(EventLayerPrefix)==0;
+    };
+
+    MovieClip.prototype.getEventLayerType=function(layerObject){
+        var typeName=layerObject.name.replace(EventLayerPrefix,"");
+        return EventType[typeName];
     };
 })();

@@ -17,10 +17,21 @@ ConvertFca.prototype={
     },
 
     convertAction:function (action,characters){
+
+        return {
+            name:action.name,
+            frameCount:action.frames.length,
+            layers:this.convertActionElements(action,characters),
+            eventLayers:this.convertActionEvents(action)
+        };
+    },
+
+    convertActionElements:function (action,characters){
         var frames=action.frames;
         var baseLayers=this.makeBaseLayers(action);
         var layers=[];
 
+        //处理element
         for(var i=0;i<baseLayers.length;++i){
             var elementIndex=baseLayers[i];
             var character=characters[elementIndex-1];
@@ -57,11 +68,54 @@ ConvertFca.prototype={
             layers.push(layer);
         }
 
-        return {
-            name:action.name,
-            frameCount:action.frames.length,
-            layers:layers
-        };
+        return layers;
+    },
+
+    convertActionEvents:function(action){
+        //处理event.按类型分层。同一帧不能有重复的类型。
+        var eventLayers=[];
+
+        var eventType;
+        var eventLayer;
+        var layerFrame;
+
+        var frames=action.frames;
+        for(var k=0;k<frames.length;++k){
+            var frame=frames[k];
+            if(frame.events && frame.events.length){
+                for(var j=0;j<frame.events.length;++j){
+                    eventType=frame.events[j].type;
+
+                    eventLayer=eventLayers[eventType];
+                    //没有则创建
+                    if(!eventLayer){
+                        eventLayer={
+                            name:EventLayerPrefix+EventTypeNames[eventType],
+                            frames:[]
+                        };
+
+                        eventLayers[eventType]=eventLayer;
+                    }
+
+                    switch (eventType){
+                        case EventType.Sound:
+                            layerFrame={
+                                startFrame:k,
+                                type:eventType,
+                                soundName:frame.events[j].arg
+                            };
+                            eventLayer.frames.push(layerFrame);
+                            break;
+                        case EventType.AddEffect:
+                            break;
+                        case EventType.RemoveEffect:
+                            break;
+                    }
+                }
+            }
+        }
+
+        return eventLayers;
     },
 
     isFramePropertySame:function (aFrame,bFrame){

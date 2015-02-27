@@ -4,6 +4,7 @@ var libFolder=currentFolder+"/../libs/";
 fl.runScript(libFolder+"json2.jsfl");
 fl.runScript(libFolder+"Path.jsfl");
 
+fl.runScript(currentFolder+"/define.jsfl");
 fl.runScript(currentFolder+"/ConvertFca.jsfl");
 fl.runScript(currentFolder+"/MovieClip.jsfl");
 fl.runScript(currentFolder+"/AnimationImport.jsfl");

@@ -36,8 +36,7 @@ AnimationExport.prototype.writeExportData=function(outFile,data) {
 
     FLfile.write(outFile,jsonString);
 
-    var dirPaht=yh.Path.dirname(outFile);
-    FLfile.write(dirPaht+"/t.js","var d="+jsonString+";");
+    FLfile.write(dirPath+"/t.js","var d="+jsonString+";");
 };
 
 /**

@@ -1,5 +1,6 @@
 ﻿var ConvertFca;
 (function (){
+var MatrixInterpolation=yh.geom.MatrixInterpolation;
 
 ConvertFca=function(fca){
     this.fca=fca;
@@ -41,7 +42,7 @@ ConvertFca.prototype={
             };
 
             var layerFrame;
-
+            //分离出关键帧
             for(var k=0;k<frames.length;++k){
                 var frame=frames[k];
                 var ele=this.getElement(frame.elements,baseLayers[i]);
@@ -65,6 +66,69 @@ ConvertFca.prototype={
                     }
                 }
             }
+
+            //TODO 加个开关，是否使用补间
+            //关键帧转成补间
+            //如果一段连续的关键帧有相同的插值，则可以转换成补间
+            var startFrame=-1;
+            var prevFrame,nextFrame;
+            for(var k=0;k<layer.frames.length-1;++k){
+                layerFrame=layer.frames[k];
+                //如果持续帧大于1，则后面不是关键帧，则不会转成补间。补间在被导出的时候，转成的帧前后值不一样。
+                if(layerFrame.continueCount==1){
+
+                    if(startFrame==-1){
+                        startFrame=k;
+                        //跳过此帧
+                    }else{
+                        //补间已经开始
+                        prevFrame=layer.frames[k-1];
+                        nextFrame=layer.frames[k+1];
+                        if(!MatrixInterpolation.haveSameInterpolation(prevFrame.matrix,layerFrame.matrix,nextFrame.matrix)){
+                            //补间结束
+                            if(k-startFrame>1){
+                                //2个以上才创建
+                                layer.frames[startFrame].tweenType="motion";
+                                layer.frames[startFrame].duration=k-startFrame;
+                            }
+                            startFrame=k;
+                        }
+                    }
+                    //检查插值
+                }else{
+                    //补间结束
+                    if(startFrame!=-1){
+                        //已经有补间
+                        if(k-startFrame>1) {
+                            //2个以上才创建
+                            layer.frames[startFrame].tweenType = "motion";
+                            layer.frames[startFrame].duration = k - startFrame;
+                        }
+
+                        startFrame=-1;
+                    }
+                }
+            }
+
+            //结束处理
+            if(startFrame!=-1){
+                var lastFrame=layer.frames.length-1;
+                if(lastFrame-startFrame>1) {
+                    //2个以上才创建
+                    layer.frames[startFrame].tweenType = "motion";
+                    layer.frames[startFrame].duration = lastFrame - startFrame;
+                }
+            }
+
+            //删除被补间转换成的关键帧
+            for(var k=0;k<layer.frames.length;++k) {
+                layerFrame = layer.frames[k];
+                if(layerFrame.tweenType){
+                    //fl.trace("delete from "+(k+1)+" to "+ (k+layerFrame.duration-1));
+                    layer.frames.splice(k+1,layerFrame.duration-1);
+                }
+            }
+
             layers.push(layer);
         }
 
@@ -115,6 +179,10 @@ ConvertFca.prototype={
             }
         }
 
+        //remove the None layer
+        if(!eventLayers[EventType.None]){
+            eventLayers.shift();
+        }
         return eventLayers;
     },
 

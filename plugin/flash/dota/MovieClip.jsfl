@@ -70,6 +70,10 @@ var MovieClip;
             }
 //            this.timeline.currentFrame=startFrame;
 
+            //检查element是否为空，可能之前被清空
+            if(layerObj.frames[startFrame].elements.length==0){
+                this.placeElement(layerIndex,startFrame,elementName);
+            }
             //set property
             this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
 

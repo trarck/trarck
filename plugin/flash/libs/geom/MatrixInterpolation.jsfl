@@ -2,8 +2,8 @@
 (function(yh){
 
     function log(){
-        var content=Array.prototype.join.call(arguments," ");
-        fl.trace(content);
+        //var content=Array.prototype.join.call(arguments," ");
+        //fl.trace(content);
     }
 
     var MatrixTransformer=yh.geom.MatrixTransformer;

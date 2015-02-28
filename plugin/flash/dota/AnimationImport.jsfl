@@ -31,21 +31,21 @@ AnimationImport.prototype.getReplaceOld=function(){
     return this.replaceOld;
 };
 
-AnimationImport.prototype.start=function(configFile,imageFolder,soundFolder,configIsConvert){
+AnimationImport.prototype.start=function(configFile,imageFolder,soundFolder,configIsConvert,needConvertMotion){
     var data=this.getConfigData(configFile);
     if(!configIsConvert){
-        var convertFca=new ConvertFca(data);
+        var convertFca=new ConvertFca(data,needConvertMotion);
         var actions=convertFca.convertActions();
         data.actions=actions;
     }
 
-    this.importImagesFromFolder(this.textureGroupName,imageFolder);
-    this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
+    //this.importImagesFromFolder(this.textureGroupName,imageFolder);
+    //this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
+    //
+    //this.importSoundsFromFolder(this.soundGroupName,soundFolder||imageFolder);
 
-    this.importSoundsFromFolder(this.soundGroupName,soundFolder||imageFolder);
-
-//    this.createAnimation(this.animationGroupName,data.actions[8]);
-    this.createAnimations(data.actions);
+    this.createAnimation(this.animationGroupName,data.actions[8]);
+    //this.createAnimations(data.actions);
 };
 
 AnimationImport.prototype.getConfigData=function(configFile) {
@@ -71,7 +71,6 @@ AnimationImport.prototype.importImages=function(group,imagePath,elements){
     }
 
     imagePath=yh.Path.adjustDirPath(imagePath||"");
-    group=yh.Path.adjustDirPath(group);
 
     for(var i in elements){
         var element=elements[i];
@@ -104,7 +103,6 @@ AnimationImport.prototype.importImagesFromFolder=function(group,folder){
     }
 
     folder=yh.Path.adjustDirPath(folder);
-    group=yh.Path.adjustDirPath(group);
 
     var files=FLfile.listFolder(folder,"files");
 
@@ -116,7 +114,7 @@ AnimationImport.prototype.importImagesFromFolder=function(group,folder){
 
             var name=file;//yh.Path.basename(path);
 
-            var itemNamePath=group+name;
+            var itemNamePath=group+"/"+name;
 
             if(this.lib.itemExists(itemNamePath)){
                 if(this.replaceOld){
@@ -152,8 +150,6 @@ AnimationImport.prototype.importSoundsFromFolder=function(group,folder){
 
     folder=yh.Path.adjustDirPath(folder);
 
-    group=yh.Path.adjustDirPath(group);
-
     var files=FLfile.listFolder(folder,"files");
 
     for(var i in files){
@@ -164,7 +160,7 @@ AnimationImport.prototype.importSoundsFromFolder=function(group,folder){
 
             var name=file;//yh.Path.basename(path);
 
-            var itemNamePath=group+name;
+            var itemNamePath=group+"/"+name;
 
             if(this.lib.itemExists(itemNamePath)){
                 if(this.replaceOld){
@@ -206,7 +202,6 @@ AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup)
 
     textureGroup=textureGroup||"";
     textureGroup=yh.Path.adjustDirPath(textureGroup);
-    group=yh.Path.adjustDirPath(group);
 
     for(var i in elements){
         var element=elements[i];
@@ -216,7 +211,7 @@ AnimationImport.prototype.convertToSymbols=function(group,elements,textureGroup)
 
         var symbolName= element.name || yh.Path.basename(element.texture,this.getExtName(element.texture));
 
-        var symbolNamePath=group+symbolName;
+        var symbolNamePath=group+"/"+symbolName;
 
         if(this.lib.itemExists(symbolNamePath)){
             if(this.replaceOld){

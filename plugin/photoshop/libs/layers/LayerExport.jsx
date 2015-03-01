@@ -223,7 +223,7 @@
                     break;
                 default:
                     if ( DialogModes.NO != app.playbackDisplayDialogs ) {
-                        alert("Unexpected Error");
+                        alert("Unexpected Error:"+exportInfo.fileType);
                     }
                     break;
             }
@@ -299,6 +299,11 @@
                         continue;
                     }
                 }
+
+                if(!this.checkLayerExportAble(dupObj.artLayers[i])){
+                    continue;
+                }
+
                 dupObj.artLayers[i].visible = true;
 
                 var layerName = dupObj.artLayers[i].name;  // store layer name before change doc
@@ -306,6 +311,8 @@
                 if ((FileType.Psd == exportInfo.fileType)||(FileType.Png24 == exportInfo.fileType)||(FileType.Png8 == exportInfo.fileType)) { // PSD: Keep transparency
                     
                     this.removeAllInvisible(duppedDocumentTmp);
+
+                    this.parseLayer(duppedDocumentTmp.activeLayer,duppedDocumentTmp);
 
                     //PNGFileOptions
                     if ((FileType.Png24 == exportInfo.fileType)||(FileType.Png8 == exportInfo.fileType)) { // PNGFileOptions
@@ -329,7 +336,7 @@
                         }
                     }
                 
-                    this.parseLayer(dupObj.artLayers[i]);
+                    
                 
                 } else { // just flatten
                     duppedDocumentTmp.flatten();
@@ -352,7 +359,7 @@
                     }
                     */
             
-                saveFile(duppedDocumentTmp, fileNameBody, exportInfo);
+                this.saveFile(duppedDocumentTmp, fileNameBody, exportInfo);
                 duppedDocumentTmp.close(SaveOptions.DONOTSAVECHANGES);
 
                 dupObj.artLayers[i].visible = false;
@@ -377,6 +384,7 @@
         },
     
         start:function(doc,exportInfo){
+
             var docName = doc.name;  // save the app.activeDocument name before duplicate.
 
             var layerCount = doc.layers.length;
@@ -397,8 +405,12 @@
         },
     
         //对layer进行处理
-        parseLayer:function(layer){
+        parseLayer:function(layer,doc){
             
+        },
+
+        checkLayerExportAble:function(layer){
+            return true;
         }
     };    
 })();

@@ -20,11 +20,12 @@ $.evalFile(g_LibsScriptFolderPath + "math/GeometryUtil.jsx");
 $.evalFile(g_LibsScriptFolderPath + "math/TransformMatrix.jsx");
 
 $.evalFile(g_LibsScriptFolderPath + "json2.jsx");
+$.evalFile(g_LibsScriptFolderPath + "utils/FileUtil.jsx");
 $.evalFile(g_LibsScriptFolderPath + "utils/LayerUtil.jsx");
 $.evalFile(g_LibsScriptFolderPath + "layers/LayerExport.jsx");
 
 
-var fcaScale=0.111;
+var fcaScale=0.5;
 var canvasWidth=1500;
 var canvasHeight=1200;
 
@@ -43,46 +44,8 @@ function getInfoData(infoFile) {
 	return null;
 }
 
-function importPart(part,texturePath){
-	var file=texturePath+part.texture+".png";
-	
-//	alert(file);
-	
-	LayerUtil.openFileList([file]);
-	
-	var currLayer=app.activeDocument.activeLayer;
-//
-//	alert(currLayer);
-//	return;
-	
-	//fix matrix	
-	var bounds = currLayer.bounds;
-	var width=bounds[2].as("px")-bounds[0].as("px");
-	var height=bounds[3].as("px")-bounds[1].as("px");
-	
-	// alert(width+","+height);
-	
-	var matrix=part.matrix;
-	
-	var tx=-0.5*matrix.c*height - 0.5*matrix.a*width + matrix.tx*fcaScale;
-	var ty=-0.5*matrix.d*height - 0.5*matrix.b*width + matrix.ty*fcaScale;
-	
-	tx+=canvasWidth/2;
-	ty+=canvasHeight/2;
-	
-	matrix.tx=tx;
-	matrix.ty=ty;
-	
-	var transformMatrix=new TransformMatrix(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
-		
-//	alert(transformMatrix.a+","+transformMatrix.b+","+transformMatrix.c+","+transformMatrix.d+","+transformMatrix.tx+","+transformMatrix.ty);
 
-//	alert(currLayer);
-
-	transformLayer(currLayer,transformMatrix);
-}
-
-function parsePart(part,layer){
+function parsePart(part,layer,currentDoc){
 
     var bounds = layer.bounds;
 	var width=bounds[2].as("px")-bounds[0].as("px");
@@ -94,32 +57,44 @@ function parsePart(part,layer){
 
     var transformMatrix=new TransformMatrix(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
 
-    transformMatrix=transformMatrix.invert();
+    matrix=transformMatrix.invert();
+
+    
 	
-//	var tx=-0.5*matrix.c*height - 0.5*matrix.a*width + matrix.tx*fcaScale;
-//	var ty=-0.5*matrix.d*height - 0.5*matrix.b*width + matrix.ty*fcaScale;
-//	
-//	tx+=canvasWidth/2;
-//	ty+=canvasHeight/2;
-//	
-//	matrix.tx=tx;
-//	matrix.ty=ty;
-//	
-//	var transformMatrix=new TransformMatrix(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
+	var tx=-0.5*matrix.c*height - 0.5*matrix.a*width + matrix.tx*fcaScale;
+	var ty=-0.5*matrix.d*height - 0.5*matrix.b*width + matrix.ty*fcaScale;
+	
+	tx+=canvasWidth/2;
+	ty+=canvasHeight/2;
+	
+	matrix.tx=tx;
+	matrix.ty=ty;
+
+    matrix.setScale(fcaScale);
+	
+	transformMatrix=new TransformMatrix(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
 		
+//    transformMatrix.tx=-canvasWidth/2;
+//	transformMatrix.ty=-canvasHeight/2;
 //	alert(transformMatrix.a+","+transformMatrix.b+","+transformMatrix.c+","+transformMatrix.d+","+transformMatrix.tx+","+transformMatrix.ty);
 
 //	alert(currLayer);
 
-	transformLayer(layer,transformMatrix);
+	transformLayer(layer,transformMatrix,currentDoc);
 }
 
 function getCornersFromLayerBounds( layer )
 {
 	var bounds = layer.bounds;
 	var fCorners = new Array();
-	fCorners[0] = new TPoint( bounds[0].as("px"), bounds[1].as("px") );
-	fCorners[2] = new TPoint( bounds[2].as("px"), bounds[3].as("px") );
+
+    var left=bounds[0].as("px");
+    var top=bounds[1].as("px");
+    var right=bounds[2].as("px");
+    var bottom=bounds[3].as("px");
+
+	fCorners[0] = new TPoint(0, 0 );
+	fCorners[2] = new TPoint( right-left, bottom-top );
 	
 	fCorners[1] = new TPoint( fCorners[2].fX, fCorners[0].fY );
 	fCorners[3] = new TPoint( fCorners[0].fX, fCorners[2].fY );
@@ -191,10 +166,10 @@ function transformActiveLayerWithCorners( newCorners )
 	app.preferences.rulerUnits = saveUnits;
 }
 
-function transformLayer(layer,matrix){
+function transformLayer(layer,matrix,currentDoc){
 	
-	if(app.activeDocument.activeLayer!=layer){
-		app.activeDocument.activeLayer=layer;
+	if(currentDoc.activeLayer!=layer){
+		currentDoc.activeLayer=layer;
 	}
 	
 	var corners=getCornersFromLayerBounds(layer);
@@ -204,7 +179,7 @@ function transformLayer(layer,matrix){
 	transformActiveLayerWithCorners(corners);
 }
 
-function exportFromChaFileAndTexturePath(chaFile,texturePath,name){
+function exportFromChaFile(chaFile,name){
 	var data=getInfoData(chaFile);
 	
 	if(!data){
@@ -212,32 +187,41 @@ function exportFromChaFileAndTexturePath(chaFile,texturePath,name){
 		return;
 	}
 
-    var currentDoc=open(new File(psdFolderPath+name+".psd"));
+    var currentDoc=app.activeDocument;//open(new File(psdFolderPath+name+".psd"));
 
     var exportInfo={
         fileNamePrefix:"",
-        fileType:png24Index,
-        destination:"/e/lua/dtcqtool/fca/work/new_heroes/",
+        fileType:LayerExport.FileType.Png24,
+        destination:"/e/lua/dtcqtool/fca/work/new_heroes/"+name,
         interlaced:false, 
-        transparency:true
+        transparency:true,
+        visibleOnly:true
     };
+
+    FileUtil.makeDirs(exportInfo.destination);
 
     var layerExport=new LayerExport();
 
-    layerExport.parseLayer=function(layer){
+    layerExport.checkLayerExportAble=function(layer){
+        return data[layer.name];
+    }
+
+    layerExport.parseLayer=function(layer,doc){
         var layerName=layer.name;
-        parsePart(data[layerName],layer);
+        parsePart(data[layerName],layer,doc);
     };
 
 	layerExport.start(currentDoc,exportInfo);
 
-	currentDoc.close();
+//    parsePart(data["SecondWeapon2"],currentDoc.activeLayer);
+
+//	currentDoc.close();
 }
 
 function exportFromFileAndName(file,name){
 	file=file instanceof File ?file:new File(file);
 	var texturePath=texgtureFolderPath+name+"/";
-	exportFromFileAndTexturePath(file,texturePath,name);
+	exportFromChaFile(file,texturePath,name);
 }
 
 function exportFromChaFolder(){
@@ -253,7 +237,14 @@ function exportFromChaFolder(){
 function selectChaFileAndTexturePath(){
 	var chaFile=File.openDialog("choose a cha file");
 	var textureFolder = Folder.selectDialog('Please select the folder of texture:',Folder(texgtureFolderPath+"Troll"));
-	exportFromFileAndTexturePath(chaFile,textureFolder.fullName+"/",textureFolder.name);
+	exportFromChaFile(chaFile,textureFolder.fullName+"/",textureFolder.name);
+}
+
+function exportFromTest(name){
+	exportFromChaFile(
+        new File(jsonFolderPath+name+"/cha.json"),
+        name
+    );
 }
 
 function main(){
@@ -266,7 +257,10 @@ function main(){
 //	}
 
 	//importFromChaFolder();
-	selectChaFileAndTexturePath();
+//	selectChaFileAndTexturePath();
+
+    exportFromTest("DR");
+
 }
 
 main();

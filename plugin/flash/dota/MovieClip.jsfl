@@ -22,7 +22,7 @@ var MovieClip;
     MovieClip.prototype.createContent=function(layers,eventLayers){
         //由于timeline创建的时候会自动生成一个layer.第一个layer可以不用创建
         this.createElementLayers(layers,false);
-        this.createEventLayers(eventLayers,true);
+        //this.createEventLayers(eventLayers,true);
     };
 
     MovieClip.prototype.createElementLayers=function(layers,needCreateFirst){
@@ -33,77 +33,72 @@ var MovieClip;
                 //create layer on top
                 this.timeline.addNewLayer();
             }
-
             //the new is on the top
             this.createElementLayer(0,layers[i]);
+
+            //if(i>1) return;
         }
     };
 
     //one layer only on element
     MovieClip.prototype.createElementLayer=function(layerIndex,data){
-        var timeline=this.timeline;
-
-        var layerObj=timeline.layers[layerIndex];
+        var layerObj=this.timeline.layers[layerIndex];
 
         var elementName=data.element;
 
         layerObj.name=data.name|| yh.Path.basename(elementName);
 
+        //clear all frames
+        if(layerObj.frameCount){
+            this.timeline.removeFrames(0,layerObj.frameCount);
+        }
+
         var frames = data.frames;
 
-        //place element in first frame
-        var firstFrame=frames[0];
+        //key frames
+        for(var i=0;i<frames.length;++i) {
+            this.createLayerFrame(layerIndex,i,frames,elementName);
+        }
+    };
 
-        this.placeElement(layerIndex,firstFrame.startFrame,elementName);
+    MovieClip.prototype.createLayerFrame=function(layerIndex,frameDataIndex,framesData,elementName){
+        var currentFrameData=framesData[frameDataIndex];
+        var startFrame=currentFrameData.startFrame;
 
-//        fl.trace("startFrame:"+firstFrame.startFrame+","+layerObj.frames[firstFrame.startFrame].elements[0]);
-        this.setElementProperty(layerObj.frames[firstFrame.startFrame].elements[0],firstFrame);
+        this.timeline.currentLayer=layerIndex;
+        this.timeline.currentFrame=startFrame;
+        var layerObj=this.timeline.layers[layerIndex];
 
-        //other key frame
-        for(var i=1;i<frames.length;++i){
-            var frame=frames[i];
-            var startFrame=frame.startFrame;
-//            fl.trace(layerObj.name+" is key frame["+startFrame+"] "+ (this.isKeyFrame(layerObj,startFrame)?"true":"false"));
-            if(!this.isKeyFrame(layerObj,startFrame)){
-                //由于一个层的元素是一样的，这里直接使用前一个关键帧的数据。
-                this.timeline.convertToKeyframes(startFrame);
-            }
-//            this.timeline.currentFrame=startFrame;
+        fl.trace("start frame:"+startFrame);
 
-            //检查element是否为空，可能之前被清空
-            if(layerObj.frames[startFrame].elements.length==0){
-                this.placeElement(layerIndex,startFrame,elementName);
-            }
-            //set property
-            this.setElementProperty(layerObj.frames[startFrame].elements[0],frame);
-
-            //检查是否是空帧，如果是空帧，则删除
-            if(i<frames.length-1){
-                var nextFrame=frames[i+1];
-                if(nextFrame.startFrame>startFrame+frame.continueCount){
-//                    fl.trace("remove ["+layerObj.name+"] from:"+(startFrame+frame.continueCount)+"-"+nextFrame.startFrame);
-                    timeline.clearFrames(startFrame+frame.continueCount,nextFrame.startFrame);
-                }
-            }
+        if(!this.isKeyFrame(layerObj,startFrame)){
+            fl.trace("convert key frame:"+startFrame);
+            //由于一个层的元素是一样的，这里直接使用前一个关键帧的数据。
+            this.timeline.convertToKeyframes(startFrame);
+            //在创建新的关键帧，可能会延长上个关键帧的持续的帧数，在下面会修正。
         }
 
-        //remove the last not visible frame
-        var lastFrame=frames[frames.length-1];
-        var removeFrom=lastFrame.startFrame+lastFrame.continueCount;
-//        fl.trace("remove ["+layerObj.name+"] from:"+removeFrom+","+lastFrame.startFrame+","+lastFrame.continueCount+",fc:"+layerObj.frameCount);
-        if(removeFrom<layerObj.frameCount){
-            timeline.removeFrames(removeFrom,layerObj.frameCount);
+        //检查element是否为空，可能会为空
+        if(layerObj.frames[startFrame].elements.length==0){
+            fl.trace("place element["+elementName+"]:"+startFrame);
+            this.placeElement(layerIndex,startFrame,elementName);
         }
 
-        //create tween
-        for(var i in frames){
-            var frame=frames[i];
-            var startFrame=frame.startFrame;
+        //set property
+        this.setElementProperty(layerObj.frames[startFrame].elements[0],currentFrameData);
 
-            if(frame.tweenType=="motion"){
-                //create a motion
-                var duration=frame.duration;
-                timeline.createMotionTween(startFrame,startFrame+duration);
+        //补上非关键帧。虽然在下个关键帧插入的时候会自动补上，为了保险和处理最后一个的情况。
+        if(currentFrameData.continueCount>1){
+            this.timeline.insertFrames(currentFrameData.continueCount-1,false,startFrame);
+        }
+
+        //检查上个关键帧是否被延长
+        //这里有另外个解决方法，每次在处理结束插入一个空的关键帧。
+        if(frameDataIndex>0){
+            var prevFrameData=framesData[frameDataIndex-1];
+            if(currentFrameData.startFrame>prevFrameData.startFrame+prevFrameData.continueCount){
+                fl.trace("remove ["+layerObj.name+"] from:"+(prevFrameData.startFrame+prevFrameData.continueCount)+"-"+currentFrameData.startFrame);
+                this.timeline.clearFrames(prevFrameData.startFrame+prevFrameData.continueCount,currentFrameData.startFrame);
             }
         }
     };
@@ -122,13 +117,25 @@ var MovieClip;
 
         if(this.isKeyFrame(layerObj,frame)){
             //clear frame data
-            this.timeline.clearKeyframes(frame);
+            if(this.timeline.layers[layer].frames[frame].elements.length){
+                fl.trace("place element clear frame elements");
+                this.clearFrameElements(layer,frame);
+            }
         }else{
             //convert to key frame
+            fl.trace("place element convert to blank key frame");
             this.timeline.convertToBlankKeyframes(frame);
         }
 
         this.lib.addItemToDocument({x:0,y:0});
+    };
+
+    MovieClip.prototype.clearFrameElements=function(layerIndex,frameIndex){
+        this.timeline.currentLayer=layerIndex;
+        this.timeline.currentFrame=frameIndex;
+        this.doc.selection=this.timeline.layers[layerIndex].frames[frameIndex].elements;
+        this.doc.deleteSelection();
+        this.doc.selectNone();
     };
 
     MovieClip.prototype.cloneObject=function(obj){

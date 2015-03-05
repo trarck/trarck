@@ -44,7 +44,7 @@ AnimationImport.prototype.start=function(configFile,imageFolder,soundFolder,conf
     //
     //this.importSoundsFromFolder(this.soundGroupName,soundFolder||imageFolder);
 
-    this.createAnimation(this.animationGroupName,data.actions[8]);
+    this.createAnimation(this.animationGroupName,data.actions[5]);
     //this.createAnimations(data.actions);
 };
 

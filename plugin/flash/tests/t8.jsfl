@@ -11,4 +11,13 @@ var timeline=doc.getTimeline();
 //var indx=lib.findItemIndex("am");
 //fl.trace(indx=="");
 //
-timeline.createMotionTween(0,10);
+//timeline.clearFrames(1,9);
+//fl.trace(timeline.layers[1].frames[13].startFrame);
+//timeline.convertToKeyframes(7);
+//timeline.clearFrames(7,7);
+//lib.addItemToDocument({x:0,y:0})
+//timeline.currentFrame=6;
+//var selects=timeline.layers[0].frames[6].elements;
+//doc.selection=selects;
+//doc.deleteSelection();
+timeline.insertFrames(2,true,6);

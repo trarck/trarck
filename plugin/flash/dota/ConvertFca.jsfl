@@ -25,22 +25,22 @@ ConvertFca.prototype={
         var actions=this.fca.actions;
         for(var i in actions){
             var action=actions[i];
-            ret.push(this.convertAction(action,this.fca.elements));
+            ret.push(this.convertAction(action));
         }
         return ret;
     },
 
-    convertAction:function (action,characters){
-
+    convertAction:function (action){
         return {
             name:action.name,
             frameCount:action.frames.length,
-            layers:this.convertActionElements(action,characters),
+            layers:this.convertActionElements(action),
             eventLayers:this.convertActionEvents(action)
         };
     },
 
-    convertActionElements:function (action,characters){
+    convertActionElements:function (action){
+        var characters=this.fca.elements;
         var frames=action.frames;
         var baseLayers=this.makeBaseLayers(action);
         var layers=[];

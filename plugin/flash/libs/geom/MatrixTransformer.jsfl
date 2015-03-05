@@ -97,23 +97,23 @@
 
 	var geom=yh.geom||(yh.geom={});
 
-	var MatrixTransformer=geom.MatrixTransformer={};
-
-	MatrixTransformer.getScaleX=getScaleX;
-	MatrixTransformer.setScaleX=setScaleX;
-	MatrixTransformer.getScaleY=getScaleY;
-	MatrixTransformer.setScaleY=setScaleY;
-	MatrixTransformer.getSkewXRadians=getSkewXRadians;
-	MatrixTransformer.setSkewXRadians=setSkewXRadians;
-	MatrixTransformer.getSkewYRadians=getSkewYRadians;
-	MatrixTransformer.setSkewYRadians=setSkewYRadians;
-	MatrixTransformer.getSkewX=getSkewX;
-	MatrixTransformer.setSkewX=setSkewX;
-	MatrixTransformer.getSkewY=getSkewY;
-	MatrixTransformer.setSkewY=setSkewY;
-	MatrixTransformer.getRotationRadians=getRotationRadians;
-	MatrixTransformer.setRotationRadians=setRotationRadians;
-	MatrixTransformer.getRotation=getRotation;
-	MatrixTransformer.setRotation=setRotation;
+	var MatrixTransformer=geom.MatrixTransformer={
+        getScaleX:getScaleX,
+        setScaleX:setScaleX,
+        getScaleY:getScaleY,
+        setScaleY:setScaleY,
+        getSkewXRadians:getSkewXRadians,
+        setSkewXRadians:setSkewXRadians,
+        getSkewYRadians:getSkewYRadians,
+        setSkewYRadians:setSkewYRadians,
+        getSkewX:getSkewX,
+        setSkewX:setSkewX,
+        getSkewY:getSkewY,
+        setSkewY:setSkewY,
+        getRotationRadians:getRotationRadians,
+        setRotationRadians:setRotationRadians,
+        getRotation:getRotation,
+        setRotation:setRotation
+    };
 
 })(yh || (yh={}));

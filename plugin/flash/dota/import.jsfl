@@ -19,7 +19,7 @@ fl.runScript(currentFolder+"/AnimationImport.jsfl");
 //animationImport.start("file:///E|/tt/aa/fl.json","file:///E|/tt/aa");
 
 var animationImport=new AnimationImport(fl.getDocumentDOM(),0.111,"center");
-animationImport.start("file:///D|/temp/AM/cha.json","file:///D|/temp/AM/Image","file:///D|/temp/AM/Sound");
+animationImport.start("file:///D|/temp/DR/cha.json","file:///D|/temp/DR/Image","file:///D|/temp/AM/Sound",false,true);
 
 function getFolder(file){
     var dotPos=file.lastIndexOf("/");

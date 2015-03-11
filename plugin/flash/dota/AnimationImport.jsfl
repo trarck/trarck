@@ -41,10 +41,10 @@ AnimationImport.prototype.start=function(configFile,imageFolder,soundFolder,conf
 
     //this.importImagesFromFolder(this.textureGroupName,imageFolder);
     //this.convertToSymbols(this.symbolGroupName,data.elements,this.textureGroupName);
-    //
+    
     //this.importSoundsFromFolder(this.soundGroupName,soundFolder||imageFolder);
 
-    this.createAnimation(this.animationGroupName,data.actions[7]);
+    this.createAnimation(this.animationGroupName,data.actions[0]);
     //this.createAnimations(data.actions);
 };
 

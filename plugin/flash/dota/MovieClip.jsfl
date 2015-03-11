@@ -59,6 +59,14 @@ var MovieClip;
         for(var i=0;i<frames.length;++i) {
             this.createLayerFrame(layerIndex,i,frames,elementName);
         }
+
+        //create tween
+        for(var i=0;i<frames.length;++i) {
+            var frame=frames[i];
+            if(frame.tweenType=="motion"){
+                this.timeline.createMotionTween(frame.startFrame,frame.startFrame+frame.duration);
+            }
+        }
     };
 
     MovieClip.prototype.createLayerFrame=function(layerIndex,frameDataIndex,framesData,elementName){
@@ -92,13 +100,27 @@ var MovieClip;
             this.timeline.insertFrames(currentFrameData.continueCount-1,false,startFrame);
         }
 
+        //如果是补间动画，则补上后续帧
+        if(currentFrameData.tweenType=="motion"){
+            this.timeline.insertFrames(currentFrameData.duration-1,false,startFrame);
+        }
+
         //检查上个关键帧是否被延长
         //这里有另外个解决方法，每次在处理结束插入一个空的关键帧。
         if(frameDataIndex>0){
             var prevFrameData=framesData[frameDataIndex-1];
-            if(currentFrameData.startFrame>prevFrameData.startFrame+prevFrameData.continueCount){
-                //fl.trace("remove ["+layerObj.name+"] from:"+(prevFrameData.startFrame+prevFrameData.continueCount)+"-"+currentFrameData.startFrame);
-                this.timeline.clearFrames(prevFrameData.startFrame+prevFrameData.continueCount,currentFrameData.startFrame);
+            if(prevFrameData.tweenType=="motion"){
+                if(currentFrameData.startFrame>prevFrameData.startFrame+prevFrameData.duration){
+
+                    //fl.trace("remove ["+layerObj.name+"] from:"+(prevFrameData.startFrame+prevFrameData.duration)+"-"+currentFrameData.startFrame);
+                    this.timeline.clearFrames(prevFrameData.startFrame+prevFrameData.duration,currentFrameData.startFrame);
+                }
+            }else{
+                if(currentFrameData.startFrame>prevFrameData.startFrame+prevFrameData.continueCount){
+
+                    //fl.trace("remove ["+layerObj.name+"] from:"+(prevFrameData.startFrame+prevFrameData.continueCount)+"-"+currentFrameData.startFrame);
+                    this.timeline.clearFrames(prevFrameData.startFrame+prevFrameData.continueCount,currentFrameData.startFrame);
+                }
             }
         }
     };

@@ -8,6 +8,7 @@ fl.runScript(libFolder+"geom/MatrixInterpolation.jsfl");
 
 fl.runScript(currentFolder+"/define.jsfl");
 
+fl.runScript(currentFolder+"/RelationMap.jsfl");
 fl.runScript(currentFolder+"/ConvertFca.jsfl");
 fl.runScript(currentFolder+"/MovieClip.jsfl");
 fl.runScript(currentFolder+"/AnimationImport.jsfl");

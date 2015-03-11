@@ -1,4 +1,4 @@
-var RelationMap;
+﻿var RelationMap;
 (function () {
     RelationMap=function () {
         this._map = {};

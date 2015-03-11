@@ -69,10 +69,10 @@ var MovieClip;
         this.timeline.currentFrame=startFrame;
         var layerObj=this.timeline.layers[layerIndex];
 
-        fl.trace("start frame:"+startFrame);
+        //fl.trace("start frame:"+startFrame);
 
         if(!this.isKeyFrame(layerObj,startFrame)){
-            fl.trace("convert key frame:"+startFrame);
+            //fl.trace("convert key frame:"+startFrame);
             //由于一个层的元素是一样的，这里直接使用前一个关键帧的数据。
             this.timeline.convertToKeyframes(startFrame);
             //在创建新的关键帧，可能会延长上个关键帧的持续的帧数，在下面会修正。
@@ -80,7 +80,7 @@ var MovieClip;
 
         //检查element是否为空，可能会为空
         if(layerObj.frames[startFrame].elements.length==0){
-            fl.trace("place element["+elementName+"]:"+startFrame);
+            //fl.trace("place element["+elementName+"]:"+startFrame);
             this.placeElement(layerIndex,startFrame,elementName);
         }
 
@@ -97,7 +97,7 @@ var MovieClip;
         if(frameDataIndex>0){
             var prevFrameData=framesData[frameDataIndex-1];
             if(currentFrameData.startFrame>prevFrameData.startFrame+prevFrameData.continueCount){
-                fl.trace("remove ["+layerObj.name+"] from:"+(prevFrameData.startFrame+prevFrameData.continueCount)+"-"+currentFrameData.startFrame);
+                //fl.trace("remove ["+layerObj.name+"] from:"+(prevFrameData.startFrame+prevFrameData.continueCount)+"-"+currentFrameData.startFrame);
                 this.timeline.clearFrames(prevFrameData.startFrame+prevFrameData.continueCount,currentFrameData.startFrame);
             }
         }
@@ -118,12 +118,12 @@ var MovieClip;
         if(this.isKeyFrame(layerObj,frame)){
             //clear frame data
             if(this.timeline.layers[layer].frames[frame].elements.length){
-                fl.trace("place element clear frame elements");
+                //fl.trace("place element clear frame elements");
                 this.clearFrameElements(layer,frame);
             }
         }else{
             //convert to key frame
-            fl.trace("place element convert to blank key frame");
+            //fl.trace("place element convert to blank key frame");
             this.timeline.convertToBlankKeyframes(frame);
         }
 

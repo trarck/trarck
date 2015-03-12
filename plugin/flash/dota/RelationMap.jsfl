@@ -6,104 +6,129 @@
 
     RelationMap.prototype = {
         _setRelation: function (a, b, v) {
-            if (!this._map[a]) {
-                this._map[a] = {};
+        if (!this._map[a]) {
+            this._map[a] = {};
+        }
+
+        this._map[a][b] = v;
+    },
+
+    setRelation: function (a, b, v) {
+        this._setRelation(a, b, v);
+        this._setRelation(b, a, -v);
+    },
+
+    getRelation: function (a, b) {
+        if (this._map[a] == null) {
+            return 0;
+        }
+
+        if (this._map[a][b] == null) {
+            return 0;
+        }
+
+        return this._map[a][b];
+    },
+    _removeRelation: function (a, b) {
+        if (this._map[a] != null) {
+            delete  this._map[a][b];
+        }
+    },
+    removeRelation: function (a, b) {
+        this._removeRelation(a, b);
+        this._map(b, a);
+    },
+
+    /**
+     * 这里的before item指的是值为负数的，即a在这些元素之前
+     * @param a
+     * @private
+     */
+    _getBeforeItems: function (a) {
+        var subMap = this._map[a];
+        var ret = [];
+        for (var k in subMap) {
+            if (subMap[k] < 0) {
+                ret.push(k);
             }
+        }
+        return  ret;
+    },
 
-            this._map[a][b] = v;
-        },
-
-        setRelation: function (a, b, v) {
-            this._setRelation(a, b, v);
-            this._setRelation(b, a, -v);
-        },
-
-        getRelation: function (a, b) {
-            if (this._map[a] == null) {
-                return 0;
+    /**
+     * 这里的after item指的是值为正数的，即a在这些元素之后
+     * @param a
+     * @private
+     */
+    _getAfterItems: function (a) {
+        var subMap = this._map[a];
+        var ret = [];
+        for (var k in subMap) {
+            if (subMap[k] > 0) {
+                ret.push(k);
             }
+        }
+        return  ret;
+    },
 
-            if (this._map[a][b] == null) {
-                return 0;
-            }
+    compareRelation: function (a, b) {
+        //直接查表的二个元素
+        var result = this.getRelation(a, b);
+        if (result) {
+            return result;
+        }
 
-            return this._map[a][b];
-        },
-        _removeRelation: function (a, b) {
-            if (this._map[a] != null) {
-                delete  this._map[a][b];
-            }
-        },
-        removeRelation: function (a, b) {
-            this._removeRelation(a, b);
-            this._map(b, a);
-        },
+        var closes={};
 
-        /**
-         * 这里的before item指的是值为负数的，即a在这些元素之前
-         * @param a
-         * @private
-         */
-        _getBeforeItems: function (a) {
-            var subMap = this._map[a];
-            var ret = [];
-            for (var k in subMap) {
-                if (subMap[k] < 0) {
-                    ret.push(k);
-                }
-            }
-            return ret;
-        },
+        //递推查表,从A搜索到b
+        var befores = this._getBeforeItems(a), afters = this._getAfterItems(a);
 
-        /**
-         * 这里的after item指的是值为正数的，即a在这些元素之后
-         * @param a
-         * @private
-         */
-        _getAfterItems: function (a) {
-            var subMap = this._map[a];
-            var ret = [];
-            for (var k in subMap) {
-                if (subMap[k] > 0) {
-                    ret.push(k);
-                }
-            }
-            return ret;
-        },
-
-        compareRelation: function (a, b) {
-            //直接查表的二个元素
-            var result = this.getRelation(a, b);
-            if (result) {
-                return result;
-            }
-
-            //递推查表,从A搜索到b
-            var befores = this._getBeforeItems(a), afters = this._getAfterItems(a);
-
-            //搜索前向,即向a的后面元素(底层级)
-            while (befores.length) {
-                var c = befores.pop();
+        //搜索前向,即向a的后面元素(底层级)
+        while (befores.length) {
+            var c = befores.pop();
+            if(!closes[c]){
                 if (c == b) {
                     return -1;
                 }
-                befores = befores.concat(this._getBeforeItems(c));
+            
+                befores = this.uniqueConcat(befores,this._getBeforeItems(c));//befores.concat(this._getBeforeItems(c));
+                closes[c]=true;
             }
+        }
 
-            while (afters.length) {
-                var c = afters.pop();
+        closes={};
+
+        while (afters.length) {
+            var c = afters.pop();
+            if(!closes[c]){
                 if (c == b) {
                     return 1;
                 }
-                afters = afters.concat(this._getAfterItems(c));
+            
+                afters = this.uniqueConcat(afters,this._getAfterItems(c));//afters.concat(this._getAfterItems(c));
+                closes[c]=true;
             }
-            //搜索不到。a和b没有关系
-            return 0;
-        },
-
-        clear: function () {
-            this._map = {};
         }
+        //搜索不到。a和b没有关系
+        return 0;
+    },
+
+    uniqueConcat:function(a,b){
+        for(var i in b){
+            if(a.indexOf(b[i])==-1) {
+                a.push(b[i]);
+            }
+//            else{
+//                console.log("fix",b[i]);
+//            }
+        }
+
+        return a;
+    },
+
+    clear:function(){
+        this._map={};
+    }
     };
 
 })();

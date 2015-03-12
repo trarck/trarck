@@ -36,7 +36,7 @@ ConvertFca.prototype={
     },
 
     convertAction:function (action){
-
+		//fl.trace("convert action "+action.name)
         return {
             name:action.name,
             frameCount:action.frames.length,
@@ -215,7 +215,7 @@ ConvertFca.prototype={
         for(var k=0;k<layer.frames.length;++k) {
             layerFrame = layer.frames[k];
             if(layerFrame.tweenType){
-                //fl.trace("delete from "+(k+1)+" to "+ (k+layerFrame.duration-1));
+                //fl.trace("delete "+layer.element+" from "+(k+1)+" to "+ (k+layerFrame.duration-1));
                 layer.frames.splice(k+1,layerFrame.duration-1);
             }
         }
@@ -314,8 +314,8 @@ ConvertFca.prototype={
         var ele,nextEle,prevEle;
         var currentObj,prevObj;
 
-        var extLayers=[];
-        var checkedElements={};
+		var extLayers=[];
+		var checkedElements={};
         var extElementsSign={};
 
         var self=this;
@@ -326,7 +326,7 @@ ConvertFca.prototype={
             var nextEle,prevEle;
 
             var checkRet=self.checkNextItemsIsAfter(frame.elements,ele.index,elePos+1,checkedElements,self._testNextItemDeep);
-
+            
             var currentIsOk=true;
 
             if(!checkRet.result){
@@ -353,8 +353,8 @@ ConvertFca.prototype={
                 }else{
                     //大于或等于，后面的元素前移，即上面的图层下移。
                     //当前元素为被调整的元素
-
                     currentIsOk=false;
+
                     //由于当前元素已经被检测过，不用在设置跳过检查标记。
                     //prevEle=frame.elements[elePos-1];
                     //nextEle=frame.elements[elePos+1];
@@ -385,22 +385,31 @@ ConvertFca.prototype={
                     prevObj=extElementsSign[elePos-1];
                 }else{
                     prevEle=frame.elements[elePos-1];
-                    prevObj=self._layerObjects[prevEle.index];
-                    if(!prevObj){
-                        //temp object
+
+                    if(!prevEle){
                         prevObj={
-                            id:prevEle.index,
-                            index:prevEle.index
+                            id:0,
+                            index:0
                         };
+                    }else{
+                        prevObj=self._layerObjects[prevEle.index];
+                        if(!prevObj){
+                            //temp object
+                            prevObj={
+                                id:prevEle.index,
+                                index:prevEle.index
+                            };
+                        }
                     }
+
                 }
 
                 nextEle=frame.elements[elePos+1];
 
                 //取得一个扩展的层
-                extLayerObj=self.getExtLayerObject(extLayers,ele.index,prevObj.id,nextEle.index);
+                extLayerObj=self.getExtLayerObject(extLayers,ele.index,prevObj.id,nextEle?nextEle.index:0);
                 if(!extLayerObj){
-                    extLayerObj=self.createExtLayerObject(ele.index,prevObj.id,nextEle.index);
+                    extLayerObj=self.createExtLayerObject(ele.index,prevObj.id,nextEle?nextEle.index:0);
                     extLayers.push(extLayerObj);
                     self._relationMap.setRelation(prevObj.id, extLayerObj.id, -1);
                 }else{
@@ -418,6 +427,7 @@ ConvertFca.prototype={
 
                 extElementsSign[elePos]=extLayerObj;
             }
+
             return currentIsOk;
         }
 
@@ -443,7 +453,7 @@ ConvertFca.prototype={
                     currentObj.frames.push(this.createLayerObjectFrameElement(k,0));
                 }
             }else{
-                checkedElements={};
+				checkedElements={};
 
                 //多个元素
                 //处理第一个元素
@@ -464,7 +474,7 @@ ConvertFca.prototype={
 
                             nextEle=frame.elements[j];
                             if(!nextEle){
-                                //fl.trace("no element frame="+k+",i="+i+",j="+j);
+                                fl.trace(k,i,j);
                             }
                             insertPos=this.findLayerObject(layers,nextEle.index);
                         }while(insertPos==-1 && ++j<frame.elements.length);
@@ -485,8 +495,9 @@ ConvertFca.prototype={
                 for(var i=1;i<frame.elements.length;++i){
                     ele=frame.elements[i];
 
-                    if(checkedElements[ele.index]) 
+                    if(checkedElements[ele.index]){
                         continue;
+                    }
 
                     prevEle=frame.elements[i-1];
 
@@ -548,76 +559,76 @@ ConvertFca.prototype={
         return layers;
     },
 
-    checkNextItemsIsAfter:function(elements,currentElementIndex,from,skipElements,maxStep){
-        var step=0;
-        var count=0;//检测到符合条件的元素数
-        var ret={};
+	checkNextItemsIsAfter:function(elements,currentElementIndex,from,skipElements,maxStep){
+		var step=0;
+		var count=0;//检测到符合条件的元素数
+		var ret={};
 
         var retResult=true;
         var result;
 
-        for(;from<elements.length;++from){
-            var ele=elements[from];
-            if(skipElements && skipElements[ele.index]){
-                continue;
-            }
+		for(;from<elements.length;++from){
+			var ele=elements[from];
+			if(skipElements && skipElements[ele.index]){
+				continue;
+			}
 
-            result=this._relationMap.compareRelation(currentElementIndex,ele.index);
+			result=this._relationMap.compareRelation(currentElementIndex,ele.index);
 
-            //ele在检测元素之前，检测结束。
-            if(result>0){
+			//ele在检测元素之前，检测结束。
+			if(result>0){
                 retResult=false;
                 break;
-            }else if(result<0){
-                step++;
-            }
-            //如果不确定，则继续,不消耗深度，但会增加数量
-            count++;
-            if( maxStep && step>=maxStep){
-                break;
-            }
-        }
+			}else if(result<0){
+				step++;
+			}
+			//如果不确定，则继续,不消耗深度，但会增加数量
+			count++;
+			if( maxStep && step>=maxStep){
+				break;
+			}
+		}
 
-        ret.result=retResult;
-        ret.count=count;
-        ret.stop=from;
+		ret.result=retResult;
+		ret.count=count;
+		ret.stop=from;
         //ret.firstResult=firstResult;
-        return ret;
+		return ret;
     },
 
-    checkNextItemsIsBefore:function(elements,currentElementIndex,from,skipElements,maxStep){
-        var step=0;
-        var count=0;//检测到符合条件的元素数
-        var ret={};
+	checkNextItemsIsBefore:function(elements,currentElementIndex,from,skipElements,maxStep){
+		var step=0;
+		var count=0;//检测到符合条件的元素数
+		var ret={};
 
         var retResult=true;
 
-        for(;from<elements.length;++from){
-            var ele=elements[from];
-            if(skipElements && skipElements[ele.index]){
-                continue;
-            }
+		for(;from<elements.length;++from){
+			var ele=elements[from];
+			if(skipElements && skipElements[ele.index]){
+				continue;
+			}
 
-            var result=this._relationMap.compareRelation(currentElementIndex,ele.index);
-            //ele在检测元素之后，停止检测。
-            if(result<0){
+			var result=this._relationMap.compareRelation(currentElementIndex,ele.index);
+			//ele在检测元素之后，停止检测。
+			if(result<0){
                 retResult=false;
                 break;
-            }else if(result>0){
-                step++;
-            }
+			}else if(result>0){
+				step++;
+			}
 
-            //如果不确定，则继续,不消耗深度，但会增加数量
-            count++;
-            if( maxStep && step>=maxStep){
-                break;
-            }
-        }
-
-        ret.result=retResult;
-        ret.count=count;
-        ret.stop=from;
-        return ret;
+			//如果不确定，则继续,不消耗深度，但会增加数量
+			count++;
+			if( maxStep && step>=maxStep){
+				break;
+			}
+		}
+	
+		ret.result=retResult;
+		ret.count=count;
+		ret.stop=from;
+		return ret;
     },
 
     createBaseLayerObject:function(index){
@@ -664,10 +675,29 @@ ConvertFca.prototype={
             layerObj=layers[i];
 
             if(layerObj.index==index){
-                //check prev and next
-                if( (this._relationMap.compareRelation(layerObj.prev,prev)!=1 && this._relationMap.compareRelation(layerObj.next,next)!=-1) ||
-                    (this._relationMap.compareRelation(layerObj.prev,prev)!=-1 && this._relationMap.compareRelation(layerObj.next,next)!=1)){
-                    return layerObj;
+
+                if(prev && next){
+                    //不在最前和最后
+                    //check prev and next
+                    if( (this._relationMap.compareRelation(layerObj.prev,prev)!=1 && this._relationMap.compareRelation(layerObj.next,next)!=-1) ||
+                        (this._relationMap.compareRelation(layerObj.prev,prev)!=-1 && this._relationMap.compareRelation(layerObj.next,next)!=1)){
+                        return layerObj;
+                    }
+                }else{
+                    //最前或最后
+                    if(!next){
+                        //当前元素在最后
+                        //查找元素在最后,或查找元素的next值在当前元素前面元素的后面
+                        if(!layerObj.next || this._relationMap.compareRelation(layerObj.next,prev)==1){ next>prev
+                            return layerObj;
+                        }
+                    }else if(!prev){
+                        //当前元素在最前
+                        //查找元素在最后,或查找元素的next值在当前元素前面元素的后面
+                        if(!layerObj.prev || this._relationMap.compareRelation(layerObj.prev,next)==-1){ prev<next
+                            return layerObj;
+                        }
+                    }
                 }
             }
         }

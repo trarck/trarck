@@ -8,6 +8,7 @@ var input = "";
 
 var col=0;
 var prePad="";
+var AccessLevel="";
 
 //todo 前导空格
 var output="";
@@ -26,6 +27,19 @@ process.stdin.on( 'end', function () {
     col=env.TM_INPUT_START_COLUMN-1;
 
     prePad=pad(col," ");
+
+    if(input.indexOf("@")>-1)
+    {
+        var pos=input.indexOf("@");
+        var posEnd=input.indexOf("@",pos+1);
+
+        AccessLevel = input.substring(pos+1,posEnd)+" ";
+
+        var prev=input.substring(0,pos);
+        var next=input.substring(posEnd+1);
+
+        input=prev+next;
+    }
 
     var items=[];
 
@@ -63,7 +77,7 @@ function lcfirst (str) {
 function synthesizePropertyField(propName,type,initValue) {
     var caseAdjusted=ucfirst(propName);
     var lVarName = 'm_' + caseAdjusted;
-    return prePad+type+" "+lVarName+ (initValue? (" = "+initValue):"")+";\n";
+    return prePad+AccessLevel+type+" "+lVarName+ (initValue? (" = "+initValue):"")+";\n";
 }
 
 function synthesizePropertyContent(propName,type) {

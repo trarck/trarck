@@ -15,12 +15,15 @@ var output="";
 
 var env = process.env || process.ENV;
 
-process.stdin.resume();
+process.stdin.setEncoding('utf8');
 
 // console.log(env)
 
-process.stdin.on( 'data', function ( chunk ) {
-    input += chunk;
+process.stdin.on('readable', function() {
+    var chunk = process.stdin.read();
+	if (chunk !== null) {
+		input += chunk;
+	}
 });
 
 process.stdin.on( 'end', function () {
@@ -48,7 +51,7 @@ process.stdin.on( 'end', function () {
     }else{
         items=input.split(",");
     }
-	
+
     output=synthesizePropertys(items);
     process.stdout.write(output);
 });

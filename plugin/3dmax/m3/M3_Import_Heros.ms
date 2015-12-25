@@ -2430,7 +2430,7 @@ fn SaveAnimInfo =
 
 	print (format "AnimationInfo:%" cnt)
 
-	local animInfoPath=pathConfig.convertPathToAbsolute "animinfos/dd"
+	local animInfoPath=pathConfig.convertPathToAbsolute "animinfos"
 
 	makeDir animInfoPath all:true
 	
@@ -2497,7 +2497,9 @@ fn SetAnimProps=
 
 			startNote.Value = val
 			endNote.Value = val
-	
+			
+			/*time tag*/
+			/*
 			if(props.firstFrame!=undefined) then
 			(
 				FrameTagManager.CreateNewTag (props.Name+"_Start") props.firstFrame
@@ -2508,8 +2510,7 @@ fn SetAnimProps=
 			(
 				FrameTagManager.CreateNewTag (props.Name+"_End") props.LastFrame
 			)	
-
-
+			*/				
 
 			PRINT ( "Added animation " + props.Name + " (" + props.firstFrame as string + " " + props.LastFrame as string + " )" )
 		)

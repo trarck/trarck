@@ -56,7 +56,8 @@ GLOBAL BONE_LOOKUP
 GLOBAL gMODL
 GLOBAL gFILETYPE
 GLOBAL nbrValidSTCs = 0
-GLOBAL nAnimationSeparate = 20
+GLOBAL nAnimationFrameStart = 20
+GLOBAL nAnimationFrameBuffer = 50
 GLOBAL sCurrentFile = ""
 
 
@@ -103,6 +104,12 @@ struct HEROES_NONSC2_MAT ( Name, Diff_Map, Norm_Map, Height_Map, Decal_Map, Spec
 	HELPER FUNCTIONS
 
 *********************************************************************************************************************/
+
+fn M3I_Convert_Time t =
+(
+	t / (1000 / M3I_useFPS)
+)
+
 fn ResetGlobals=
 (
 	/* When reselectin a file, reset these so no data of previous files is retained */
@@ -2396,33 +2403,32 @@ fn SaveAnimInfo =
 	local cnt="["
 	local isFirst=true
 
+	local firstFrame = nAnimationFrameStart
+
 	for i=1 to nbrValidSTCs do
 	(
-		local props = animPropsList[i]
-		local underscorePos = findstring props.Name "_"
-
-		if( underscorePos != undefined) then
-		(
-			props.Name = substring props.Name 1 (underscorePos-1)
-		)
-		
 		if(isFirst) then
 		(
 			isFirst=false
 		)
 		else
 		(
-			cnt +=","
+			cnt +=",\r\n"
 		)
-				
+
+		local seqsId = STC_LIST[i].SEQ_refId
+		local nbrFrames = (SEQS_LIST[seqsId].endFrame * 30 / 1000.0 ) as integer  --> end frame is actually wrong, this is the number of seconds the animation takes
+			
 		local val = "{"
-		val += "\"name\":\"" +props.Name + "\","
-		val += "\"firstFrame\":" + props.firstFrame as string + ","
-		val += "\"lastFrame\":" + props.lastFrame as string + ","
-		val += "\"rarity\" : " 	 + props.frequency as string + ","
-		val += "\"moveSpeed\" : "  + props.MovementSpeed as string + ","
-		val += "\"nonLoop\" : " 	 + props.NonLooping as string +"}\r\n"
+		val += "\"name\":\"" +STC_LIST[i].Name + "\","
+		val += "\"firstFrame\":" + firstFrame as string + ","
+		val += "\"lastFrame\":" + (firstFrame + nbrFrames) as string + ","
+		val += "\"frequency\" : " 	 + SEQS_LIST[seqsId].frequency as string + ","
+		val += "\"moveSpeed\" : "  + SEQS_LIST[seqsId].MovementSpeed as string + ","
+		val += "\"nonLoop\" : " 	 + STC_LIST[i].NonLooping as string +"}"
 		
+		firstFrame += (nbrFrames + nAnimationFrameBuffer) as integer
+
 		cnt+= val 
 	)
 
@@ -2515,11 +2521,6 @@ fn SetAnimProps=
 			PRINT ( "Added animation " + props.Name + " (" + props.firstFrame as string + " " + props.LastFrame as string + " )" )
 		)
 	)
-
-	if(bSaveAnimationInfo) then
-	(
-		SaveAnimInfo()
-	)
 )
 
 /* APPLY THE ANIMATION*/
@@ -2547,7 +2548,7 @@ fn ApplyAnimation=
 	)
 
 	-- build the stc animations -->TODO must be changed to the correct SEQS animations
-	local firstFrame = nAnimationSeparate
+	local firstFrame = nAnimationFrameStart
 
 	for i=1 to nbrValidSTCs do
 	(
@@ -2559,7 +2560,7 @@ fn ApplyAnimation=
 		STC_LIST[i].NonLooping = SEQS_LIST[seqsId].NonLooping
 		STC_LIST[i].Frequency = SEQS_LIST[seqsId].Frequency
 		STC_LIST[i].MovementSpeed = SEQS_LIST[seqsId].MovementSpeed
-		firstFrame += (nbrFrames + nAnimationSeparate) as integer
+		firstFrame += (nbrFrames + nAnimationFrameBuffer) as integer
 
 		if( i> 1) then
 		(
@@ -2713,6 +2714,11 @@ fn ApplyAnimation=
 	)
 
 	--print SEQS_LIST
+
+	if(bSaveAnimationInfo) then
+	(
+		SaveAnimInfo()
+	)
 
 	SetAnimProps()
 

@@ -2434,8 +2434,17 @@ fn SaveAnimInfo =
 
 	cnt +="]\r\n"
 
+	
 	print (format "AnimationInfo:%" cnt)
 
+	--save to track
+	local animInfoTrack = notetrack "AnimInfoTrack"
+	addNoteTrack rootNode animInfoTrack
+
+	local animInfoNote = AddNewNoteKey animInfoTrack 1
+	animInfoNote.value=cnt
+
+	--save to file
 	local animInfoPath=pathConfig.convertPathToAbsolute "animinfos"
 
 	makeDir animInfoPath all:true
@@ -2715,14 +2724,12 @@ fn ApplyAnimation=
 
 	--print SEQS_LIST
 
+	SetAnimProps()
+
 	if(bSaveAnimationInfo) then
 	(
 		SaveAnimInfo()
 	)
-
-	SetAnimProps()
-
-
 
 )
 

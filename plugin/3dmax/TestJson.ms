@@ -13,4 +13,6 @@ d.Add "c" "CCCCC"
 
 local s=MyJson.ToJSON(d)
 print s
+
+for i=10 to 1 by -1 do print i
 )

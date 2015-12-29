@@ -2475,7 +2475,7 @@ fn SetAnimProps=
 	local nNoteTracks = numNoteTracks rootNode
 	if(  nNoteTracks > 0 ) then
 	(
-		for n=1 to nNoteTracks do deleteNoteTrack rootNode (getNoteTrack rootNode n)
+		for n=nNoteTracks to 1 by -1 do deleteNoteTrack rootNode (getNoteTrack rootNode n)
 	)
 
 	if( numNoteTracks rootNode == 0 ) then

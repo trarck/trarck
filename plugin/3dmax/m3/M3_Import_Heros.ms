@@ -586,7 +586,7 @@ fn Read_SEQS stream idx=
 		SkipBytes stream (size - 20 - 16 - 12 )
 	)
 
-	print SEQS_LIST
+	--print SEQS_LIST
 )
 
 /* STG - Sequence transformation group */
@@ -612,7 +612,7 @@ fn Read_STG stream idx=
 		append STG_LIST stg
 	)
 
-	print STG_LIST
+	--print STG_LIST
 
 )
 /* Read STS */

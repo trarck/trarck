@@ -3,6 +3,7 @@ include  "M3_Import_Heros_Lib.ms"
 GLOBAL SavePath= pathConfig.getCurrentProjectFolder() + "\\Units\\Heroes\\"
 GLOBAL CurrentPath=""
 GLOBAL bReplaceOldFile = false
+GLOBAL bIgnoreDeath = false
 
 fn CreateNewScene =
 (
@@ -19,6 +20,13 @@ fn IsAnimation filename =
     return findString filename "Anims" != undefined
 )
 
+fn IsDeath filename=
+(
+    parts=filterString  filename "_"
+
+    return parts[parts.count] == "Death"
+)
+
 fn GetSkinName filename=
 (
     parts=filterString  filename "_"
@@ -26,7 +34,7 @@ fn GetSkinName filename=
     return parts[parts.count]
 )
 
-fn GetRequiredAnimsName filename=
+fn GetParentRequiredAnimsName filename=
 (
     parts=filterString  filename "_"
 
@@ -36,6 +44,31 @@ fn GetRequiredAnimsName filename=
         animsName+=parts[i]+"_"
     )
     return animsName+"RequiredAnims"
+)
+
+fn GetBaseRequiredAnimsName filename=
+(
+    return filename+"_RequiredAnims"
+)
+
+fn GetRequiredAnimsName filename=
+(
+    requiredAnims = GetBaseRequiredAnimsName filename
+    requiredAnimsPath= pathConfig.appendPath CurrentPath requiredAnims
+
+    if (DoesFileExist requiredAnimsPath) then
+    (
+        return requiredAnimsPath
+    )  
+
+    requiredAnims = GetParentRequiredAnimsName filename
+    requiredAnimsPath= pathConfig.appendPath CurrentPath requiredAnims
+    if (DoesFileExist requiredAnimsPath) then
+    (
+       return requiredAnimsPath
+    )    
+    
+    return undefined   
 )
 
 fn SaveToUnitFile filename =
@@ -122,21 +155,21 @@ fn ImportM3 filename=
     ImportModel modelFile
 
     --import anims
-
-    --base anim
-    requiredAnims = GetRequiredAnimsName filename
-    requiredAnimsPath= pathConfig.appendPath CurrentPath requiredAnims
-    if (DoesFileExist requiredAnimsPath) then
+    --death not import Required animations
+    if( NOT (bIgnoreDeath AND IsDeath(filename)) ) then
     (
-       animsFile=GetAnimsFile(requiredAnimsPath)
-       print("filename:"+filename+"->anims:" + animsFile)
-       ImportAnimations animsFile
-    )  
-    else
-    (
-        print ("no ext anims perhaps in model file:"+filename)
+        requiredAnimsPath= GetRequiredAnimsName filename
+        if (requiredAnimsPath!=undefined) then
+        (
+           animsFile=GetAnimsFile(requiredAnimsPath)
+           print("filename:"+filename+"->anims:" + animsFile)
+           ImportAnimations animsFile
+        )  
+        else
+        (
+            print ("no ext anims perhaps in model file:"+filename)
+        )
     )
-
     --fix path 
     FixMaterialPath()
     
@@ -200,6 +233,7 @@ UTILITY HeroesOfTheStormImport "TM's M3 Import All (v2.1)"
 		CheckBox cbBuildSkin "Skin"
 		CheckBox cbSaveAnimInfo "Save Animation Info"
         CheckBox cbReplaceOldFile "Replace old File"
+        CheckBox cbIgnoreDeath "Ignore Death"
 
 		Button bGo "Import..." height:35 width:100
 
@@ -218,6 +252,7 @@ UTILITY HeroesOfTheStormImport "TM's M3 Import All (v2.1)"
 		cbSaveAnimInfo.Checked = true
 
         cbReplaceOldFile.Checked = false
+        cbIgnoreDeath.Checked = false
 	)
 
 	on cbBuildBones CHANGED theState do
@@ -382,5 +417,19 @@ UTILITY HeroesOfTheStormImport "TM's M3 Import All (v2.1)"
         )
        
     )
+
+    ON cbIgnoreDeath CHANGED theState do
+    (
+        if bIgnoreDeath then
+        (
+            bIgnoreDeath=false
+        )
+        else
+        (
+            bIgnoreDeath=true
+        )
+       
+    )
+    
 )
 

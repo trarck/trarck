@@ -73,7 +73,7 @@
     /**********************************************************************************************************************************
         CREATE THE UTILITY
     **********************************************************************************************************************************/
-    UTILITY HeroesOfTheStormImport "Export Hero"
+    UTILITY HeroesOfTheStormExport "Export Hero"
     (
         Group "Model export"
         (
@@ -88,7 +88,7 @@
             Button bGo "Export..." height:35 width:100
         )
 
-        on HeroesOfTheStormImport OPEN DO
+        on HeroesOfTheStormExport OPEN DO
         (
             cbReplaceOldFile.Checked = false
         )

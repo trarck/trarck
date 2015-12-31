@@ -1,6 +1,5 @@
 (
-    GLOBAL SavePath= "E:\unity\Storm\Assets\Textures"
-
+    GLOBAL SavePath= "E:/unity/Storm/Assets/Textures"
 
     fn CollectMaxFile filepath=
     (       
@@ -11,7 +10,7 @@
             --print bmt.filename
             
             -- copy to dest
-            textureFile=pathConfig.appendPath pathConfig.getCurrentProjectFolder() bmt.filename
+            textureFile=pathConfig.appendPath (pathConfig.getCurrentProjectFolder()) bmt.filename
             
             textureName= currentFilename = filenameFromPath bmt.filename
 
@@ -32,7 +31,7 @@
         )
     )
     
-    CollectMaxFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Abathur_Base.max"
+    --CollectMaxFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Abathur_Base.max"
 
     /**********************************************************************************************************************************
         CREATE THE UTILITY

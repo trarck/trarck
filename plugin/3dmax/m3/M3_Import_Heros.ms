@@ -2398,68 +2398,71 @@ fn Apply_Skin=
 /* save animation info*/
 fn SaveAnimInfo =
 (
-	animPropsList = STC_LIST
-	
-	local cnt="["
-	local isFirst=true
+    if nbrValidSTCs >0 then
+    (
+        animPropsList = STC_LIST
+        
+        local cnt="["
+        local isFirst=true
 
-	local firstFrame = nAnimationFrameStart
+        local firstFrame = nAnimationFrameStart
 
-	for i=1 to nbrValidSTCs do
-	(
-		if(isFirst) then
-		(
-			isFirst=false
-		)
-		else
-		(
-			cnt +=",\r\n"
-		)
+        for i=1 to nbrValidSTCs do
+        (
+            if(isFirst) then
+            (
+                isFirst=false
+            )
+            else
+            (
+                cnt +=",\r\n"
+            )
 
-		local seqsId = STC_LIST[i].SEQ_refId
-		local nbrFrames = (SEQS_LIST[seqsId].endFrame * 30 / 1000.0 ) as integer  --> end frame is actually wrong, this is the number of seconds the animation takes
-			
-		local val = "{"
-		val += "\"name\":\"" +STC_LIST[i].Name + "\","
-		val += "\"firstFrame\":" + firstFrame as string + ","
-		val += "\"lastFrame\":" + (firstFrame + nbrFrames) as string + ","
-		val += "\"frequency\" : " 	 + SEQS_LIST[seqsId].frequency as string + ","
-		val += "\"moveSpeed\" : "  + SEQS_LIST[seqsId].MovementSpeed as string + ","
-		val += "\"nonLoop\" : " 	 + STC_LIST[i].NonLooping as string +"}"
-		
-		firstFrame += (nbrFrames + nAnimationFrameBuffer) as integer
+            local seqsId = STC_LIST[i].SEQ_refId
+            local nbrFrames = (SEQS_LIST[seqsId].endFrame * 30 / 1000.0 ) as integer  --> end frame is actually wrong, this is the number of seconds the animation takes
+                
+            local val = "{"
+            val += "\"name\":\"" +STC_LIST[i].Name + "\","
+            val += "\"firstFrame\":" + firstFrame as string + ","
+            val += "\"lastFrame\":" + (firstFrame + nbrFrames) as string + ","
+            val += "\"frequency\" : " 	 + SEQS_LIST[seqsId].frequency as string + ","
+            val += "\"moveSpeed\" : "  + SEQS_LIST[seqsId].MovementSpeed as string + ","
+            val += "\"nonLoop\" : " 	 + STC_LIST[i].NonLooping as string +"}"
+            
+            firstFrame += (nbrFrames + nAnimationFrameBuffer) as integer
 
-		cnt+= val 
-	)
+            cnt+= val 
+        )
 
-	cnt +="]\r\n"
+        cnt +="]\r\n"
 
-	
-	print (format "AnimationInfo:%" cnt)
+        
+        print (format "AnimationInfo:%" cnt)
 
-	--save to track
-	local animInfoTrack = notetrack "AnimInfoTrack"
-	addNoteTrack rootNode animInfoTrack
+        --save to track
+        local animInfoTrack = notetrack "AnimInfoTrack"
+        addNoteTrack rootNode animInfoTrack
 
-	local animInfoNote = AddNewNoteKey animInfoTrack 1
-	animInfoNote.value=cnt
+        local animInfoNote = AddNewNoteKey animInfoTrack 1
+        animInfoNote.value=cnt
 
-	--save to file
-	local animInfoPath=pathConfig.convertPathToAbsolute "animinfos"
+        --save to file
+        local animInfoPath=pathConfig.convertPathToAbsolute "animinfos"
 
-	makeDir animInfoPath all:true
-	
-	local baseFileName=getFilenameFile sCurrentFile
+        makeDir animInfoPath all:true
+        
+        local baseFileName=getFilenameFile sCurrentFile
 
-	local animInfoFileName= pathConfig.appendPath animInfoPath baseFileName
-	
-	animInfoFileName+=".json"
+        local animInfoFileName= pathConfig.appendPath animInfoPath baseFileName
+        
+        animInfoFileName+=".json"
 
-	animInfoFile = createfile animInfoFileName
+        animInfoFile = createfile animInfoFileName
 
-	format "%" cnt to:animInfoFile
+        format "%" cnt to:animInfoFile
 
-	close animInfoFile
+        close animInfoFile
+    )
 )
 
 /* create StarCraft 2 AnimProps */

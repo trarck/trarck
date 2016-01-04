@@ -10,7 +10,8 @@
             --print bmt.filename
             
             -- copy to dest
-            textureFile=pathConfig.appendPath (pathConfig.getCurrentProjectFolder()) bmt.filename
+
+            textureFile=pathConfig.appendPath (pathConfig.getCurrentProjectFolder()) (bmt.filename)
             
             textureName= currentFilename = filenameFromPath bmt.filename
 

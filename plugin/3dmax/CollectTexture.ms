@@ -3,7 +3,9 @@
 
     fn CollectMaxFile filepath=
     (       
-        loadMaxFile filepath
+        ClearListener()
+
+        loadMaxFile filepath quiet:true
         
         for bmt in getClassInstances bitmaptex do
         (

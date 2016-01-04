@@ -5,7 +5,9 @@
     fn CreateNewScene =
     (
         setSaveRequired false
+        
         clearUndoBuffer()
+
         actionMan.executeAction 0 "16"
     )
 
@@ -30,23 +32,30 @@
             )
         )
 
+        if objs.count>0 then
+        (
+            select objs
+        )
+
         select objs
     )
 
     fn IsExportFileExists filepath =
     (
         currentFilename = getFilenameFile filepath
-        exportFilePath= SavePath+currentFilename+".fbx"
+        exportFilePath= SavePath+currentFilename+".FBX"
         return DoesFileExist exportFilePath
     )
 
-    fn ExplodeHero filepath=
+    fn ExplodeFile filepath=
     (
         print("parse:"+filepath)
 
-        CreateNewScene()
+        --CreateNewScene()
         
-        loadMaxFile filepath
+        ClearListener()
+
+        loadMaxFile filepath quiet:true
 
         HideLayer("HitTestFuzzy")
         HideLayer("Vol_Target")
@@ -54,31 +63,33 @@
         SelectAllVisibleObjects()
         
         currentFilename = getFilenameFile filepath
-        exportFilePath= SavePath+currentFilename+".fbx"
+        exportFilePath= SavePath+currentFilename+".FBX"
         
+        print("Save:"+exportFilePath)
+
         exportfile exportFilePath #noPrompt selectedOnly:true
     )
 
-    fn ExplodeHeroFromDir dir =
+    fn ExplodeFromDir dir =
     (
         files = getFiles (dir +"/*.max")
         for file in files do
         (
             if NOT IsExportFileExists(file) OR bReplaceOldFile then
             (
-                ExplodeHero file
+                ExplodeFile file
             )
         )
     )
     
-    --ExplodeHeroFromDir "E:\3dmax\Storm\Units\Heroes"
-    --ExplodeHero "E:\3dmax\Storm\Units\Heroes\Storm_Morph_Abathur_Base_Megathur.max"
+    --ExplodeFromDir "E:\3dmax\Storm\Units\Mercs"
+    --ExplodeFile "E:\3dmax\Storm\Units\Mercs\Storm_Merc_HvH2_Punisher_Arcane.max"
     --loadMaxFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Abathur_Pajamathur.max"
 
     /**********************************************************************************************************************************
         CREATE THE UTILITY
     **********************************************************************************************************************************/
-    UTILITY HeroesOfTheStormExport "Export Hero"
+    UTILITY HeroesOfTheStormExport "Export Storm"
     (
         Group "Model export"
         (
@@ -133,8 +144,10 @@
 
         On bGo PRESSED do
         (
-            SavePath = txtSaveFile.Text+ "/"
-            ExplodeHeroFromDir txtSelectedFile.Text
+            setWaitCursor()
+            SavePath = txtSaveFile.Text+ "\\"
+            ExplodeFromDir txtSelectedFile.Text
+            setArrowCursor()
         )
     )
 )

@@ -4,8 +4,11 @@
 
     fn CreateNewScene =
     (
+        setSaveRequired false
+        clearUndoBuffer()
         actionMan.executeAction 0 "16"
     )
+
     fn HideLayer layerName =
     (
         layer = LayerManager.GetLayerFromName layerName
@@ -39,7 +42,9 @@
 
     fn ExplodeHero filepath=
     (
-        --CreateNewScene()
+        print("parse:"+filepath)
+
+        CreateNewScene()
         
         loadMaxFile filepath
 
@@ -67,7 +72,7 @@
     )
     
     --ExplodeHeroFromDir "E:\3dmax\Storm\Units\Heroes"
-    --loadMaxFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Abathur_Base.max"
+    --ExplodeHero "E:\3dmax\Storm\Units\Heroes\Storm_Morph_Abathur_Base_Megathur.max"
     --loadMaxFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Abathur_Pajamathur.max"
 
     /**********************************************************************************************************************************

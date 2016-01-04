@@ -1,0 +1,2 @@
+setSaveRequired false
+clearUndoBuffer()

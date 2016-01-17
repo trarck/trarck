@@ -1,210 +1,83 @@
-
 if($.os.indexOf("Macintosh OS")>-1){
 	//mac os
 	var g_LibsScriptFolderPath = "/Users/duanhouhai/development/trarck/trarck/plugin/photoshop/libs/";
-	var texgtureFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/hero/";
-	var jsonFolderPath="/Users/duanhouhai/development/trarck/dtcq/fca/temp/json/"
+	var fontFolderPath="/Users/duanhouhai/development/trarck/dtcq/fca/temp/json/"
 	var psdFolderPath = "/Users/duanhouhai/development/trarck/dtcq/fca/temp/psd/";
 }else{
 	//windows
-	var g_LibsScriptFolderPath = "/d/trarck/plugin/photoshop/libs/";
-	var texgtureFolderPath = "/e/lua/dtcqtool/fca/temp/hero/";
-	var jsonFolderPath="/e/lua/dtcqtool/fca/temp/json/"
+	var g_LibsScriptFolderPath = "/e/trarck/plugin/photoshop/libs/";
+	var fontFolderPath="/e/temp/score_numbers/"
 	var psdFolderPath = "/e/lua/dtcqtool/fca/temp/psd/";
 }
 
-
-$.evalFile(g_LibsScriptFolderPath + "math/Terminology.jsx");
-$.evalFile(g_LibsScriptFolderPath + "math/Geometry.jsx");
-$.evalFile(g_LibsScriptFolderPath + "math/GeometryUtil.jsx");
-$.evalFile(g_LibsScriptFolderPath + "math/TransformMatrix.jsx");
-
-$.evalFile(g_LibsScriptFolderPath + "json2.jsx");
 $.evalFile(g_LibsScriptFolderPath + "utils/LayerUtil.jsx");
 
+var canvasWidth=1024;
+var canvasHeight=128;
+var padding=1;
+var itemWidth=97;
 
-var fcaScale=0.111;
-var canvasWidth=1500;
-var canvasHeight=1200;
+function moveLayerTo(fLayer,x,y) {
 
-function getInfoData(infoFile) {
-	//var file = new File(g_LibsScriptFolderPath+"../tests/cha.json");//File.openDialog("choose dialog");
-	infoFile.encoding="BINARY";
-	if(infoFile.open()){
-		var data=infoFile.read();
-		var jsonObj=JSON.parse(data);
-
-		infoFile.close();
-		
-		return jsonObj;
-	}
-	
-	return null;
+ // var bounds = fLayer.bounds;
+ // X = X- BOUNDS[0].AS("PX");;
+ // Y = Y - BOUNDS[1].AS("PX");;
+    
+  fLayer.translate(x+" px",y+" px");
 }
 
-function importPart(part,texturePath){
-	var file=texturePath+part.texture+".png";
+function importFontFile(fontFile,index){
 	
-//	alert(file);
-	
-	LayerUtil.openFileList([file]);
+	LayerUtil.openFileList([fontFile]);
 	
 	var currLayer=app.activeDocument.activeLayer;
-//
-//	alert(currLayer);
-//	return;
 	
 	//fix matrix	
-	var bounds = currLayer.bounds;
-	var width=bounds[2].as("px")-bounds[0].as("px");
-	var height=bounds[3].as("px")-bounds[1].as("px");
+	moveLayerTo(currLayer,index*(itemWidth+padding),0);
 	
-	// alert(width+","+height);
-	
-	var matrix=part.matrix;
-	
-	var tx=-0.5*matrix.c*height - 0.5*matrix.a*width + matrix.tx*fcaScale;
-	var ty=-0.5*matrix.d*height - 0.5*matrix.b*width + matrix.ty*fcaScale;
-	
-	tx+=canvasWidth/2;
-	ty+=canvasHeight/2;
-	
-	matrix.tx=tx;
-	matrix.ty=ty;
-	
-	var transformMatrix=new TransformMatrix(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
-		
-//	alert(transformMatrix.a+","+transformMatrix.b+","+transformMatrix.c+","+transformMatrix.d+","+transformMatrix.tx+","+transformMatrix.ty);
+	//currLayer.translate("100 px",0);
 
-//	alert(currLayer);
+   // var bounds = currLayer.bounds;
+	//var width=bounds[2].as("px")-bounds[0].as("px");
+	//var height=bounds[3].as("px")-bounds[1].as("px");
 
-	transformLayer(currLayer,transformMatrix);
-	
+   // alert(bounds[0])
 }
 
-function getCornersFromLayerBounds( layer )
-{
-	var bounds = layer.bounds;
-	var fCorners = new Array();
-	fCorners[0] = new TPoint( bounds[0].as("px"), bounds[1].as("px") );
-	fCorners[2] = new TPoint( bounds[2].as("px"), bounds[3].as("px") );
-	
-	fCorners[1] = new TPoint( fCorners[2].fX, fCorners[0].fY );
-	fCorners[3] = new TPoint( fCorners[0].fX, fCorners[2].fY );
-	
-	return fCorners;
+
+function importFontFiles(){
+	var fontFolder = Folder.selectDialog('Please select the folder to be imported:', Folder(fontFolderPath));
+	var fontFiles=fontFolder.getFiles();
+
+	for(var i in fontFiles){
+		var fontFile=fontFiles[i].toString();
+		if(fontFile.indexOf(".png")>0){
+            importFontFile(fontFile,i);
+        }
+
+        //return;
+	}
 }
 
-function applyConersTransformMaxtrix(corners,matrix){
-	for(var i=0;i<corners.length;++i){
-		var p=matrix.pointApply(corners[i].fX,corners[i].fY);
-		corners[i].fX=p.x;
-		corners[i].fY=p.y;
-	}
-	return corners;
-}
+function importFromFontFolder(){
+    var startRulerUnits = app.preferences.rulerUnits
+    var startTypeUnits = app.preferences.typeUnits
+    var startDisplayDialogs = app.displayDialogs
 
-function transformActiveLayerWithCorners( newCorners )
-{
-	function pxToNumber( px )
-	{
-		return px.as("px");
-	}
-	
-	var saveUnits = app.preferences.rulerUnits;
-	app.preferences.rulerUnits = Units.PIXELS;
+    app.preferences.rulerUnits = Units.PIXELS
+    app.preferences.typeUnits = TypeUnits.PIXELS
+    //app.displayDialogs = DialogModes.NO
 
-	var i;
-	var setArgs = new ActionDescriptor();
-	var chanArg = new ActionReference();
-	
-	chanArg.putProperty( classChannel, keySelection );
-	setArgs.putReference( keyNull, chanArg );
-	
-	var boundsDesc = new ActionDescriptor();
-	var layerBounds = app.activeDocument.activeLayer.bounds;
-	boundsDesc.putUnitDouble( keyTop, unitPixels, pxToNumber( layerBounds[1] ) );
-	boundsDesc.putUnitDouble( keyLeft, unitPixels, pxToNumber( layerBounds[0] ) );
-	boundsDesc.putUnitDouble( keyRight, unitPixels, pxToNumber( layerBounds[2] ) );
-	boundsDesc.putUnitDouble( keyBottom, unitPixels, pxToNumber( layerBounds[3] ) );
-	
-	setArgs.putObject( keyTo, classRectangle, boundsDesc );
-	executeAction( eventSet, setArgs );
-	
-	var result = new ActionDescriptor();
-	var args = new ActionDescriptor();
-	var quadRect = new ActionList();
-	quadRect.putUnitDouble( unitPixels, pxToNumber( layerBounds[0] ) );	// ActionList put is different from ActionDescriptor put
-	quadRect.putUnitDouble( unitPixels, pxToNumber( layerBounds[1] ) );
-	quadRect.putUnitDouble( unitPixels, pxToNumber( layerBounds[2] ) );
-	quadRect.putUnitDouble( unitPixels, pxToNumber( layerBounds[3] ) );
-	
-	var quadCorners = new ActionList();
-	for (i = 0; i < 4; ++i)
-	{
-		quadCorners.putUnitDouble( unitPixels, newCorners[i].fX );
-		quadCorners.putUnitDouble( unitPixels, newCorners[i].fY );
-	}
-	args.putList( krectangleStr, quadRect );
-	args.putList( kquadrilateralStr, quadCorners );
-	executeAction( eventTransform, args );
-	
-	// Deselect
-	deselArgs = new ActionDescriptor();
-	deselRef = new ActionReference();
-	deselRef.putProperty( classChannel, keySelection );
-	deselArgs.putReference( keyNull, deselRef );
-	deselArgs.putEnumerated( keyTo, typeOrdinal, enumNone );
-	executeAction( eventSet, deselArgs );
-	app.preferences.rulerUnits = saveUnits;
-}
+    var currentDoc=app.documents.add(canvasWidth, canvasHeight,72, "FontDoc", NewDocumentMode.RGB,DocumentFill.TRANSPARENT);
 
-function transformLayer(layer,matrix){
-	
-	if(app.activeDocument.activeLayer!=layer){
-		app.activeDocument.activeLayer=layer;
-	}
-	
-	var corners=getCornersFromLayerBounds(layer);
-	
-	applyConersTransformMaxtrix(corners,matrix);
-	
-	transformActiveLayerWithCorners(corners);
-}
+    importFontFiles();
 
-function importFromFileAndTexturePath(file,texturePath,name){
-	
-	var currentDoc=app.documents.add(canvasWidth, canvasHeight,72, "boneDoc", NewDocumentMode.RGB,DocumentFill.TRANSPARENT);
+	//currentDoc.saveAs(new File(psdFolderPath+name+".psd"));
+	//currentDoc.close();
 
-	var data=getInfoData(file);
-	
-	if(!data){
-		alert("false");
-		return;
-	}
-	
-	for(var k in data){
-		importPart(data[k],texturePath);
-	}
-
-	currentDoc.saveAs(new File(psdFolderPath+name+".psd"));
-	currentDoc.close();
-}
-
-function importFromFileAndName(file,name){
-	file=file instanceof File ?file:new File(file);
-	var texturePath=texgtureFolderPath+name+"/";
-	importFromFileAndTexturePath(file,texturePath,name);
-}
-
-function importFromChaFolder(){
-	var jsonFolder = Folder.selectDialog('Please select the folder to be imported:', Folder(jsonFolderPath));
-	var boneFolders=jsonFolder.getFiles();
-
-	for(var i in boneFolders){
-		var boneFolder=boneFolders[i];
-		importFromFileAndName((boneFolder.getFiles())[0],boneFolder.name);
-	}
+    app.preferences.rulerUnits = startRulerUnits
+    app.preferences.typeUnits = startTypeUnits
+    app.displayDialogs = startDisplayDialogs
 }
 
 function selectChaFileAndTexturePath(){
@@ -215,14 +88,7 @@ function selectChaFileAndTexturePath(){
 
 function main(){
 
-//	//create a new doc if no document
-//	if(app.documents.length){
-//		currentDoc=app.activeDocument;
-//	}else{
-//		currentDoc=app.documents.add(canvasWidth, canvasHeight,72, "boneDoc", NewDocumentMode.RGB,DocumentFill.TRANSPARENT);
-//	}
-
-	importFromChaFolder();
+	importFromFontFolder();
 	// selectChaFileAndTexturePath();
 }
 

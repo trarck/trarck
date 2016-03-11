@@ -1319,8 +1319,16 @@ fn Read_LITE stream idx=
 			lightLayer.AddNode l
 
 			SkipBytes stream 20
-
-			BONE_LIST[boneIndex].TheBone.name = BONE_LIST[boneIndex].TheBone.name + "_BoneRef"
+            
+            if(findstring BONE_LIST[boneIndex].TheBone.name "_BoneRef" !=undefined) then
+            (
+                BONE_LIST[boneIndex].TheBone.name = BONE_LIST[boneIndex].TheBone.name
+            )
+            else
+            (
+                BONE_LIST[boneIndex].TheBone.name = BONE_LIST[boneIndex].TheBone.name + "_BoneRef"
+            )
+			
 			--print l
 		)
 	) catch()

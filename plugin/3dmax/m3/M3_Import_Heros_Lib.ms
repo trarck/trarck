@@ -87,8 +87,8 @@ struct HEROES_IREF      ( Matrix )
 struct HEROES_Submesh   ( Name, firstVertex, nVerts, firstIndex, nIndices, nBones,firstBoneLookup,nBoneLookup, nBoneWeightPairs, RootBoneId, TheMesh )
 struct HEROES_MeshMat	( MeshId, MatId)
 struct HEROES_MATM		( materialIndex, materialType )
-struct HEROES_VOLTARGET ( type, size0, size1, size2,bone0, bone1,bone2, matrix )
-struct HEROES_HITTEST   ( type, size0, size1, size2,boneId, matrix )
+struct HEROES_VOLTARGET ( type, size0, size1, size2,bone0, bone1,bone2, matrix,matrix_array )
+struct HEROES_HITTEST   ( type, size0, size1, size2,boneId, matrix,matrix_array )
 struct HEROES_ATT		( Name, ParentId )
 
 struct HEROES_MODL	 	( Name, VerticesTAG, nSkinBones )
@@ -292,19 +292,25 @@ fn ValidateTexture texture=
 	return undefined
 )
 
-fn Read4x4Matrix stream=
+fn Read4x4Matrix stream &out: =
 (
 	/* Reads a 4x4 matrix, but Max only knows a 3x4 matrix, if it is called a matrix3, so skip the fourth float */
 
 	-- reads 16 * 4 bytes = 64bytes
-	row1 = [ReadFloat stream, ReadFloat stream, ReadFloat stream]
-	 ReadFloat stream
-	row2 = [ReadFloat stream, ReadFloat stream, ReadFloat stream]
-	 ReadFloat stream
-	row3 = [ReadFloat stream, ReadFloat stream, ReadFloat stream]
-	 ReadFloat stream
-	row4 = [ReadFloat stream * 100, ReadFloat stream * 100, ReadFloat stream * 100] -- Position
-	 ReadFloat stream
+    local arr=#()
+    for i=1 to 16 to
+    (
+        append arr ReadFloat stream
+    )
+    out=arr    
+
+	row1 = [arr[1], arr[2], arr[3]]
+
+	row2 = [arr[5], arr[6], arr[7]]
+
+	row3 = [arr[9], arr[10], arr[11]]
+
+	row4 = [arr[13] * 100,arr[14] * 100, arr[15] * 100] -- Position
 	return ( inverse ( matrix3 row1 row2 row3 row4 ) )
 )
 
@@ -1365,7 +1371,9 @@ fn Read_ATVL stream idx=
 		volTarget.bone2 = ReadLong stream
 		-- 16bytes
 
-		volTarget.matrix = Read4x4Matrix stream --> 64 bytes --> transformation matrix
+        local matrix_array=#()
+		volTarget.matrix = Read4x4Matrix stream out:&matrix_array --> 64 bytes --> transformation matrix
+        volTarget.matrix_array=matrix_array
 
 		SkipBytes stream 24
 
@@ -1408,8 +1416,9 @@ fn Read_SSGS stream idx=
 
 		SkipBytes stream 2
 		-- 8bytes
-
-		hitTest.matrix = Read4x4Matrix stream --> 64 bytes --> transformation matrix
+        local matrix_array=#()
+		hitTest.matrix = Read4x4Matrix stream out:&matrix_array --> 64 bytes --> transformation matrix
+        hitTest.matrix_array=matrix_array
 
 		SkipBytes stream 24
 
@@ -2434,76 +2443,6 @@ fn Apply_Skin=
 )
 
 /* save animation info*/
-fn SaveVolumeInfo =
-(
-    if nbrValidSTCs >0 then
-    (
-        animPropsList = STC_LIST
-        
-        local cnt="["
-        local isFirst=true
-
-        local firstFrame = nAnimationFrameStart
-
-        for i=1 to nbrValidSTCs do
-        (
-            if(isFirst) then
-            (
-                isFirst=false
-            )
-            else
-            (
-                cnt +=",\r\n"
-            )
-
-            local seqsId = STC_LIST[i].SEQ_refId
-            local nbrFrames = (SEQS_LIST[seqsId].endFrame * 30 / 1000.0 ) as integer  --> end frame is actually wrong, this is the number of seconds the animation takes
-                
-            local val = "{"
-            val += "\"name\":\"" +STC_LIST[i].Name + "\","
-            val += "\"firstFrame\":" + firstFrame as string + ","
-            val += "\"lastFrame\":" + (firstFrame + nbrFrames) as string + ","
-            val += "\"frequency\" : " 	 + SEQS_LIST[seqsId].frequency as string + ","
-            val += "\"moveSpeed\" : "  + SEQS_LIST[seqsId].MovementSpeed as string + ","
-            val += "\"nonLoop\" : " 	 + STC_LIST[i].NonLooping as string +"}"
-            
-            firstFrame += (nbrFrames + nAnimationFrameBuffer) as integer
-
-            cnt+= val 
-        )
-
-        cnt +="]\r\n"
-
-        
-        print (format "AnimationInfo:%" cnt)
-
-        --save to track
-        local animInfoTrack = notetrack "AnimInfoTrack"
-        addNoteTrack rootNode animInfoTrack
-
-        local animInfoNote = AddNewNoteKey animInfoTrack 1
-        animInfoNote.value=cnt
-
-        --save to file
-        local animInfoPath=pathConfig.convertPathToAbsolute "animinfos"
-
-        makeDir animInfoPath all:true
-        
-        local baseFileName=getFilenameFile sCurrentFile
-
-        local animInfoFileName= pathConfig.appendPath animInfoPath baseFileName
-        
-        animInfoFileName+=".json"
-
-        animInfoFile = createfile animInfoFileName
-
-        format "%" cnt to:animInfoFile
-
-        close animInfoFile
-    )
-)
-
-/* save animation info*/
 fn SaveAnimInfo =
 (
     if nbrValidSTCs >0 then
@@ -2844,6 +2783,117 @@ fn ApplyAnimation=
 
 )
 
+/* save model info*/
+fn SaveModelInfo =
+(
+    /* Fuzzy volume in hos use for hit test*/
+    local modelInfo="{
+
+    if SSGS_LIST.Count>0 then
+    (
+        local fuzzyHitTest="["
+        for i=1 to SSGS_LIST.Count do
+        (
+            local hitTest = SSGS_LIST[i]
+            local hitTestInfo="{"
+            hitTestInfo+="\"type\":"+hitTest.type+","
+            hitTestInfo+="\"size0\":"+hitTest.size0+","
+            hitTestInfo+="\"size1\":"+hitTest.size1+","
+            hitTestInfo+="\"size2\":"+hitTest.size2+","
+            hitTestInfo+="\"bone\":"+BONE_LIST[hitTest.BoneId].theBone.Name+","
+
+            local matrix_array="["
+            for j=1 to hitTest.maxtrix_array.Count do
+            (
+                matrix_array+= hitTest.maxtrix_array[j]
+                if j!=hitTest.maxtrix_array.Count then
+                (
+                    matrix_array+= ","
+                )
+            )
+            matrix_array+="]"
+            hitTestInfo+="\"matrix\":"+matrix_array+
+            hitTestInfo+="}"
+
+            fuzzyHitTest+=hitTestInfo
+            if i!=SSGS_LIST.Count then
+            (
+                fuzzyHitTest+=","
+            )
+        )        
+
+        fuzzyHitTest +="]"
+
+        modelInfo+="\"fuzzyHitTest\":"+fuzzyHitTest+","
+    )
+
+    /* volume Target */
+    if ATVL_LIST.Count>0 then
+    (
+        local attachmentVolumes="["
+        for i=1 to ATVL_LIST.Count do
+        (
+            local attachmentVolume = ATVL_LIST[i]
+
+            local attaInfo="{"
+            attaInfo +="\"type\":"+ attachmentVolume.type+","
+            attaInfo +="\"size0\":"+ attachmentVolume.size0+","
+            attaInfo +="\"size1\":"+ attachmentVolume.size1+","
+            attaInfo +="\"size2\":"+ attachmentVolume.size2+","
+            attaInfo +="\"bone\":"+BONE_LIST[attachmentVolume.bone0].theBone.Name+","
+
+            local matrix_array="["
+            for j=1 to attachmentVolume.maxtrix_array.Count do
+            (
+                matrix_array+= attachmentVolume.maxtrix_array[j]
+                if j!=attachmentVolume.maxtrix_array.Count then
+                (
+                    matrix_array+= ","
+                )
+            )
+            matrix_array+="]"
+            attaInfo +="\"matrix\":"+matrix_array+
+            attaInfo+="}"
+
+            attachmentVolumes +=attaInfo
+            if i!=SSGS_LIST.Count then
+            (
+                attachmentVolumes +=","
+            )
+        )
+
+        attachmentVolumes +="]"
+
+        modelInfo+="\"attachmentVolume\":"+attachmentVolumes+","
+    )
+
+    modelInfo +="}"
+
+    --save to track
+    local modelInfoTrack = notetrack "ModelInfoTrack"
+    addNoteTrack rootNode modelInfoTrack
+
+    local modelInfoNote = AddNewNoteKey modelInfoTrack 1
+    modelInfoNote.value=modelInfo
+
+    --save to file
+    local modelInfoPath=pathConfig.convertPathToAbsolute "modelinfos"
+
+    makeDir modelInfoPath all:true
+    
+    local baseFileName=getFilenameFile sCurrentFile
+
+    local modelInfoFileName= pathConfig.appendPath modelInfoPath baseFileName
+    
+    modelInfoFileName=".json"
+
+    modelInfoFile = createfile modelInfoFileName
+
+    format "%" modelInfo to:modelInfoFile
+
+    close modelInfoFile
+)
+
 /**********************************************************************************************************************************/
 /* START READING THE FILE */
 /**********************************************************************************************************************************/
@@ -3080,6 +3130,9 @@ fn ImportModel file=
 			Build_Materials()
 			ApplyMaterials()
 		)
+
+        SaveModelInfo()
+
 		CleanUpScene()
 	)
 )
@@ -3134,6 +3187,9 @@ fn MainImport file=
 			Build_Materials()
 			ApplyMaterials()
 		)
+
+        SaveModelInfo()
+
 		CleanUpScene()
 
 	)

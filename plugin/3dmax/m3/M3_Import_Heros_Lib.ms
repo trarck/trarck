@@ -111,6 +111,18 @@ fn M3I_Convert_Time t =
 	t / (1000 / M3I_useFPS)
 )
 
+fn RenameBoneRef bone=
+(
+    if(findstring bone.name "_BoneRef" !=undefined) then
+    (
+        bone.name = bone.TheBone.name
+    )
+    else
+    (
+        bone.name = bone + "_BoneRef"
+    )
+)
+
 fn ResetGlobals=
 (
 	/* When reselectin a file, reset these so no data of previous files is retained */
@@ -1320,14 +1332,7 @@ fn Read_LITE stream idx=
 
 			SkipBytes stream 20
             
-            if(findstring BONE_LIST[boneIndex].TheBone.name "_BoneRef" !=undefined) then
-            (
-                BONE_LIST[boneIndex].TheBone.name = BONE_LIST[boneIndex].TheBone.name
-            )
-            else
-            (
-                BONE_LIST[boneIndex].TheBone.name = BONE_LIST[boneIndex].TheBone.name + "_BoneRef"
-            )
+            RenameBoneRef(BONE_LIST[boneIndex].TheBone)
 			
 			--print l
 		)
@@ -1793,7 +1798,8 @@ fn Read_CAM stream idx=
         local cam = HEROES_SC2Camera()
 
         cam.name = BONE_LIST[boneIndex].Name
-        BONE_LIST[boneIndex].Name = BONE_LIST[boneIndex].Name + "_boneRef"
+        --BONE_LIST[boneIndex].Name = BONE_LIST[boneIndex].Name + "_boneRef"
+        RenameBoneRef(BONE_LIST[boneIndex])
         cam.rotation = BONE_LIST[boneIndex].Rotation
         cam.position = BONE_LIST[boneIndex].Position
 
@@ -2115,7 +2121,8 @@ fn Build_VolTarget=
 			freeze obj
 			Hide refBone
 		)
-		BONE_LIST[volTarget.Bone0].theBone.name = BONE_LIST[volTarget.Bone0].theBone.name + "_BoneRef"
+		--BONE_LIST[volTarget.Bone0].theBone.name = BONE_LIST[volTarget.Bone0].theBone.name + "_BoneRef"
+        RenameBoneRef(BONE_LIST[volTarget.Bone0].theBone)
 	)
 
 
@@ -2183,8 +2190,8 @@ fn Build_HitTestFuzzy=
 			freeze obj
 			hide refBone
 		)
-		BONE_LIST[hitTest.BoneId].theBone.name = BONE_LIST[hitTest.BoneId].theBone.name + "_BoneRef"
-
+		--BONE_LIST[hitTest.BoneId].theBone.name = BONE_LIST[hitTest.BoneId].theBone.name + "_BoneRef"
+        RenameBoneRef(BONE_LIST[hitTest.BoneId].theBone)
 	)
 
 
@@ -2219,7 +2226,8 @@ fn Build_Attachments=
 			attLayer.AddNode refBone
 			hide refBone
 			freeze obj
-			BONE_LIST[att.ParentId].theBone.name = BONE_LIST[att.ParentId].theBone.name + "_BoneRef"
+			--BONE_LIST[att.ParentId].theBone.name = BONE_LIST[att.ParentId].theBone.name + "_BoneRef"
+            RenameBoneRef(BONE_LIST[att.ParentId].theBone)
 		)
 	)
 
@@ -2244,7 +2252,8 @@ fn Build_Attachments=
 			attLayer.AddNode refBone
 			hide refBone
 			freeze obj
-			BONE_LIST[att.ParentId].theBone.name = BONE_LIST[att.ParentId].theBone.name + "_BoneRef"
+			--BONE_LIST[att.ParentId].theBone.name = BONE_LIST[att.ParentId].theBone.name + "_BoneRef"
+            RenameBoneRef(BONE_LIST[att.ParentId].theBone)
 		)
 
 	)
@@ -2422,6 +2431,76 @@ fn Apply_Skin=
 		redrawViews()
 	)
 
+)
+
+/* save animation info*/
+fn SaveVolumeInfo =
+(
+    if nbrValidSTCs >0 then
+    (
+        animPropsList = STC_LIST
+        
+        local cnt="["
+        local isFirst=true
+
+        local firstFrame = nAnimationFrameStart
+
+        for i=1 to nbrValidSTCs do
+        (
+            if(isFirst) then
+            (
+                isFirst=false
+            )
+            else
+            (
+                cnt +=",\r\n"
+            )
+
+            local seqsId = STC_LIST[i].SEQ_refId
+            local nbrFrames = (SEQS_LIST[seqsId].endFrame * 30 / 1000.0 ) as integer  --> end frame is actually wrong, this is the number of seconds the animation takes
+                
+            local val = "{"
+            val += "\"name\":\"" +STC_LIST[i].Name + "\","
+            val += "\"firstFrame\":" + firstFrame as string + ","
+            val += "\"lastFrame\":" + (firstFrame + nbrFrames) as string + ","
+            val += "\"frequency\" : " 	 + SEQS_LIST[seqsId].frequency as string + ","
+            val += "\"moveSpeed\" : "  + SEQS_LIST[seqsId].MovementSpeed as string + ","
+            val += "\"nonLoop\" : " 	 + STC_LIST[i].NonLooping as string +"}"
+            
+            firstFrame += (nbrFrames + nAnimationFrameBuffer) as integer
+
+            cnt+= val 
+        )
+
+        cnt +="]\r\n"
+
+        
+        print (format "AnimationInfo:%" cnt)
+
+        --save to track
+        local animInfoTrack = notetrack "AnimInfoTrack"
+        addNoteTrack rootNode animInfoTrack
+
+        local animInfoNote = AddNewNoteKey animInfoTrack 1
+        animInfoNote.value=cnt
+
+        --save to file
+        local animInfoPath=pathConfig.convertPathToAbsolute "animinfos"
+
+        makeDir animInfoPath all:true
+        
+        local baseFileName=getFilenameFile sCurrentFile
+
+        local animInfoFileName= pathConfig.appendPath animInfoPath baseFileName
+        
+        animInfoFileName+=".json"
+
+        animInfoFile = createfile animInfoFileName
+
+        format "%" cnt to:animInfoFile
+
+        close animInfoFile
+    )
 )
 
 /* save animation info*/

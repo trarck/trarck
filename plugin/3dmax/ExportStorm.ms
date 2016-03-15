@@ -57,8 +57,8 @@
 
         loadMaxFile filepath quiet:true
 
-        HideLayer("HitTestFuzzy")
-        HideLayer("Vol_Target")
+        --HideLayer("HitTestFuzzy")
+        --HideLayer("Vol_Target")
 
         SelectAllVisibleObjects()
         
@@ -83,7 +83,7 @@
     )
     
     --ExplodeFromDir "E:\3dmax\Storm\Units\Mercs"
-    --ExplodeFile "E:\3dmax\Storm\Units\Mercs\Storm_Merc_HvH2_Punisher_Arcane.max"
+    ExplodeFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Artanis_Base.max"
     --loadMaxFile "E:\3dmax\Storm\Units\Heroes\Storm_Hero_Abathur_Pajamathur.max"
 
     /**********************************************************************************************************************************

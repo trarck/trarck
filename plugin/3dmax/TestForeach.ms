@@ -1,3 +1,13 @@
+fn showProps obj =
+(
+    ps = getPropNames obj
+
+    for p in ps do (
+        val = getProperty obj p
+        format (p as string + " = % , type is % \n") val (classof val)
+    )
+)
+
 struct HEROES_CAMERA    
 ( 
     CamRef,
@@ -12,10 +22,7 @@ c=HEROES_CAMERA()
 c.CamRef="a"
 c.BoneRefId=2
 
-print(classof c)
-ps = getPropNames c
 
-for p in ps do (
-val = getProperty c p
-format (p as string + " = % , type is % \n") val (classof val)
-)
+showProps c
+
+showProps([1,1,1])

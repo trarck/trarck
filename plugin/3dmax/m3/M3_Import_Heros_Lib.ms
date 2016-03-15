@@ -113,13 +113,9 @@ fn M3I_Convert_Time t =
 
 fn RenameBoneRef bone=
 (
-    if(findstring bone.name "_BoneRef" !=undefined) then
+    if((findstring bone.name "_BoneRef") ==undefined) then
     (
-        bone.name = bone.TheBone.name
-    )
-    else
-    (
-        bone.name = bone + "_BoneRef"
+        bone.name = bone.name + "_BoneRef"
     )
 )
 
@@ -298,9 +294,9 @@ fn Read4x4Matrix stream &out: =
 
 	-- reads 16 * 4 bytes = 64bytes
     local arr=#()
-    for i=1 to 16 to
+    for i=1 to 16 do
     (
-        append arr ReadFloat stream
+        append arr (ReadFloat stream)
     )
     out=arr    
 
@@ -2787,33 +2783,34 @@ fn ApplyAnimation=
 fn SaveModelInfo =
 (
     /* Fuzzy volume in hos use for hit test*/
-    local modelInfo="{
+    local modelInfo="{"
 
     if SSGS_LIST.Count>0 then
     (
-        local fuzzyHitTest="["
+        local fuzzyHitTest="["+ "\r\n"
         for i=1 to SSGS_LIST.Count do
         (
             local hitTest = SSGS_LIST[i]
-            local hitTestInfo="{"
-            hitTestInfo+="\"type\":"+hitTest.type+","
-            hitTestInfo+="\"size0\":"+hitTest.size0+","
-            hitTestInfo+="\"size1\":"+hitTest.size1+","
-            hitTestInfo+="\"size2\":"+hitTest.size2+","
-            hitTestInfo+="\"bone\":"+BONE_LIST[hitTest.BoneId].theBone.Name+","
+            local hitTestInfo="{"+ "\r\n"
+			
+            hitTestInfo+="\"type\":"+hitTest.type as string+","+ "\r\n"
+            hitTestInfo+="\"size0\":"+hitTest.size0 as string+","+ "\r\n"
+            hitTestInfo+="\"size1\":"+hitTest.size1 as string+","+ "\r\n"
+            hitTestInfo+="\"size2\":"+hitTest.size2 as string+","+ "\r\n"
+            hitTestInfo+="\"bone\":\""+BONE_LIST[hitTest.BoneId].theBone.Name+"\","+ "\r\n"
 
             local matrix_array="["
-            for j=1 to hitTest.maxtrix_array.Count do
+            for j=1 to hitTest.matrix_array.Count do
             (
-                matrix_array+= hitTest.maxtrix_array[j]
-                if j!=hitTest.maxtrix_array.Count then
+                matrix_array += hitTest.matrix_array[j] as string
+                if j!=hitTest.matrix_array.Count then
                 (
-                    matrix_array+= ","
+                    matrix_array += ","
                 )
             )
             matrix_array+="]"
-            hitTestInfo+="\"matrix\":"+matrix_array+
-            hitTestInfo+="}"
+            hitTestInfo+="\"matrix\":"+matrix_array+ "\r\n"
+            hitTestInfo+="}"+ "\r\n"
 
             fuzzyHitTest+=hitTestInfo
             if i!=SSGS_LIST.Count then
@@ -2824,39 +2821,41 @@ fn SaveModelInfo =
 
         fuzzyHitTest +="]"
 
-        modelInfo+="\"fuzzyHitTest\":"+fuzzyHitTest+","
+        modelInfo+="\"fuzzyHitTest\":"+fuzzyHitTest
     )
 
     /* volume Target */
     if ATVL_LIST.Count>0 then
     (
+		if SSGS_LIST.Count>0 then modelInfo+=","+ "\r\n"
+			
         local attachmentVolumes="["
         for i=1 to ATVL_LIST.Count do
         (
             local attachmentVolume = ATVL_LIST[i]
 
-            local attaInfo="{"
-            attaInfo +="\"type\":"+ attachmentVolume.type+","
-            attaInfo +="\"size0\":"+ attachmentVolume.size0+","
-            attaInfo +="\"size1\":"+ attachmentVolume.size1+","
-            attaInfo +="\"size2\":"+ attachmentVolume.size2+","
-            attaInfo +="\"bone\":"+BONE_LIST[attachmentVolume.bone0].theBone.Name+","
+            local attaInfo="{"+ "\r\n"
+            attaInfo +="\"type\":"+ attachmentVolume.type as string+","+ "\r\n"
+            attaInfo +="\"size0\":"+ attachmentVolume.size0 as string +","+ "\r\n"
+            attaInfo +="\"size1\":"+ attachmentVolume.size1 as string +","+ "\r\n"
+            attaInfo +="\"size2\":"+ attachmentVolume.size2 as string +","+ "\r\n"
+            attaInfo +="\"bone\":\""+BONE_LIST[attachmentVolume.bone0].theBone.Name+"\","+ "\r\n"
 
             local matrix_array="["
-            for j=1 to attachmentVolume.maxtrix_array.Count do
+            for j=1 to attachmentVolume.matrix_array.Count do
             (
-                matrix_array+= attachmentVolume.maxtrix_array[j]
-                if j!=attachmentVolume.maxtrix_array.Count then
+                matrix_array+= attachmentVolume.matrix_array[j] as string
+                if j!=attachmentVolume.matrix_array.Count then
                 (
                     matrix_array+= ","
                 )
             )
             matrix_array+="]"
-            attaInfo +="\"matrix\":"+matrix_array+
-            attaInfo+="}"
+            attaInfo +="\"matrix\":"+matrix_array+ "\r\n"
+            attaInfo+="}"+ "\r\n"
 
             attachmentVolumes +=attaInfo
-            if i!=SSGS_LIST.Count then
+            if i!=ATVL_LIST.Count then
             (
                 attachmentVolumes +=","
             )
@@ -2864,7 +2863,7 @@ fn SaveModelInfo =
 
         attachmentVolumes +="]"
 
-        modelInfo+="\"attachmentVolume\":"+attachmentVolumes+","
+        modelInfo+="\"attachmentVolume\":"+attachmentVolumes+ "\r\n"
     )
 
     modelInfo +="}"
@@ -2885,7 +2884,7 @@ fn SaveModelInfo =
 
     local modelInfoFileName= pathConfig.appendPath modelInfoPath baseFileName
     
-    modelInfoFileName=".json"
+    modelInfoFileName +=".json"
 
     modelInfoFile = createfile modelInfoFileName
 

@@ -1,6 +1,6 @@
 include  "M3_Import_Heros_Lib.ms"
 
-GLOBAL SavePath= pathConfig.getCurrentProjectFolder() + "\\Units\\Heroes\\"
+GLOBAL SavePath= pathConfig.getCurrentProjectFolder() + "\\Units\\Tests\\"
 GLOBAL CurrentPath=""
 GLOBAL bReplaceOldFile = false
 GLOBAL bIgnoreDeath = false
@@ -184,15 +184,17 @@ fn ImportM3FromDir dir=
     print("parse:"+CurrentPath)
 
     dirArray=GetDirectories(dir+"/*")
-
+	print(dirArray.Count)
     for d in dirArray do
     (
         filename=trimRight (filenameFromPath  d) "/\\"
 
         if NOT IsAnimation(filename) AND  ((findString d "DeathRagdoll")==undefined) then
         (
+			print("check:"+filename)
             if NOT IsUnitFileExists(filename) OR bReplaceOldFile then
             (
+				print("import:"+filename)
                 ImportM3(filename)
             )
         )
@@ -361,7 +363,7 @@ UTILITY HeroesOfTheStormImport "TM's M3 Import All (v2.1)"
 
 		local path = getSavePath \
 			caption:"Heroes of the Storm" \
-            initialDir:"E:\cascview-en64\Heros\mods\heroes.stormmod\base.stormassets\Assets\Units\Heroes"
+            initialDir:"E:\hos\mods\heroes.stormmod\base.stormassets\Assets\Units\Tests"
 
         try
         ( 

@@ -166,7 +166,7 @@ private
 					v = toStr k val
 					append partial (quote(k) + ":" + v) 
 				)
-				print mind.count
+				
 				if partial.count>0 then
 				(
 					if gap=="" then
@@ -203,7 +203,7 @@ public
 	)
 )
 
-
+/*
 struct Item(a,b,c,d)
 struct Test(a,b,c,d,m,bm)
 
@@ -233,3 +233,4 @@ animInfoFile = createfile "tst.json"
 format "%" s to:animInfoFile
 
 close animInfoFile
+*/

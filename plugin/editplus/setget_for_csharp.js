@@ -134,7 +134,7 @@ function synthesizePropertys(props) {
 			propName=propParts[propParts.length-1];
 		}
 	
-		propName=camelCase(lcfirst(propName));
+		propName=camelCase(ucfirst(propName));
 		
 		filedOut+=synthesizePropertyField(propName,type,initValue)+"\n";
 		contentOut+=synthesizePropertyContent(propName,type);

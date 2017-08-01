@@ -97,6 +97,10 @@ function synthesizePropertyContent(propName,type) {
                +tab+"{\n"
                +tab+tab+"return "+lVarName+";\n"
                +tab+"}\n";
+	//bool type use IsXXX;
+	if(type=="bool"){
+		propName="Is"+propName;
+	}
 	
     return "public "+type+" "+propName+"\n{\n"
                 +setter+"\n"

@@ -1,5 +1,6 @@
 ﻿ 
- visitorLayers(app.activeDocument);
+// visitorLayers(app.activeDocument);
+ test();
  
 function visitorLayers(obj){
      showObjInfo(obj);
@@ -56,6 +57,8 @@ function showArtLayerInfo(layerObj){
     s+="kind:"+layerObj.kind+"\n";
     s+="linkedLayers:"+layerObj.linkedLayers.length+"\n";
     s+="typename:"+layerObj.typename;    
+    var layerEffects  = layerObj.property("Effects");
+    s+="effects:"+layerEffects.lenght;
     $.writeln(s);
 }
 
@@ -63,4 +66,10 @@ function showLayerSetInfo(layerObj){
     var s="name:"+layerObj.name+"\n";
     s+="typename:"+layerObj.typename;    
     $.writeln(s);
+}
+
+function test(){
+    var ref = new ActionReference();
+    ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
+    var a = executeActionGet(ref);
 }

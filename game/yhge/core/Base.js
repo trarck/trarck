@@ -26,7 +26,7 @@
         createNameSpace  : function(name){
             var namespace = name.split("."), name = namespace.pop(), ns = TOPNS, p;
             for (var ii in namespace) {
-                p = yhge.ucfirst(namespace[ii]);
+                p = yhge.core.ucfirst(namespace[ii]);
                 ns = (p in ns ? ns[p] : ns[p] = {});
             }
             return {
@@ -92,8 +92,8 @@
             var Class;
             switch (typeof (name)) {
                 case "string":
-                    var nsc = yhge.createNameSpace(name);
-                    var cName = yhge.ucfirst(nsc.cName);
+                    var nsc = yhge.core.createNameSpace(name);
+                    var cName = yhge.core.ucfirst(nsc.cName);
                     Class=nsc.ns[cName] = hasPrent?function(){
                         Class._superclass_.apply(this,arguments);
 						Class.prototype.initialize && Class.prototype.initialize.apply(Class.prototype,arguments);

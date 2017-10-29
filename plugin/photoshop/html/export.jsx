@@ -69,7 +69,23 @@ function showLayerSetInfo(layerObj){
 }
 
 function test(){
+    showObjInfo(app.activeDocument.activeLayer);
     var ref = new ActionReference();
     ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
     var a = executeActionGet(ref);
+    $.writeln(a.count);
+    for(var i=0;i<a.count;++i){
+            $.writeln (typeIDToStringID(a.getKey(i)));
+    }
+    var layerEffects=a.getObjectValue(stringIDToTypeID("layerEffects"));
+    
+    /*
+    var innerGlow=layerEffects.getObjectValue(stringIDToTypeID("innerGlow"));
+    var g=innerGlow.getObjectValue(stringIDToTypeID("color"));
+    
+     var n = g.getDouble(charIDToTypeID('Rd  ')),
+            t = g.getDouble(charIDToTypeID('Grn ')),
+            E = g.getDouble(charIDToTypeID('Bl  '));
+   $.writeln ("r="+n+"g="+t+"b="+E );
+   */
 }

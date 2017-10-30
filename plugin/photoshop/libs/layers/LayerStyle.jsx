@@ -149,16 +149,28 @@ var LayerStyle;
                         name: name
                     });
                 }
-    I.f('frameFX');
-    var i;
-    this.isLayerEffectEnable('frameFX') && (this.checkMode( 'frameFX', 'stroke'), ('solidColor' == this.getLayerEffectObjectProperty('frameFX.paintType') ? i = this.getLayerEffectObjectProperty('frameFX.color', 'color') : (this.Z.push('stroke'), i = Ma(Ac(this, this.getLayerEffectObjectProperty('frameFX')).gradient))), i = {
-      size: parseFloat(this.getLayerEffectObjectProperty('frameFX.size')),
-      color: i,
-      style: this.getLayerEffectObjectProperty('frameFX.style')
-    }, c = this.getLayerEffectObjectProperty('frameFX.opacity') / 100, i.color.c = c, this.style.stroke.push({
-      value: i,
-      a: 'stroke'
-    }));
+                //'frameFX'
+                var i;
+                if(this.isLayerEffectEnable('frameFX')){ 
+                    this.checkMode( 'frameFX', 'stroke');
+                    if('solidColor' == this.getLayerEffectObjectProperty('frameFX.paintType')){
+                        i = this.getLayerEffectObjectProperty('frameFX.color', 'color');
+                    }else{
+                        this.Z.push('stroke');
+                        i = Ma(Ac(this, this.getLayerEffectObjectProperty('frameFX')).gradient);
+                    }               
+                    i = {
+                        size: parseFloat(this.getLayerEffectObjectProperty('frameFX.size')),
+                        color: i,
+                        style: this.getLayerEffectObjectProperty('frameFX.style')
+                    };
+                    c = this.getLayerEffectObjectProperty('frameFX.opacity') / 100;
+                    i.color.c = c;
+                    this.style.stroke.push({
+                        value: i,
+                        a: 'stroke'
+                    });
+                }
     I.f('dropShadow');
     this.isLayerEffectEnable('dropShadow') && (this.checkMode( 'dropShadow', 'drop shadow'), c = Bc(this, 'dropShadow', 'drop shadow', m), this.style.dropShadow.push({
       value: c,
@@ -270,6 +282,96 @@ var LayerStyle;
         
         getGradientFillData:function(gradientFill,useLayerFillOpacity,color){
             
+        },
+        getGradientData:function (gradientObject, useLayerFillOpacity, color) {
+          if (!gradientObject){
+              console.log('Gradient object is missing even though gradient fill is enabled.');
+              return false;
+          }
+          //'_readPsGradient'
+          //'get gradient'
+          var gradient = ActionUtils.getPSObjectPropertyChain(gradientObject, 'gradient', 'object'),
+              opacity = (useLayerFillOpacity ? this.fillOpacity : ActionUtils.getPSObjectPropertyChain(gradientObject, 'opacity', 'double') / 100),
+              a = new Ia();
+          try {
+            var colors = gradient.getList(T('colors'));
+          } catch (ex) {
+            return false;
+          }
+          //'get color stops';
+          var k, desc, idx = 0;
+          for (k = colors.count; idx < k; ++idx) {
+            desc = colors.getObjectValue(idx);
+            var colorData = ActionUtils.getPSObjectPropertyChain(n, 'color', 'color');
+            desc = new H(100 * desc.getInteger(T('location')) / 4096, colorData);
+            a.D.push(desc);
+          }
+          I.f('get opacities');
+          transparency = gradient.getList(T('transparency'));
+          idx = 0;
+          for (k = transparency.count; idx < k; ++idx) n = transparency.getObjectValue(idx), g = new Fa(100 * n.getInteger(T('location')) / 4096, ActionUtils.getPSObjectPropertyChain(n, 'opacity', 'double') / 100 * opacity), a.G.push(g);
+          I.f('overlay with color');
+          if (color) {
+            idx = 0;
+            for (e = a.D.length; idx < e; idx++) opacity = Ca(a.D[idx].color, color), a.D[idx].color = opacity;
+            idx = 0;
+            for (e = a.G.length; idx < e; idx++) opacity = a.G[idx].opacity, opacity += (1 - opacity) * color.idx, a.G[idx].opacity = opacity;
+          }
+          I.f('position, scale ...');
+          var offset = ActionUtils.getPSObjectPropertyChain(gradientObject, 'offset', 'offset', m) || {
+            horizontal: 0,
+            vertical: 0
+          };
+          e = ActionUtils.getPSObjectPropertyChain(gradientObject, 'scale', l, m) || 100;
+          d = ActionUtils.getPSObjectPropertyChain(gradientObject, 'type') || 'linear';
+          f = ActionUtils.getPSObjectPropertyChain(gradientObject, 'reverse', l, m);
+          I.f('gradientObj');
+          I.ja('mergeColorAndOpacity');
+          I.f('sort');
+          a.sort();
+          g = (0 == a.G.length ? Oa : a.G);
+          k = (0 == a.D.length ? Na : a.D);
+          for (var E = t = n = -1, i = [], w;
+          (w = Qa(k, g, E, n, t)) !== o;) n = w.ra, t = w.sa, E = w.h.location, i.push(w.h);
+          I.ka();
+          f = {
+            gradient: a,
+            i: i,
+            type: d,
+            ib: f,
+            offset: offset,
+            scale: e
+          };
+          I.f('invert');
+          if (f.ib) {
+            g = f.i.length;
+            for (e = 0; e < g; e++) f.i[e].location = 100 - f.i[e].location;
+            f.i.sort(function(a, b) {
+              return a.location - b.location;
+            });
+          }
+          switch (d) {
+          case 'linear':
+            I.f('type = linear');
+            f.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
+            break;
+          case 'reflected':
+            I.f('type = reflected');
+            f.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
+            g = f.i.length;
+            for (c = 0; c < g; c++) f.i[c].location = 50 + f.i[c].location / 2;
+            for (e = 0; e < g; e++) c = f.i.length - g + e, 50.0005 < f.i[c].location && f.i.unshift({
+              color: f.i[c].color,
+              location: 100 - f.i[c].location
+            });
+            break;
+          case 'radial':
+            I.f('type = radial');
+          }
+          I.f('angle');
+          a.angle && (a.angle = (a.angle + 360) % 360);
+          I.ka();
+          return f;
         }
         
     };

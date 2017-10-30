@@ -1,4 +1,6 @@
-﻿ 
+﻿ var g_YHLibsFolderPath="/d/projects/trarck/plugin/photoshop/libs/";
+ $.evalFile(g_YHLibsFolderPath + "index.jsx");
+ $.evalFile(g_YHLibsFolderPath + "actions/ActionUtils.jsx");
 // visitorLayers(app.activeDocument);
  test();
  
@@ -73,12 +75,17 @@ function test(){
     var ref = new ActionReference();
     ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
     var a = executeActionGet(ref);
-    $.writeln(a.count);
+    $.writeln(a.count,a.typename);
+    var data=ActionUtils.getDescriptorData(a);
+    //$.writeln(JSON.stringify(data,null,4));
+    var b=ActionUtils.getPSObjectPropertyChain(a,"layerEffects.solidFill.enabled",undefined,true);
+    $.writeln(b);
+    /*
     for(var i=0;i<a.count;++i){
             $.writeln (typeIDToStringID(a.getKey(i)));
     }
     var layerEffects=a.getObjectValue(stringIDToTypeID("layerEffects"));
-    
+    */
     /*
     var innerGlow=layerEffects.getObjectValue(stringIDToTypeID("innerGlow"));
     var g=innerGlow.getObjectValue(stringIDToTypeID("color"));

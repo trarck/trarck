@@ -1,0 +1,151 @@
+name:圆角矩形 8
+typename:ArtLayer
+30ActionDescriptor
+{
+    "@type": "ActionDescriptor",
+    "name": "圆角矩形 8",
+    "color": "none",
+    "visible": true,
+    "mode": "normal",
+    "opacity": 255,
+    "layerID": 1332,
+    "itemIndex": 3,
+    "count": 18,
+    "preserveTransparency": false,
+    "layerFXVisible": true,
+    "layerEffects": {
+        "@type": "ActionDescriptor",
+        "scale": {
+            "@type": "percentUnit",
+            "value": 100
+        },
+        "innerGlow": {
+            "@type": "ActionDescriptor",
+            "enabled": true,
+            "mode": "normal",
+            "color": {
+                "@type": "ActionDescriptor",
+                "red": 9.00375366210938,
+                "grain": 191.9970703125,
+                "blue": 173.001251220703
+            },
+            "opacity": {
+                "@type": "percentUnit",
+                "value": 100
+            },
+            "glowTechnique": "softMatte",
+            "chokeMatte": {
+                "@type": "pixelsUnit",
+                "value": 0
+            },
+            "blur": {
+                "@type": "pixelsUnit",
+                "value": 16
+            },
+            "shadingNoise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "noise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "antiAlias": false,
+            "innerGlowSource": "edgeGlow",
+            "transferSpec": {
+                "@type": "ActionDescriptor",
+                "name": "线性"
+            },
+            "inputRange": {
+                "@type": "percentUnit",
+                "value": 50
+            }
+        },
+        "frameFX": {
+            "@type": "ActionDescriptor",
+            "enabled": true,
+            "style": "insetFrame",
+            "paintType": "solidColor",
+            "mode": "normal",
+            "opacity": {
+                "@type": "percentUnit",
+                "value": 100
+            },
+            "size": {
+                "@type": "pixelsUnit",
+                "value": 2
+            },
+            "color": {
+                "@type": "ActionDescriptor",
+                "red": 0,
+                "grain": 30.5992222577333,
+                "blue": 38.0000015348196
+            }
+        }
+    },
+    "globalAngle": 90,
+    "background": false,
+    "layerSection": "layerSectionContent",
+    "layerLocking": {
+        "@type": "ActionDescriptor",
+        "protectTransparency": false,
+        "protectComposite": false,
+        "protectPosition": false,
+        "protectAll": false
+    },
+    "group": false,
+    "targetChannels": [
+        null,
+        null,
+        null
+    ],
+    "visibleChannels": [
+        null,
+        null,
+        null
+    ],
+    "channelRestrictions": [
+        "red",
+        "grain",
+        "blue"
+    ],
+    "fillOpacity": 255,
+    "hasUserMask": false,
+    "hasVectorMask": true,
+    "hasFilterMask": false,
+    "userMaskDensity": 255,
+    "userMaskFeather": 0,
+    "vectorMaskDensity": 255,
+    "vectorMaskFeather": 0,
+    "adjustment": [
+        {
+            "@type": "ActionDescriptor",
+            "color": {
+                "@type": "ActionDescriptor",
+                "red": 0,
+                "grain": 61.9990539550781,
+                "blue": 77.0027160644531
+            }
+        }
+    ],
+    "bounds": {
+        "@type": "ActionDescriptor",
+        "top": {
+            "@type": "pixelsUnit",
+            "value": 286
+        },
+        "left": {
+            "@type": "pixelsUnit",
+            "value": 314
+        },
+        "bottom": {
+            "@type": "pixelsUnit",
+            "value": 395
+        },
+        "right": {
+            "@type": "pixelsUnit",
+            "value": 425
+        }
+    },
+    "useAlignedRendering": false
+}

@@ -5,6 +5,9 @@ var LayerStyle;
 (function(){
     var xc=true;
     
+    var DefaultColorStops = [new ColorStop(0, new Corlor(0, 0, 0)), new ColorStop(100, new Corlor(255, 255, 255))],
+    DefaultOpacities = [new OpacityStop(0, 1), new OpacityStop(100, 1)];
+    
     LayerStyle=function(layer){
         this.layer=layer;
         
@@ -269,9 +272,11 @@ var LayerStyle;
             var path = 'layerEffects.' + effect + '.enabled',
             return this.readActiveValue(path, undefined, true) && this.readActiveValue('layerEffects.' + effect + '.enabled');
         },
+        
         checkMode:function(key,name){
            'normal' != this.readActiveValue(((key ? 'layerEffects.' + key + '.' : '')) + 'mode') && this.na.push(name);
         },
+        
         getAdjustment:function() {
             var ret = {
                 color: readActiveValue('adjustment[0].color', 'color')
@@ -283,6 +288,7 @@ var LayerStyle;
         getGradientFillData:function(gradientFill,useLayerFillOpacity,color){
             
         },
+        
         getGradientData:function (gradientObject, useLayerFillOpacity, color) {
           if (!gradientObject){
               console.log('Gradient object is missing even though gradient fill is enabled.');
@@ -290,11 +296,11 @@ var LayerStyle;
           }
           //'_readPsGradient'
           //'get gradient'
-          var gradient = ActionUtils.getPSObjectPropertyChain(gradientObject, 'gradient', 'object'),
+          var gradientDesc = ActionUtils.getPSObjectPropertyChain(gradientObject, 'gradient', 'object'),
               opacity = (useLayerFillOpacity ? this.fillOpacity : ActionUtils.getPSObjectPropertyChain(gradientObject, 'opacity', 'double') / 100),
               gradientStyle = new GradientStyle();
           try {
-            var colors = gradient.getList(T('colors'));
+            var colors = gradientDesc.getList(stringIDToTypeID('colors'));
           } catch (ex) {
             return false;
           }
@@ -302,20 +308,20 @@ var LayerStyle;
           var k, desc, idx = 0;
           for (k = colors.count; idx < k; ++idx) {
             desc = colors.getObjectValue(idx);
-            var colorData = ActionUtils.getPSObjectPropertyChain(n, 'color', 'color');
-            desc = new H(100 * desc.getInteger(T('location')) / 4096, colorData);
-            gradientStyle.D.push(desc);
+            var colorData = ActionUtils.getPSObjectPropertyChain(desc, 'color', 'color');
+            var colorStop = new ColorStop(100 * desc.getInteger(stringIDToTypeID('location')) / 4096, colorData);
+            gradientStyle.colorStops.push(colorStop);
           }
-          I.f('get opacities');
-          transparency = gradient.getList(T('transparency'));
+          //'get opacities';
+          transparency = gradientDesc.getList(stringIDToTypeID('transparency'));
           idx = 0;
-          for (k = transparency.count; idx < k; ++idx) n = transparency.getObjectValue(idx), g = new Fa(100 * n.getInteger(T('location')) / 4096, ActionUtils.getPSObjectPropertyChain(n, 'opacity', 'double') / 100 * opacity), gradientStyle.G.push(g);
+          for (k = transparency.count; idx < k; ++idx) n = transparency.getObjectValue(idx), g = new Fa(100 * n.getInteger(stringIDToTypeID('location')) / 4096, ActionUtils.getPSObjectPropertyChain(n, 'opacity', 'double') / 100 * opacity), gradientStyle.opacities.push(g);
           I.f('overlay with color');
           if (color) {
             idx = 0;
-            for (e = gradientStyle.D.length; idx < e; idx++) opacity = Ca(gradientStyle.D[idx].color, color), gradientStyle.D[idx].color = opacity;
+            for (e = gradientStyle.colorStops.length; idx < e; idx++) opacity = Ca(gradientStyle.colorStops[idx].color, color), gradientStyle.colorStops[idx].color = opacity;
             idx = 0;
-            for (e = gradientStyle.G.length; idx < e; idx++) opacity = gradientStyle.G[idx].opacity, opacity += (1 - opacity) * color.idx, gradientStyle.G[idx].opacity = opacity;
+            for (e = gradientStyle.opacities.length; idx < e; idx++) opacity = gradientStyle.opacities[idx].opacity, opacity += (1 - opacity) * color.idx, gradientStyle.opacities[idx].opacity = opacity;
           }
           I.f('position, scale ...');
           var offset = ActionUtils.getPSObjectPropertyChain(gradientObject, 'offset', 'offset', m) || {
@@ -329,8 +335,8 @@ var LayerStyle;
           I.ja('mergeColorAndOpacity');
           I.f('sort');
           gradientStyle.sort();
-          g = (0 == gradientStyle.G.length ? Oa : gradientStyle.G);
-          k = (0 == gradientStyle.D.length ? Na : gradientStyle.D);
+          g = (0 == gradientStyle.opacities.length ? DefaultOpacities : gradientStyle.opacities);
+          k = (0 == gradientStyle.colorStops.length ? DefaultColorStops : gradientStyle.colorStops);
           for (var E = t = n = -1, i = [], w;
           (w = Qa(k, g, E, n, t)) !== o;) n = w.ra, t = w.sa, E = w.h.location, i.push(w.h);
           I.ka();

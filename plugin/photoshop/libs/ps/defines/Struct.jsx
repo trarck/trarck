@@ -17,8 +17,8 @@ Color.prototype.toString = function() {
 };
 
 function GradientStyle(){
-    this.points=[];
-    this.stops=[];
+    this.colorStops=[];//D
+    this.opacities=[];//G
 }
 
 function ColorStop(location,color){

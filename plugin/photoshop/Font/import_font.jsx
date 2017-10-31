@@ -10,7 +10,7 @@ if($.os.indexOf("Macintosh OS")>-1){
 	var psdFolderPath = "/e/lua/dtcqtool/fca/temp/psd/";
 }
 
-$.evalFile(g_LibsScriptFolderPath + "utils/LayerUtil.jsx");
+$.evalFile(g_LibsScriptFolderPath + "ps/utils/LayerUtil.jsx");
 
 var canvasWidth=1024;
 var canvasHeight=128;

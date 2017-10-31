@@ -1,6 +1,6 @@
 ﻿ var g_YHLibsFolderPath="/d/projects/trarck/plugin/photoshop/libs/";
- $.evalFile(g_YHLibsFolderPath + "index.jsx");
- $.evalFile(g_YHLibsFolderPath + "actions/ActionUtils.jsx");
+ $.evalFile(g_YHLibsFolderPath + "yh/index.jsx");
+ $.evalFile(g_YHLibsFolderPath + "ps/actions/ActionUtils.jsx");
 // visitorLayers(app.activeDocument);
  test();
  

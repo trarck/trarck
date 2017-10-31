@@ -14,13 +14,13 @@ if($.os.indexOf("Macintosh OS")>-1){
 }
 
 
-$.evalFile(g_LibsScriptFolderPath + "math/Terminology.jsx");
-$.evalFile(g_LibsScriptFolderPath + "math/Geometry.jsx");
-$.evalFile(g_LibsScriptFolderPath + "math/GeometryUtil.jsx");
-$.evalFile(g_LibsScriptFolderPath + "math/TransformMatrix.jsx");
+$.evalFile(g_LibsScriptFolderPath + "ps/defines/Terminology.jsx");
+$.evalFile(g_LibsScriptFolderPath + "yh/math/Geometry.jsx");
+$.evalFile(g_LibsScriptFolderPath + "yh/math/GeometryUtil.jsx");
+$.evalFile(g_LibsScriptFolderPath + "yh/math/TransformMatrix.jsx");
 
-$.evalFile(g_LibsScriptFolderPath + "json2.jsx");
-$.evalFile(g_LibsScriptFolderPath + "utils/LayerUtil.jsx");
+$.evalFile(g_LibsScriptFolderPath + "yh/json2.jsx");
+$.evalFile(g_LibsScriptFolderPath + "ps/utils/LayerUtil.jsx");
 
 
 var fcaScale=0.111;

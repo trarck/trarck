@@ -1,15 +1,13 @@
 /*
  *定义类与部件
  */
- var yh;
 (function(){
     //require
 
     //private
     var objectPrototype = Object.prototype,TOPNS=$;
     
-    //define
-    yh={
+    var Base={
         ucfirst : function(str){
             str += '';
             var f = str.charAt(0).toUpperCase();
@@ -366,4 +364,6 @@
             throw err;
         }
     };
+    //yh.core=Base;
+    Base.mixin(yh.core,Base);
 })();

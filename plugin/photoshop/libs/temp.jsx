@@ -5,3 +5,5 @@ var l = void 0,undefined
 var Xb = charIDToTypeID,
     O = stringIDToTypeID,
     Yb = typeIDToStringID,
+    
+Ma //GradientStyle.reduce

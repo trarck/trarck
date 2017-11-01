@@ -153,32 +153,37 @@ var LayerStyle;
                     });
                 }
                 //'frameFX'
-                var i;
+                var strokeData;
                 if(this.isLayerEffectEnable('frameFX')){ 
                     this.checkMode( 'frameFX', 'stroke');
+                    var color;
                     if('solidColor' == this.getLayerEffectObjectProperty('frameFX.paintType')){
-                        i = this.getLayerEffectObjectProperty('frameFX.color', 'color');
+                        color = this.getLayerEffectObjectProperty('frameFX.color', 'color');
                     }else{
                         this.Z.push('stroke');
-                        i = Ma(Ac(this, this.getLayerEffectObjectProperty('frameFX')).gradient);
+                        color = GradientStyle.reduce(this.getGradientData(this.getLayerEffectObjectProperty('frameFX')).gradient);
                     }               
-                    i = {
+                    strokeData = {
                         size: parseFloat(this.getLayerEffectObjectProperty('frameFX.size')),
-                        color: i,
+                        color: color,
                         style: this.getLayerEffectObjectProperty('frameFX.style')
                     };
                     c = this.getLayerEffectObjectProperty('frameFX.opacity') / 100;
-                    i.color.c = c;
+                    strokeData.color.c = c;
                     this.style.stroke.push({
-                        value: i,
-                        a: 'stroke'
+                        value: strokeData,
+                        name: 'stroke'
                     });
                 }
-    I.f('dropShadow');
-    this.isLayerEffectEnable('dropShadow') && (this.checkMode( 'dropShadow', 'drop shadow'), c = Bc(this, 'dropShadow', 'drop shadow', m), this.style.dropShadow.push({
-      value: c,
-      a: 'drop shadow'
-    }));
+                //'dropShadow'
+                if(this.isLayerEffectEnable('dropShadow')){ 
+                    this.checkMode( 'dropShadow', 'drop shadow');
+                    var c = Bc('dropShadow', 'drop shadow', true);
+                    this.style.dropShadow.push({
+                        value: c,
+                        name: 'drop shadow'
+                    });
+                }
     I.f('innerShadow');
     this.isLayerEffectEnable('innerShadow') && this.style.innerShadow.push({
       value: Cc(this),
@@ -290,95 +295,194 @@ var LayerStyle;
         },
         
         getGradientData:function (gradientObject, useLayerFillOpacity, color) {
-          if (!gradientObject){
-              console.log('Gradient object is missing even though gradient fill is enabled.');
-              return false;
-          }
-          //'_readPsGradient'
-          //'get gradient'
-          var gradientDesc = ActionUtils.getPSObjectPropertyChain(gradientObject, 'gradient', 'object'),
-              opacity = (useLayerFillOpacity ? this.fillOpacity : ActionUtils.getPSObjectPropertyChain(gradientObject, 'opacity', 'double') / 100),
-              gradientStyle = new GradientStyle();
-          try {
-            var colors = gradientDesc.getList(stringIDToTypeID('colors'));
-          } catch (ex) {
-            return false;
-          }
-          //'get color stops';
-          var k, desc, idx = 0;
-          for (k = colors.count; idx < k; ++idx) {
-            desc = colors.getObjectValue(idx);
-            var colorData = ActionUtils.getPSObjectPropertyChain(desc, 'color', 'color');
-            var colorStop = new ColorStop(100 * desc.getInteger(stringIDToTypeID('location')) / 4096, colorData);
-            gradientStyle.colorStops.push(colorStop);
-          }
-          //'get opacities';
-          transparency = gradientDesc.getList(stringIDToTypeID('transparency'));
-          idx = 0;
-          for (k = transparency.count; idx < k; ++idx) n = transparency.getObjectValue(idx), g = new Fa(100 * n.getInteger(stringIDToTypeID('location')) / 4096, ActionUtils.getPSObjectPropertyChain(n, 'opacity', 'double') / 100 * opacity), gradientStyle.opacities.push(g);
-          I.f('overlay with color');
-          if (color) {
+            if (!gradientObject){
+                console.log('Gradient object is missing even though gradient fill is enabled.');
+                return false;
+            }
+            //'_readPsGradient'
+            //'get gradient'
+            var gradientDesc = ActionUtils.getPSObjectPropertyChain(gradientObject, 'gradient', 'object'),
+                opacity = (useLayerFillOpacity ? this.fillOpacity : ActionUtils.getPSObjectPropertyChain(gradientObject, 'opacity', 'double') / 100),
+                gradientStyle = new GradientStyle();
+            try {
+                var colors = gradientDesc.getList(stringIDToTypeID('colors'));
+            } catch (ex) {
+                return false;
+            }
+            //'get color stops';
+            var len, desc, idx = 0;
+            for (len = colors.count; idx < len; ++idx) {
+                desc = colors.getObjectValue(idx);
+                var colorData = ActionUtils.getPSObjectPropertyChain(desc, 'color', 'color');
+                var colorStop = new ColorStop(100 * desc.getInteger(stringIDToTypeID('location')) / 4096, colorData);
+                gradientStyle.colorStops.push(colorStop);
+            }
+            //'get opacities';
+            var transparency = gradientDesc.getList(stringIDToTypeID('transparency'));
             idx = 0;
-            for (e = gradientStyle.colorStops.length; idx < e; idx++) opacity = Ca(gradientStyle.colorStops[idx].color, color), gradientStyle.colorStops[idx].color = opacity;
-            idx = 0;
-            for (e = gradientStyle.opacities.length; idx < e; idx++) opacity = gradientStyle.opacities[idx].opacity, opacity += (1 - opacity) * color.idx, gradientStyle.opacities[idx].opacity = opacity;
-          }
-          I.f('position, scale ...');
-          var offset = ActionUtils.getPSObjectPropertyChain(gradientObject, 'offset', 'offset', m) || {
-            horizontal: 0,
-            vertical: 0
-          };
-          e = ActionUtils.getPSObjectPropertyChain(gradientObject, 'scale', l, m) || 100;
-          d = ActionUtils.getPSObjectPropertyChain(gradientObject, 'type') || 'linear';
-          f = ActionUtils.getPSObjectPropertyChain(gradientObject, 'reverse', l, m);
-          I.f('gradientObj');
-          I.ja('mergeColorAndOpacity');
-          I.f('sort');
-          gradientStyle.sort();
-          g = (0 == gradientStyle.opacities.length ? DefaultOpacities : gradientStyle.opacities);
-          k = (0 == gradientStyle.colorStops.length ? DefaultColorStops : gradientStyle.colorStops);
-          for (var E = t = n = -1, i = [], w;
-          (w = Qa(k, g, E, n, t)) !== o;) n = w.ra, t = w.sa, E = w.h.location, i.push(w.h);
-          I.ka();
-          f = {
-            gradient: gradientStyle,
-            i: i,
-            type: d,
-            ib: f,
-            offset: offset,
-            scale: e
-          };
-          I.f('invert');
-          if (f.ib) {
-            g = f.i.length;
-            for (e = 0; e < g; e++) f.i[e].location = 100 - f.i[e].location;
-            f.i.sort(function(a, b) {
-              return a.location - b.location;
-            });
-          }
-          switch (d) {
-          case 'linear':
-            I.f('type = linear');
-            f.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
-            break;
-          case 'reflected':
-            I.f('type = reflected');
-            f.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
-            g = f.i.length;
-            for (c = 0; c < g; c++) f.i[c].location = 50 + f.i[c].location / 2;
-            for (e = 0; e < g; e++) c = f.i.length - g + e, 50.0005 < f.i[c].location && f.i.unshift({
-              color: f.i[c].color,
-              location: 100 - f.i[c].location
-            });
-            break;
-          case 'radial':
-            I.f('type = radial');
-          }
-          I.f('angle');
-          a.angle && (a.angle = (a.angle + 360) % 360);
-          I.ka();
-          return f;
-        }
+            for (len = transparency.count; idx < len; ++idx){
+                var transparencyDesc = transparency.getObjectValue(idx);
+                var opacityStop = new OpacityStop(
+                                    100 * transparencyDesc.getInteger(stringIDToTypeID('location')) / 4096,
+                                    ActionUtils.getPSObjectPropertyChain(transparencyDesc, 'opacity', 'double') / 100 * opacity);
+                gradientStyle.opacityStops.push(opacityStop);
+            } 
+            //'overlay with color'
+            if (color) {
+                idx = 0;
+                var averageColor;
+                for (len = gradientStyle.colorStops.length; idx < len; idx++) {
+                    averageColor = Color.alphaBlend(gradientStyle.colorStops[idx].color, color);
+                    gradientStyle.colorStops[idx].color = averageColor;
+                }
+                idx = 0;
+                for (len = gradientStyle.opacityStops.length; idx < len; idx++){
+                    opacity = gradientStyle.opacityStops[idx].opacity;
+                    opacity += (1 - opacity) * color.a;
+                    gradientStyle.opacityStops[idx].opacity = opacity;
+                }
+            }
+            //'position, scale ...'
+            var offset = ActionUtils.getPSObjectPropertyChain(gradientObject, 'offset', 'offset', true) || {
+                horizontal: 0,
+                vertical: 0
+            };
+            var scale = ActionUtils.getPSObjectPropertyChain(gradientObject, 'scale', l, true) || 100;
+            var type = ActionUtils.getPSObjectPropertyChain(gradientObject, 'type') || 'linear';
+            var reverse = ActionUtils.getPSObjectPropertyChain(gradientObject, 'reverse', l, true);
+            //'gradientObj'
+            //'mergeColorAndOpacity'
+            //'sort'
+            gradientStyle.sort();
+            var opacityStops = (0 == gradientStyle.opacityStops.length ? DefaultOpacities : gradientStyle.opacityStops);
+            var colorStops = (0 == gradientStyle.colorStops.length ? DefaultColorStops : gradientStyle.colorStops);
+            for (var location = opacityStart = colorStart = -1, mergedColors = [], iter;
+            (iter = this.nextStop(colorStops, opacityStops, location, colorStart, opacityStart)) !== null;){ 
+                colorStart = iter.colorStart;
+                opacityStart = iter.opacityStart;
+                location = iter.colorStop.location;
+                mergedColors.push(iter.colorStop)
+            }
+   
+            var ret = {
+                gradient: gradientStyle,
+                mergedColors: mergedColors,
+                type: type,
+                reverse: reverse,
+                offset: offset,
+                scale: scale
+            };
+            //'invert'
+            if (ret.reverse) {
+                var len = ret.mergedColors.length;
+                for (var i= 0; i < len; i++){
+                    ret.mergedColors[i].location = 100 - ret.mergedColors[i].location;
+                }
+                ret.mergedColors.sort(function(a, b) {
+                    return a.location - b.location;
+                });
+            }
+            switch (type) {
+                case 'linear':
+                    //'type = linear'
+                    ret.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
+                    break;
+                case 'reflected':
+                    //'type = reflected'
+                    ret.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
+                    var len = ret.mergedColors.length;
+                    for (var i = 0; i < len; i++) ret.mergedColors[i].location = 50 + ret.mergedColors[i].location / 2;
+                    for (var j = 0; j < len; j++){
+                        if(50.0005 < ret.mergedColors[j].location){
+                            ret.mergedColors.unshift({
+                                color: ret.mergedColors[j].color,
+                                location: 100 - ret.mergedColors[j].location
+                            });
+                        }
+                    }
+                break;
+                case 'radial':
+                    //'type = radial'
+            }
+            //'angle'
+            gradientStyle.angle && (gradientStyle.angle = (gradientStyle.angle + 360) % 360);
+            
+            return ret;
+        },
         
+        findStopItem:function(arr, localtion, start) {
+            if (0 == arr.length) return null;
+            for (var i = Math.max(-1, start), len = arr.length - 1; i < len; i++){ 
+                if (0 > i) {
+                    if (localtion <= arr[0].location){ 
+                        return {
+                            value: arr[0],
+                            index: 0
+                        };
+                    }
+                } else if (arr[i].location <= localtion && localtion <= arr[i + 1].location){ 
+                    return {
+                        value: arr[i + 1],
+                        index: i + 1
+                    };
+                }
+            }
+            return null;
+        },
+        nextStop:function (colorStops, opacityStops, location, colorStart, opacityStart) {
+            //'nextStop'
+            var color;
+            var colorItem = this.findStopItem(colorStops, location, colorStart),
+                opacityItem = this.findStopItem(opacityStops, location, opacityStart);
+            if (colorItem === null && opacityItem === null) return null;
+            if (colorItem === null || opacityItem.value.location < colorItem.value.location){
+                 color = GradientStyle.getStopValue(opacityItem.value.location, colorStops, 'color'), color.a *= opacityItem.value.opacity;
+                 return {
+                    colorStart: colorStart,
+                    opacityStart: opacityItem.index,
+                    colorStop: new ColorStop(opacityItem.value.location, color)
+                };
+            }
+            if (opacityItem === null || colorItem.value.location < opacityItem.value.location){
+                color = Color.clone(colorItem.value.color);
+                var opacity = GradientStyle.getStopValue(colorItem.value.location, opacityStops, 'opacity');
+                color.a *= opacity;
+                return {
+                    colorStart: colorItem.index,
+                    opacityStart: opacityStart,
+                    colorStop: new ColorStop(colorItem.value.location, color)
+                };
+            }
+            if (colorItem.value.location == opacityItem.value.location) {
+                color = Color.clone(colorItem.value.color);
+                color.a *= opacityItem.value.opacity;
+                return {
+                    colorStart: colorItem.index,
+                    opacityStart: opacityItem.index,
+                    colorStop: new ColorStop(colorItem.value.location, color)
+            };
+            //'nextStop: no path was successful;
+            return null;
+        },
+        Bc:function (key, name, d, inset) {
+            var chokeMatte = this.getLayerEffectObjectProperty(key + '.chokeMatte') / 100,
+                blur = this.getLayerEffectObjectProperty(key + '.blur'),
+                ret = {
+                    blur: blur * (1 - chokeMatte),
+                    chokeMatte: blur * chokeMatte,
+                    color: this.getLayerEffectObjectProperty(key + '.color', 'color'),
+                    inset: !(!inset)//F
+                };
+            if(ret.color == null) {
+                this.Z.push(name);
+                var gradientData = this.getGradientData(this.getLayerEffectObjectProperty(key)),
+                ret.color = GradientStyle.reduce(gradientData.gradient));
+            }
+            var opacity = this.getLayerEffectObjectProperty(key + '.opacity') / 100;
+            ret.color.a = opacity;
+            ret.distance = (d ? this.getLayerEffectObjectProperty(key + '.distance') : 0);
+            ret.angle = (d ? (this.getLayerEffectObjectProperty(key + '.useGlobalAngle') ? this.globalAngle : this.getLayerEffectObjectProperty(key + '.localLightingAngle')) : 0);
+            return ret;
+        }        
     };
 })();

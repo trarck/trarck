@@ -4,6 +4,8 @@ var l = void 0,undefined
     p = !1;//false
 var Xb = charIDToTypeID,
     O = stringIDToTypeID,
-    Yb = typeIDToStringID,
+    Yb = typeIDToStringID;
     
+var Q = Xb,
+    T = O;    
 Ma //GradientStyle.reduce

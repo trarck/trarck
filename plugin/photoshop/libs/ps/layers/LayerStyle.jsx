@@ -54,7 +54,7 @@ var LayerStyle;
             
             this.la=false;
             this.kind=this.layer.kind.toString();
-            /isText
+            //isText
             this.isText = 'LayerKind.TEXT' === this.kind;
             this.opacity = yh.checkType(this.readActiveValue('opacity') / 255, 'number');
             this.fillOpacity = yh.checkType(this.readActiveValue('fillOpacity') / 255, 'number');
@@ -178,17 +178,17 @@ var LayerStyle;
                 //'dropShadow'
                 if(this.isLayerEffectEnable('dropShadow')){ 
                     this.checkMode( 'dropShadow', 'drop shadow');
-                    var c = Bc('dropShadow', 'drop shadow', true);
+                    var dropShadow = this.getLightEffectData('dropShadow', 'drop shadow', true);
                     this.style.dropShadow.push({
-                        value: c,
+                        value: dropShadow,
                         name: 'drop shadow'
                     });
                 }
-    I.f('innerShadow');
-    this.isLayerEffectEnable('innerShadow') && this.style.innerShadow.push({
-      value: Cc(this),
-      a: 'inner shadow'
-    });
+                //'innerShadow'
+                this.isLayerEffectEnable('innerShadow') && this.style.innerShadow.push({
+                    value: Cc(this),
+                    a: 'inner shadow'
+                });
     I.f('innerGlow');
     this.isLayerEffectEnable('innerGlow') && ((this.getLayerEffectObjectProperty('innerGlow.color', 'color') || Ac(this, this.getLayerEffectObjectProperty('innerGlow')) ? this.style.innerGlow.push({
       value: Dc(this),
@@ -464,7 +464,23 @@ var LayerStyle;
             //'nextStop: no path was successful;
             return null;
         },
-        Bc:function (key, name, d, inset) {
+        Fc:function (a) {
+          var b = lc().getList(charIDToTypeID('Adjs')).getObjectValue(0);
+          return Ac(a, b, true);
+        }
+        function Cc(a) {
+          wc(a, 'innerShadow', 'inner shadow');
+          return getLightEffectData(a, 'innerShadow', 'inner shadow', m, m);
+        }
+        function Dc(a) {
+          wc(a, 'innerGlow', 'inner glow');
+          return getLightEffectData(a, 'innerGlow', 'inner glow', p, m);
+        }
+        function Ec(a) {
+          wc(a, 'outerGlow', 'outer glow');
+          return getLightEffectData(a, 'outerGlow', 'outer glow');
+        }
+        getLightEffectData:function (key, name, d, inset) {
             var chokeMatte = this.getLayerEffectObjectProperty(key + '.chokeMatte') / 100,
                 blur = this.getLayerEffectObjectProperty(key + '.blur'),
                 ret = {

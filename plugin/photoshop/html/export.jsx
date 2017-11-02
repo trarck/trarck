@@ -77,9 +77,9 @@ function test(){
     var a = executeActionGet(ref);
     $.writeln(a.count,a.typename);
     var data=ActionUtils.getDescriptorData(a);
-    //$.writeln(JSON.stringify(data,null,4));
-    var b=ActionUtils.getPSObjectPropertyChain(a,"layerEffects.solidFill.enabled",undefined,true);
-    $.writeln(b);
+   $.writeln(JSON.stringify(data,null,4));
+    //var b=ActionUtils.getPSObjectPropertyChain(a,"layerEffects.solidFill.enabled",undefined,true);
+    //$.writeln(b);
     /*
     for(var i=0;i<a.count;++i){
             $.writeln (typeIDToStringID(a.getKey(i)));

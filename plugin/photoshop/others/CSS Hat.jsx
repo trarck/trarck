@@ -1817,7 +1817,7 @@ function rc() {
       a: 'stroke'
     }));
     I.f('dropShadow');
-    X('dropShadow') && (wc(this, 'dropShadow', 'drop shadow'), c = Bc(this, 'dropShadow', 'drop shadow', m), this.style.dropShadow.push({
+    X('dropShadow') && (wc(this, 'dropShadow', 'drop shadow'), c = getLightEffectData(this, 'dropShadow', 'drop shadow', m), this.style.dropShadow.push({
       value: c,
       a: 'drop shadow'
     }));
@@ -1938,17 +1938,17 @@ function Fc(a) {
 }
 function Cc(a) {
   wc(a, 'innerShadow', 'inner shadow');
-  return Bc(a, 'innerShadow', 'inner shadow', m, m);
+  return getLightEffectData(a, 'innerShadow', 'inner shadow', m, m);
 }
 function Dc(a) {
   wc(a, 'innerGlow', 'inner glow');
-  return Bc(a, 'innerGlow', 'inner glow', p, m);
+  return getLightEffectData(a, 'innerGlow', 'inner glow', p, m);
 }
 function Ec(a) {
   wc(a, 'outerGlow', 'outer glow');
-  return Bc(a, 'outerGlow', 'outer glow');
+  return getLightEffectData(a, 'outerGlow', 'outer glow');
 }
-function Bc(a, b, c, d, e) {
+function getLightEffectData(a, b, c, d, e) {
   var f = Y(b + '.chokeMatte') / 100,
       g = Y(b + '.blur'),
       e = {

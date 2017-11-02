@@ -1,0 +1,201 @@
+name:图层 43
+typename:ArtLayer
+29ActionDescriptor
+{
+    "@type": "ActionDescriptor",
+    "name": "图层 43",
+    "color": "none",
+    "visible": true,
+    "mode": "normal",
+    "opacity": 255,
+    "layerID": 1333,
+    "itemIndex": 6,
+    "count": 18,
+    "preserveTransparency": false,
+    "layerFXVisible": true,
+    "layerEffects": {
+        "@type": "ActionDescriptor",
+        "scale": {
+            "@type": "percentUnit",
+            "value": 100
+        },
+        "innerShadow": {
+            "@type": "ActionDescriptor",
+            "enabled": true,
+            "mode": "multiply",
+            "color": {
+                "@type": "ActionDescriptor",
+                "red": 0,
+                "grain": 0,
+                "blue": 0
+            },
+            "opacity": {
+                "@type": "percentUnit",
+                "value": 75
+            },
+            "useGlobalAngle": true,
+            "localLightingAngle": {
+                "@type": "angleUnit",
+                "value": 120
+            },
+            "distance": {
+                "@type": "pixelsUnit",
+                "value": 5
+            },
+            "chokeMatte": {
+                "@type": "pixelsUnit",
+                "value": 0
+            },
+            "blur": {
+                "@type": "pixelsUnit",
+                "value": 5
+            },
+            "noise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "antiAlias": false,
+            "transferSpec": {
+                "@type": "ActionDescriptor",
+                "name": "线性"
+            }
+        },
+        "outerGlow": {
+            "@type": "ActionDescriptor",
+            "enabled": true,
+            "mode": "linearDodge",
+            "color": {
+                "@type": "ActionDescriptor",
+                "red": 255,
+                "grain": 255,
+                "blue": 189.997100830078
+            },
+            "opacity": {
+                "@type": "percentUnit",
+                "value": 75
+            },
+            "glowTechnique": "softMatte",
+            "chokeMatte": {
+                "@type": "pixelsUnit",
+                "value": 0
+            },
+            "blur": {
+                "@type": "pixelsUnit",
+                "value": 5
+            },
+            "noise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "shadingNoise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "antiAlias": false,
+            "transferSpec": {
+                "@type": "ActionDescriptor",
+                "name": "线性"
+            },
+            "inputRange": {
+                "@type": "percentUnit",
+                "value": 50
+            }
+        },
+        "innerGlow": {
+            "@type": "ActionDescriptor",
+            "enabled": true,
+            "mode": "linearDodge",
+            "color": {
+                "@type": "ActionDescriptor",
+                "red": 255,
+                "grain": 255,
+                "blue": 189.997100830078
+            },
+            "opacity": {
+                "@type": "percentUnit",
+                "value": 75
+            },
+            "glowTechnique": "softMatte",
+            "chokeMatte": {
+                "@type": "pixelsUnit",
+                "value": 0
+            },
+            "blur": {
+                "@type": "pixelsUnit",
+                "value": 5
+            },
+            "shadingNoise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "noise": {
+                "@type": "percentUnit",
+                "value": 0
+            },
+            "antiAlias": false,
+            "innerGlowSource": "edgeGlow",
+            "transferSpec": {
+                "@type": "ActionDescriptor",
+                "name": "线性"
+            },
+            "inputRange": {
+                "@type": "percentUnit",
+                "value": 50
+            }
+        }
+    },
+    "globalAngle": 90,
+    "background": false,
+    "layerSection": "layerSectionContent",
+    "layerLocking": {
+        "@type": "ActionDescriptor",
+        "protectTransparency": false,
+        "protectComposite": false,
+        "protectPosition": false,
+        "protectAll": false
+    },
+    "group": false,
+    "targetChannels": [
+        null,
+        null,
+        null
+    ],
+    "visibleChannels": [
+        null,
+        null,
+        null
+    ],
+    "channelRestrictions": [
+        "red",
+        "grain",
+        "blue"
+    ],
+    "fillOpacity": 107,
+    "hasUserMask": false,
+    "hasVectorMask": false,
+    "hasFilterMask": false,
+    "userMaskDensity": 255,
+    "userMaskFeather": 0,
+    "vectorMaskDensity": 255,
+    "vectorMaskFeather": 0,
+    "bounds": {
+        "@type": "ActionDescriptor",
+        "top": {
+            "@type": "pixelsUnit",
+            "value": 289
+        },
+        "left": {
+            "@type": "pixelsUnit",
+            "value": 317
+        },
+        "bottom": {
+            "@type": "pixelsUnit",
+            "value": 392
+        },
+        "right": {
+            "@type": "pixelsUnit",
+            "value": 423
+        }
+    },
+    "useAlignedRendering": false
+}

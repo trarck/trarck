@@ -149,7 +149,30 @@ var ActionUtils;
         return app.executeActionGet(ref);
     };
     
+    ActionUtils.getDocumentDescriptor = function(doc) {
+      var active = undefined;
+      if (doc && doc != app.activeDocument) {
+        active = app.activeDocument;
+        app.activeDocument = doc;
+      }
+      var ref = new ActionReference();
+      ref.putEnumerated(classDocument,
+                         typeOrdinal,
+                         enumTarget );  //activeDoc
+      var desc = executeActionGet(ref);
+
+      if (active) {
+        app.activeDocument = active;
+      }
+
+      return desc;
+    };
+    
     ActionUtils.getDescriptorData=function(descriptor){
+        return DescriptorTypeHandle.ActionDescriptor(descriptor);
+    };
+    
+    ActionUtils.actionDescriptorToData=function(descriptor){
         return DescriptorTypeHandle.ActionDescriptor(descriptor);
     };
     
@@ -289,5 +312,49 @@ var ActionUtils;
       }
     };       
     
+    ActionUtils.setSelectedLayer=function( layerIndexOrName ) {
+        try {
+            var id239 = charIDToTypeID( "slct" );
+            var desc45 = new ActionDescriptor();
+            var id240 = charIDToTypeID( "null" );
+            var ref43 = new ActionReference();
+            var id241 = charIDToTypeID( "Lyr " );
+            if ( typeof layerIndexOrName == "number" ) {
+                ref43.putIndex( id241, layerIndexOrName );
+            } else {
+                ref43.putName( id241, layerIndexOrName );
+            }
+            desc45.putReference( id240, ref43 );
+            var id242 = charIDToTypeID( "MkVs" );
+            desc45.putBoolean( id242, false );
+            executeAction( id239, desc45, DialogModes.NO );
+        }catch(e) {
+            ; // do nothing
+        }
+    };
+    ActionUtils.addSelectedLayer=function( layerIndexOrName ) {
+        try {
+            var id243 = charIDToTypeID( "slct" );
+            var desc46 = new ActionDescriptor();
+            var id244 = charIDToTypeID( "null" );
+            var ref44 = new ActionReference();
+            var id245 = charIDToTypeID( "Lyr " );
+            if ( typeof layerIndexOrName == "number" ) {
+                ref44.putIndex( id245, layerIndexOrName );
+            } else {
+                ref44.putName( id245, layerIndexOrName );
+            }
+            desc46.putReference( id244, ref44 );
+            var id246 = stringIDToTypeID( "selectionModifier" );
+            var id247 = stringIDToTypeID( "selectionModifierType" );
+            var id248 = stringIDToTypeID( "addToSelection" );
+            desc46.putEnumerated( id246, id247, id248 );
+            var id249 = charIDToTypeID( "MkVs" );
+            desc46.putBoolean( id249, false );
+            executeAction( id243, desc46, DialogModes.NO );
+        }catch(e) {
+            ; // do nothing
+        }
+    }
    
 })();

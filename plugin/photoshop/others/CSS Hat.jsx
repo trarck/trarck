@@ -1633,7 +1633,7 @@ function kc(a, b, c) {
     h(Error('Failed reading: ' + Yb(b)));
   }
 }
-function R(a, b, c, d) {
+function getPSObjectPropertyChain(a, b, c, d) {//R
   var e = [];
   try {
     e.push('_get: ' + b + '(' + c + ')');
@@ -1671,9 +1671,9 @@ function lc() {
   a.putEnumerated(Q('Lyr '), Q('Ordn'), Q('Trgt'));
   return app.executeActionGet(a);
 }
-function W(a, b, c) {
+function readActiveValue(a, b, c) {//W
   var d = lc();
-  return R(d, a, b, c);
+  return getPSObjectPropertyChain(d, a, b, c);
 };
 
 function mc(a, b) {
@@ -1733,14 +1733,14 @@ function rc() {
   I.f('readId');
   a = lc();
   this.gb = Wb(a.getInteger(Q('LyrI')), 'number').toString();
-  this.name = Wb(W('name'), 'string');
-  wc(this, '', 'layer');
+  this.name = Wb(readActiveValue('name'), 'string');
+  checkLayerEffectMode(this, '', 'layer');
   this.la = p;
   this.ta = this.$.kind.toString();
   this.p = 'LayerKind.TEXT' === this.ta;
-  this.Na = Wb(W('opacity') / 255, 'number');
-  this.ga = Wb(W('fillOpacity') / 255, 'number');
-  this.globalAngle = Wb(W('globalAngle'), 'number');
+  this.Na = Wb(readActiveValue('opacity') / 255, 'number');
+  this.ga = Wb(readActiveValue('fillOpacity') / 255, 'number');
+  this.globalAngle = Wb(readActiveValue('globalAngle'), 'number');
   1 > this.Na && this.style.opacity.push({
     value: this.Na,
     a: 'layer alpha'
@@ -1788,52 +1788,52 @@ function rc() {
       a: 'font'
     });
   } else 'LayerKind.SOLIDFILL' == this.ta && 0.01 < this.ga && this.style.solidFill.push({
-    value: zc(this),
+    value: getAdjustmentColor(this),
     a: 'layer fill content'
   });
   I.f('layerFxEnabled');
-  if (W('layerFXVisible', l, m)) {
+  if (readActiveValue('layerFXVisible', l, m)) {
     I.f('solidFillFx');
     c = o;
-    X('solidFill') && (wc(this, 'solidFill', 'solid fill'), g = {
-      color: Y('solidFill.color', 'color')
-    }, c = Y('solidFill.opacity') / 100, g.color.c = c, c = g.color, this.style.solidFill.push({
+    isLayerEffectEnable('solidFill') && (checkLayerEffectMode(this, 'solidFill', 'solid fill'), g = {
+      color: getLayerEffectObjectProperty('solidFill.color', 'color')
+    }, c = getLayerEffectObjectProperty('solidFill.opacity') / 100, g.color.c = c, c = g.color, this.style.solidFill.push({
       value: g,
       a: 'color overlay'
     }));
     I.f('gradientFillFx');
-    X('gradientFill') && (g = c, wc(this, 'gradientFill', 'gradient fill'), a = Y('gradientFill'), g = Ac(this, a, p, g), a = 'gradient overlay', c && (a = this.style.solidFill.Ma().a + ' + ' + a, this.style.solidFill.pop()), this.style.gradientFill.push({
+    isLayerEffectEnable('gradientFill') && (g = c, checkLayerEffectMode(this, 'gradientFill', 'gradient fill'), a = getLayerEffectObjectProperty('gradientFill'), g = getGradientData(this, a, p, g), a = 'gradient overlay', c && (a = this.style.solidFill.Ma().a + ' + ' + a, this.style.solidFill.pop()), this.style.gradientFill.push({
       value: g,
       a: a
     }));
     I.f('frameFX');
     var i;
-    X('frameFX') && (wc(this, 'frameFX', 'stroke'), ('solidColor' == Y('frameFX.paintType') ? i = Y('frameFX.color', 'color') : (this.Z.push('stroke'), i = Ma(Ac(this, Y('frameFX')).gradient))), i = {
-      size: parseFloat(Y('frameFX.size')),
+    isLayerEffectEnable('frameFX') && (checkLayerEffectMode(this, 'frameFX', 'stroke'), ('solidColor' == getLayerEffectObjectProperty('frameFX.paintType') ? i = getLayerEffectObjectProperty('frameFX.color', 'color') : (this.Z.push('stroke'), i = Ma(getGradientData(this, getLayerEffectObjectProperty('frameFX')).gradient))), i = {
+      size: parseFloat(getLayerEffectObjectProperty('frameFX.size')),
       color: i,
-      style: Y('frameFX.style')
-    }, c = Y('frameFX.opacity') / 100, i.color.c = c, this.style.stroke.push({
+      style: getLayerEffectObjectProperty('frameFX.style')
+    }, c = getLayerEffectObjectProperty('frameFX.opacity') / 100, i.color.c = c, this.style.stroke.push({
       value: i,
       a: 'stroke'
     }));
     I.f('dropShadow');
-    X('dropShadow') && (wc(this, 'dropShadow', 'drop shadow'), c = getLightEffectData(this, 'dropShadow', 'drop shadow', m), this.style.dropShadow.push({
+    isLayerEffectEnable('dropShadow') && (checkLayerEffectMode(this, 'dropShadow', 'drop shadow'), c = getLightEffectData(this, 'dropShadow', 'drop shadow', m), this.style.dropShadow.push({
       value: c,
       a: 'drop shadow'
     }));
     I.f('innerShadow');
-    X('innerShadow') && this.style.innerShadow.push({
-      value: Cc(this),
+    isLayerEffectEnable('innerShadow') && this.style.innerShadow.push({
+      value: getInnerShadowData(this),
       a: 'inner shadow'
     });
     I.f('innerGlow');
-    X('innerGlow') && ((Y('innerGlow.color', 'color') || Ac(this, Y('innerGlow')) ? this.style.innerGlow.push({
-      value: Dc(this),
+    isLayerEffectEnable('innerGlow') && ((getLayerEffectObjectProperty('innerGlow.color', 'color') || getGradientData(this, getLayerEffectObjectProperty('innerGlow')) ? this.style.innerGlow.push({
+      value: getInnerGlowData(this),
       a: 'inner glow'
     }) : this.ba.push('inner glow')));
     I.f('outerGlow');
-    X('outerGlow') && ((Y('outerGlow.color', 'color') || Ac(this, Y('outerGlow')) ? this.style.outerGlow.push({
-      value: Ec(this),
+    isLayerEffectEnable('outerGlow') && ((getLayerEffectObjectProperty('outerGlow.color', 'color') || getGradientData(this, getLayerEffectObjectProperty('outerGlow')) ? this.style.outerGlow.push({
+      value: getOuterGlowData(this),
       a: 'outer glow'
     }) : this.ba.push('outer glow')));
     if (!this.p && 'undefined' != typeof i && ('insetFrame' == i.style || 'centeredFrame' == i.style)) {
@@ -1854,7 +1854,7 @@ function rc() {
   }
   I.f('gradientFill');
   'LayerKind.GRADIENTFILL' == this.ta && 0.01 < this.ga && this.style.gradientFill.push({
-    value: Fc(this),
+    value: getAdjustmentData(this),
     a: 'layer fill content'
   });
   I.f('borderRadius');
@@ -1885,9 +1885,9 @@ function rc() {
   })));
   I.f('effectsWeCannotRender');
   i = [];
-  X('bevelEmboss') && i.push('bevel & emboss');
-  X('chromeFX') && i.push('satin');
-  X('patternFill') && i.push('pattern overlay');
+  isLayerEffectEnable('bevelEmboss') && i.push('bevel & emboss');
+  isLayerEffectEnable('chromeFX') && i.push('satin');
+  isLayerEffectEnable('patternFill') && i.push('pattern overlay');
   i.length && (I.k('Note: CSS Hat currently cannot render ' + i.m() + ', as it is hard to express in CSS.'), this.la = m);
   this.na.length && (I.k('Blending modes are used in ' + this.na.m() + ', but they are impossible to realistically transfer to CSS.'), this.la = m);
   this.Z.length && (I.k(this.Z.m().ea() + ' ' + ((1 < this.Z.length ? 'have' : 'has')) + ' a gradient fill type, but there is no way to express that in CSS, writing the average color instead.'), this.la = m);
@@ -1914,62 +1914,62 @@ function Jc(a, b) {
   }
   return c;
 }
-function Y(a, b) {
-  return W('layerEffects.' + a, b);
+function getLayerEffectObjectProperty(a, b) {//Y
+  return readActiveValue('layerEffects.' + a, b);
 }
-function X(a) {
+function isLayerEffectEnable(a) {//X
   var b = 'layerEffects.' + a + '.enabled',
       c = lc();
-  return R(c, b, l, m) && W('layerEffects.' + a + '.enabled');
+  return getPSObjectPropertyChain(c, b, l, m) && readActiveValue('layerEffects.' + a + '.enabled');
 }
-function wc(a, b, c) {
-  'normal' != W(((b ? 'layerEffects.' + b + '.' : '')) + 'mode') && a.na.push(c);
+function checkLayerEffectMode(a, b, c) {//wc
+  'normal' != readActiveValue(((b ? 'layerEffects.' + b + '.' : '')) + 'mode') && a.na.push(c);
 }
-function zc(a) {
+function getAdjustmentColor(a) {//zc
   var b = {
-    color: W('adjustment[0].color', 'color')
+    color: readActiveValue('adjustment[0].color', 'color')
   };
   b.color.c = a.ga;
   return b;
 }
-function Fc(a) {
+function getAdjustmentData(a) {
   var b = lc().getList(Q('Adjs')).getObjectValue(0);
-  return Ac(a, b, m);
+  return getGradientData(a, b, m);
 }
-function Cc(a) {
-  wc(a, 'innerShadow', 'inner shadow');
+function getInnerShadowData(a) {
+  checkLayerEffectMode(a, 'innerShadow', 'inner shadow');
   return getLightEffectData(a, 'innerShadow', 'inner shadow', m, m);
 }
-function Dc(a) {
-  wc(a, 'innerGlow', 'inner glow');
+function getInnerGlowData(a) {
+  checkLayerEffectMode(a, 'innerGlow', 'inner glow');
   return getLightEffectData(a, 'innerGlow', 'inner glow', p, m);
 }
-function Ec(a) {
-  wc(a, 'outerGlow', 'outer glow');
+function getOuterGlowData(a) {
+  checkLayerEffectMode(a, 'outerGlow', 'outer glow');
   return getLightEffectData(a, 'outerGlow', 'outer glow');
 }
 function getLightEffectData(a, b, c, d, e) {
-  var f = Y(b + '.chokeMatte') / 100,
-      g = Y(b + '.blur'),
+  var f = getLayerEffectObjectProperty(b + '.chokeMatte') / 100,
+      g = getLayerEffectObjectProperty(b + '.blur'),
       e = {
       blur: g * (1 - f),
       g: g * f,
-      color: Y(b + '.color', 'color'),
+      color: getLayerEffectObjectProperty(b + '.color', 'color'),
       F: !(!e)
       };
-  e.color == o && (a.Z.push(c), c = Ac(a, Y(b)), e.color = Ma(c.gradient));
-  c = Y(b + '.opacity') / 100;
+  e.color == o && (a.Z.push(c), c = getGradientData(a, getLayerEffectObjectProperty(b)), e.color = Ma(c.gradient));
+  c = getLayerEffectObjectProperty(b + '.opacity') / 100;
   e.color.c = c;
-  e.distance = (d ? Y(b + '.distance') : 0);
-  e.angle = (d ? (Y(b + '.useGlobalAngle') ? a.globalAngle : Y(b + '.localLightingAngle')) : 0);
+  e.distance = (d ? getLayerEffectObjectProperty(b + '.distance') : 0);
+  e.angle = (d ? (getLayerEffectObjectProperty(b + '.useGlobalAngle') ? a.globalAngle : getLayerEffectObjectProperty(b + '.localLightingAngle')) : 0);
   return e;
 }
-function Ac(a, b, c, d) {
+function getGradientData(a, b, c, d) {//Ac
   if (!b) return I.log('Gradient object is missing even though gradient fill is enabled.'), p;
   I.ja('_readPsGradient');
   I.f('get gradient');
-  var e = R(b, 'gradient', 'object'),
-      f = (c ? a.ga : R(b, 'opacity', 'double') / 100),
+  var e = getPSObjectPropertyChain(b, 'gradient', 'object'),
+      f = (c ? a.ga : getPSObjectPropertyChain(b, 'opacity', 'double') / 100),
       a = new Ia();
   try {
     var g = e.getList(T('colors'));
@@ -1980,14 +1980,14 @@ function Ac(a, b, c, d) {
   var k, n, c = 0;
   for (k = g.count; c < k; ++c) {
     n = g.getObjectValue(c);
-    var t = R(n, 'color', 'color');
+    var t = getPSObjectPropertyChain(n, 'color', 'color');
     n = new H(100 * n.getInteger(T('location')) / 4096, t);
     a.D.push(n);
   }
   I.f('get opacities');
   e = e.getList(T('transparency'));
   c = 0;
-  for (k = e.count; c < k; ++c) n = e.getObjectValue(c), g = new Fa(100 * n.getInteger(T('location')) / 4096, R(n, 'opacity', 'double') / 100 * f), a.G.push(g);
+  for (k = e.count; c < k; ++c) n = e.getObjectValue(c), g = new Fa(100 * n.getInteger(T('location')) / 4096, getPSObjectPropertyChain(n, 'opacity', 'double') / 100 * f), a.G.push(g);
   I.f('overlay with color');
   if (d) {
     c = 0;
@@ -1996,13 +1996,13 @@ function Ac(a, b, c, d) {
     for (e = a.G.length; c < e; c++) f = a.G[c].opacity, f += (1 - f) * d.c, a.G[c].opacity = f;
   }
   I.f('position, scale ...');
-  c = R(b, 'offset', 'offset', m) || {
+  c = getPSObjectPropertyChain(b, 'offset', 'offset', m) || {
     horizontal: 0,
     vertical: 0
   };
-  e = R(b, 'scale', l, m) || 100;
-  d = R(b, 'type') || 'linear';
-  f = R(b, 'reverse', l, m);
+  e = getPSObjectPropertyChain(b, 'scale', l, m) || 100;
+  d = getPSObjectPropertyChain(b, 'type') || 'linear';
+  f = getPSObjectPropertyChain(b, 'reverse', l, m);
   I.f('gradientObj');
   I.ja('mergeColorAndOpacity');
   I.f('sort');
@@ -2031,11 +2031,11 @@ function Ac(a, b, c, d) {
   switch (d) {
   case 'linear':
     I.f('type = linear');
-    f.angle = R(b, 'angle');
+    f.angle = getPSObjectPropertyChain(b, 'angle');
     break;
   case 'reflected':
     I.f('type = reflected');
-    f.angle = R(b, 'angle');
+    f.angle = getPSObjectPropertyChain(b, 'angle');
     g = f.i.length;
     for (c = 0; c < g; c++) f.i[c].location = 50 + f.i[c].location / 2;
     for (e = 0; e < g; e++) c = f.i.length - g + e, 50.0005 < f.i[c].location && f.i.unshift({
@@ -2052,7 +2052,7 @@ function Ac(a, b, c, d) {
   return f;
 }
 function Ic() {
-  var a = W('bounds', 'rectangle');
+  var a = readActiveValue('bounds', 'rectangle');
   return {
     top: a.top,
     left: a.left,
@@ -2066,7 +2066,7 @@ function Gc() {
     var b = new ActionReference();
     b.putEnumerated(Q('Path'), Q('Path'), T('vectorMask'));
     var c = executeActionGet(b);
-    a = R(c, 'pathContents.pathComponents');
+    a = getPSObjectPropertyChain(c, 'pathContents.pathComponents');
     I.log('Layer has layer mask.');
   } catch (d) {
     return p;

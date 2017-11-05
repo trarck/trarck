@@ -35,6 +35,133 @@ Color.lerp=function (a, b, delta) {
     );
 };
 
+function UnitNumber(value, unit, orientation) {//D
+    this.value = value;
+    this.unit = unit || 'px';
+    this.orientation = orientation || 'Css.Size.Orientation.ANY';
+}
+
+UnitNumber.prototype.toString = function() {
+    if (yh.math.equal(this.value, 0)) return '0';
+    switch (this.unit) {
+        case 'px':
+            return yh.math.round(this.value);
+        case 'em':
+        case 'mm':
+        case 'cm':
+        case 'in':
+        case 'pc':
+        case 'pt':
+            return yh.math.removeDecimalFirstZero(yh.math.formatDecimaTwoPlace(this.value)) + this.unit;
+        case 'pt':
+        case '%':
+            return Math.round(this.value) + this.unit;
+        default:
+            throw new Error('unknown unit: ' + this.unit);
+    }
+};
+
+UnitNumber.prototype.equal = function(other) {
+    return (
+        'number' == typeof other ? 
+        yh.math.equal(this.value, other) : 
+        yh.math.equal(this.value, other.value) && this.unit == other.unit
+    );
+};
+
+function CornerArray(v) {
+    if ('array' == yh.util.getType(v)){
+        this.values = v;
+    }else {
+        this.values = [];
+        for (var i = 0, l = arguments.length; i < l; i++) 
+            this.values.push(arguments[i]);
+    }
+}
+
+CornerArray.prototype.toString = function() {
+    var idx = 1;
+    do {
+        var flag = true;
+        this.values.forEach(function(unitNumber, i) {
+            unitNumber.equal(this.values[i % idx]) || (flag = false);
+        }, this);
+        if (flag) break;
+        idx++;
+    } while (idx < this.values.length);
+    var data = [];
+    for (var i = 0; i < idx; i++) data.push(this.values[i].toString());
+    return data.join(' ');
+};
+
+CornerArray.prototype.equal = function(a) {
+    if (this.values.length != a.values.length) return false;
+    for (var ret = true, i = 0, len = this.values.length; i < len; i++) this.values[i].equal(a.values[i]) || (ret = false);
+    return ret;
+};
+
+function Point(x, y, unit) {
+    if('number' == typeof y ){
+        this.unit = unit || 'px';
+        this.x = x;
+        this.y = y;
+    }else{
+        this.unit = ('string' == typeof y ? y : 'px');
+        this.y = this.x = x;
+    }
+}
+
+Point.prototype.add=function(n) {
+  this.x += n;
+  this.y += n;
+};
+
+Point.prototype.equal = function(a) {
+  if('number' == typeof a){
+    return yh.math.equal(this.x, a) && yh.math.equal(this.y, a);
+  }else {
+      if(this.equal(0) && equal.o(0)){
+          return  true;
+      }else{
+          yh.math.equal(this.x, a.x) && yh.math.equal(this.y, a.y) && this.unit == a.unit));
+      }
+  }
+};
+
+Point.sub=function (a, b) {
+  return new Point(Math.abs(a.x - b.x), Math.abs(a.y - b.y), 'px');
+}
+
+
+function Corners(tl, tr, br, bl) {
+  this.topLeft = tl;//Va
+  this.topRight = tr;//Wa
+  this.bottomRight = br;/Da
+  this.bottomLeft = bl;//Ca
+  this.values = [this.topLeft, this.topRight, this.bottomRight, this.bottomLeft];
+}
+
+Corners.prototype.toString = function() {
+    var xs = this.values.map(function(a) {
+            return new UnitNumber(a.x, a.unit);
+        }),
+        ys = this.values.map(function(a) {
+            return new UnitNumber(a.y, a.unit);
+        });
+        
+    var xCorners = new CornerArray(xs),
+      yCorners = new CornerArray(ys),
+      xCornersStr= xCorners.toString(),
+      yCornersStr=yCorners.toString();
+  return (xCornersStr == yCornersStr ? c : xCornersStr + ' / ' + yCornersStr);
+};
+
+Corners.prototype.isZero = function() {
+  return this.values.reduce(function(flag, b) {
+    return flag && b.equal(0);
+  }, true);
+};
+
 function GradientStyle(){
     this.colorStops=[];//D
     this.opacityStops=[];//G

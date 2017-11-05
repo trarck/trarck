@@ -90,7 +90,7 @@ var LayerStyle;
                     style = 'normal';
                 try {
                     font = app.fonts[face];
-                } catch (t) {}
+                } catch (ex) {}
                 var fontName,fontFamily,fontStyle;
                 if(font){
                     fontName = font.name, fontFamily = font.family, fontStyle = font.style
@@ -252,7 +252,8 @@ var LayerStyle;
             }
             //'borderRadius'
             i = this.descriptorData;
-            ((c = Gc()) ? i = c : ((i = i.name.match(/(\d+)px/i)) && i[1] ? (i = parseFloat(i[1]), i = {
+            var c=Gc();
+            ((c = Gc()) ? i = c : ((i = this.descriptorData.name.match(/(\d+)px/i)) && i[1] ? (i = parseFloat(i[1]), i = {
                 source: 'radius from layer name',
                 X: new ya(new wa(i), new wa(i), new wa(i), new wa(i)),
                 bounds: o
@@ -266,10 +267,10 @@ var LayerStyle;
   });
   Hc && (I.f('bounds'), (i.bounds ? this.style.dimensions.push({
     value: {
-      top: i.bounds.w,
-      left: i.bounds.v,
-      width: i.bounds.z - i.bounds.v,
-      height: i.bounds.A - i.bounds.w
+      top: i.bounds.top,
+      left: i.bounds.left,
+      width: i.bounds.right - i.bounds.left,
+      height: i.bounds.bottom - i.bounds.top
     },
     name: 'dimensions'
   }) : this.style.dimensions.push({
@@ -518,6 +519,134 @@ var LayerStyle;
             gradientStyle.angle && (gradientStyle.angle = (gradientStyle.angle + 360) % 360);
             
             return ret;
+        },
+        Gc:function () {
+            var pathComponents;
+            try {
+                var ref = new ActionReference();
+                ref.putEnumerated(Q('Path'), Q('Path'), T('vectorMask'));
+                var desc = executeActionGet(ref);
+                pathComponents = getPSObjectPropertyChain(desc, 'pathContents.pathComponents');
+                //'Layer has layer mask.';
+            } catch (ex) {
+                return false;
+            }
+            if (!pathComponents) return false;
+            var b = [],bounds;
+            for (var i = 0; i < pathComponents.count; ++i) {
+                bounds = {
+                    left: Infinity,
+                    right: -Infinity,
+                    top: Infinity,
+                    bottom: -Infinity
+                },
+                pointsList = pathComponents.getObjectValue(i).getList(T('subpathListKey')).getObjectValue(0).getList(T('points')),
+                var points = [];
+                for (var j = 0; j < pointsList.count; ++j) {
+                    var anchorDesc = pointsList.getObjectValue(j).getObjectValue(T('anchor')),
+                    horizontal = anchorDesc.getUnitDoubleValue(T('horizontal')),
+                    vertical = anchorDesc.getUnitDoubleValue(T('vertical'));
+                    //anchorDesc.getUnitDoubleType(T('horizontal'));
+                    //anchorDesc.getUnitDoubleType(T('horizontal'));
+                    if(horizontal < bounds.left){
+                        bounds.left = horizontal;
+                    }
+                    
+                    if(horizontal > bounds.right){
+                        bounds.right = horizontal;
+                    }
+                    
+                    if(vertical < bounds.top){
+                        bounds.top = vertical;
+                    }
+                    
+                    if(vertical > bounds.bottom){
+                        bounds.bottom = vertical;
+                    }
+                    
+                    points.push({
+                        x: horizontal,//d
+                        y: vertical//e
+                    });
+                }
+                b.push({
+                    points: points,//B
+                    bounds: bounds
+                });
+            }
+            bounds = {
+                left: Infinity,//v
+                right: -Infinity,//z
+                top: Infinity,//W
+                bottom: -Infinity//A
+            };
+            var a = 0;
+            for (var len = b.length; i < len; i++){
+                
+                if(b[i].bounds.left < bounds.left){
+                    bounds.left = b[i].bounds.left;
+                }
+                
+                if(b[i].bounds.top < bounds.top){
+                    bounds.top = b[i].bounds.top;
+                }
+                
+                if(b[i].bounds.right > bounds.right){
+                    bounds.right = b[i].bounds.right;
+                }
+                if(b[i].bounds.bottom > bounds.bottom){
+                    bounds.bottom = b[i].bounds.bottom;
+                }                
+            }            
+
+            i = 0;
+            for (var len = b.length; i < len; i++) 
+                if (f = Kc(b[i])) return f;
+            return {
+                source: o,
+                X: o,
+                bounds: bounds
+            };
+        },
+        Kc:function (pathData) {
+            function getFirstAndEnd(arr) {
+                if(1 == arr.length){
+                    arr.push(arr[0]);
+                }else if( 2 < arr.length){
+                    arr.splice(1, arr.length - 2));
+                }
+                return arr;
+            }
+            function sort(arr) {
+                arr.sort(function(a, b) {
+                    return a.x + a.y - (b.x + b.y);
+                });
+                return arr;
+            }
+            var lefts = [], rights = [], tops = [], bottoms = [];
+            for (var j = 0, k = pathData.B.length; j < k; j++){
+                if(pathData.points[j].x < pathData.bounds.left + 0.0005){
+                    lefts.push(pathData.points[j]);
+                }
+                if(pathData.points[j].x > pathData.bounds.right - 0.0005){
+                    rights.push(pathData.points[j]);
+                }                    
+                if(pathData.points[j].y < pathData.bounds.top + 0.0005){
+                    tops.push(pathData.points[j]);
+                }
+                if(pathData.points[j].y > pathData.bounds.bottom - 0.0005 ){
+                    bottoms.push(pathData.points[j]);
+                }
+            }
+            tops = getFirstAndEnd(sort(tops));
+            lefts = getFirstAndEnd(sort(lefts));
+            bottoms = getFirstAndEnd(sort(bottoms));
+            rights = getFirstAndEnd(sort(rights));
+            return (2 != tops.length && 2 != lefts.length && 2 != bottoms.length && 2 != rights.length ? false : {
+                source: 'radius from shape',
+                Corners: new Corners(ic(tops[0], lefts[0]), ic(tops[1], rights[0]), ic(bottoms[1], rights[1]), ic(bottoms[0], lefts[1])),//X
+                bounds: pathData.bounds
+            });
         }
     };
 })();

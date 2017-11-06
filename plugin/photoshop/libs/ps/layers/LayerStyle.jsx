@@ -4,6 +4,8 @@
 var LayerStyle;
 (function(){
     var xc=true;
+    var Hc=true;
+    
     
     var DefaultColorStops = [new ColorStop(0, new Corlor(0, 0, 0)), new ColorStop(100, new Corlor(255, 255, 255))],
     DefaultOpacities = [new OpacityStop(0, 1), new OpacityStop(100, 1)];
@@ -251,38 +253,58 @@ var LayerStyle;
                 });
             }
             //'borderRadius'
-            i = this.descriptorData;
-            var c=Gc();
-            ((c = Gc()) ? i = c : ((i = this.descriptorData.name.match(/(\d+)px/i)) && i[1] ? (i = parseFloat(i[1]), i = {
-                source: 'radius from layer name',
-                X: new ya(new wa(i), new wa(i), new wa(i), new wa(i)),
-                bounds: o
-            }) : i = {
-                X: o,
-                bounds: o
-            }));
-  i.X && this.style.borderRadius.push({
-    value: i.X,
-    name: 'border radius'
-  });
-  Hc && (I.f('bounds'), (i.bounds ? this.style.dimensions.push({
-    value: {
-      top: i.bounds.top,
-      left: i.bounds.left,
-      width: i.bounds.right - i.bounds.left,
-      height: i.bounds.bottom - i.bounds.top
-    },
-    name: 'dimensions'
-  }) : this.style.dimensions.push({
-    value: Ic(),
-    name: 'dimensions'
-  })));
-  I.f('effectsWeCannotRender');
-  i = [];
-  this.isLayerEffectEnable('bevelEmboss') && i.push('bevel & emboss');
-  this.isLayerEffectEnable('chromeFX') && i.push('satin');
-  this.isLayerEffectEnable('patternFill') && i.push('pattern overlay');
-  i.length && (I.k('Note: CSS Hat currently cannot render ' + i.m() + ', as it is hard to express in CSS.'), this.la = m);
+            var borderRadiusData=this.getBorderRadiusData();
+            if(!borderRadiusData){
+                var ms= this.descriptorData.name.match(/(\d+)px/i);
+                if(ms && ms[1]){
+                    var n = parseFloat(ms[1]);
+                    borderRadiusData = {
+                        source: 'radius from layer name',
+                        box: new Box(new Vector(n), new Vector(n), new Vector(n), new Vector(n)),//X
+                        bounds: null
+                    }
+                }else{
+                     borderRadiusData = {
+                        box: null,//X
+                        bounds: null
+                    }
+                }                
+            }
+            if(borderRadiusData.box){
+                this.style.borderRadius.push({
+                    value: borderRadiusData.box,
+                    name: 'border radius'
+                });
+            }
+            if(Hc){
+                //bounds
+                if(borderRadiusData.bounds){
+                    this.style.dimensions.push({
+                        value: {
+                            top: borderRadiusData.bounds.top,
+                            left: borderRadiusData.bounds.left,
+                            width: borderRadiusData.bounds.right - borderRadiusData.bounds.left,
+                            height: borderRadiusData.bounds.bottom - borderRadiusData.bounds.top
+                        },
+                        name: 'dimensions'
+                    });
+                }else{
+                    this.style.dimensions.push({
+                        value: this.getBoundsData(),
+                        name: 'dimensions'
+                    });
+                }
+            }
+           //'effectsWeCannotRender'
+            notSupportEffects = [];
+            this.isLayerEffectEnable('bevelEmboss') && notSupportEffects.push('bevel & emboss');
+            this.isLayerEffectEnable('chromeFX') && notSupportEffects.push('satin');
+            this.isLayerEffectEnable('patternFill') && notSupportEffects.push('pattern overlay');
+            if(notSupportEffects.length){
+                console.log('Note: CSS Hat currently cannot render ' + notSupportEffects.join() + ', as it is hard to express in CSS.');
+                this.la = true;
+            }
+            
   this.na.length && (I.k('Blending modes are used in ' + this.na.m() + ', but they are impossible to realistically transfer to CSS.'), this.la = m);
   this.Z.length && (I.k(this.Z.m().ea() + ' ' + ((1 < this.Z.length ? 'have' : 'has')) + ' a gradient fill type, but there is no way to express that in CSS, writing the average color instead.'), this.la = m);
   this.ba.length && (I.k(this.ba.m().ea() + ' ' + ((1 < this.ba.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.'), this.la = m);
@@ -520,11 +542,22 @@ var LayerStyle;
             
             return ret;
         },
-        Gc:function () {
+        
+        function getBoundsData() {
+            var bounds = this.readActiveValue('bounds', 'rectangle');
+            return {
+                top: bounds.top,
+                left: bounds.left,
+                width: bounds.right - bounds.left,
+                height: bounds.bottom - bounds.top
+            };
+        },
+        
+        getBorderRadiusData:function () {
             var pathComponents;
             try {
                 var ref = new ActionReference();
-                ref.putEnumerated(Q('Path'), Q('Path'), T('vectorMask'));
+                ref.putEnumerated(charIDToTypeID('Path'), charIDToTypeID('Path'), stringIDToTypeID('vectorMask'));
                 var desc = executeActionGet(ref);
                 pathComponents = getPSObjectPropertyChain(desc, 'pathContents.pathComponents');
                 //'Layer has layer mask.';
@@ -532,7 +565,7 @@ var LayerStyle;
                 return false;
             }
             if (!pathComponents) return false;
-            var b = [],bounds;
+            var paths = [],bounds;
             for (var i = 0; i < pathComponents.count; ++i) {
                 bounds = {
                     left: Infinity,
@@ -540,14 +573,14 @@ var LayerStyle;
                     top: Infinity,
                     bottom: -Infinity
                 },
-                pointsList = pathComponents.getObjectValue(i).getList(T('subpathListKey')).getObjectValue(0).getList(T('points')),
+                pointsList = pathComponents.getObjectValue(i).getList(stringIDToTypeID('subpathListKey')).getObjectValue(0).getList(stringIDToTypeID('points')),
                 var points = [];
                 for (var j = 0; j < pointsList.count; ++j) {
-                    var anchorDesc = pointsList.getObjectValue(j).getObjectValue(T('anchor')),
-                    horizontal = anchorDesc.getUnitDoubleValue(T('horizontal')),
-                    vertical = anchorDesc.getUnitDoubleValue(T('vertical'));
-                    //anchorDesc.getUnitDoubleType(T('horizontal'));
-                    //anchorDesc.getUnitDoubleType(T('horizontal'));
+                    var anchorDesc = pointsList.getObjectValue(j).getObjectValue(stringIDToTypeID('anchor')),
+                    horizontal = anchorDesc.getUnitDoubleValue(stringIDToTypeID('horizontal')),
+                    vertical = anchorDesc.getUnitDoubleValue(stringIDToTypeID('vertical'));
+                    //anchorDesc.getUnitDoubleType(stringIDToTypeID('horizontal'));
+                    //anchorDesc.getUnitDoubleType(stringIDToTypeID('horizontal'));
                     if(horizontal < bounds.left){
                         bounds.left = horizontal;
                     }
@@ -569,7 +602,7 @@ var LayerStyle;
                         y: vertical//e
                     });
                 }
-                b.push({
+                paths.push({
                     points: points,//B
                     bounds: bounds
                 });
@@ -581,34 +614,34 @@ var LayerStyle;
                 bottom: -Infinity//A
             };
             var a = 0;
-            for (var len = b.length; i < len; i++){
+            for (var len = paths.length; i < len; i++){
                 
-                if(b[i].bounds.left < bounds.left){
-                    bounds.left = b[i].bounds.left;
+                if(paths[i].bounds.left < bounds.left){
+                    bounds.left = paths[i].bounds.left;
                 }
                 
-                if(b[i].bounds.top < bounds.top){
-                    bounds.top = b[i].bounds.top;
+                if(paths[i].bounds.top < bounds.top){
+                    bounds.top = paths[i].bounds.top;
                 }
                 
-                if(b[i].bounds.right > bounds.right){
-                    bounds.right = b[i].bounds.right;
+                if(paths[i].bounds.right > bounds.right){
+                    bounds.right = paths[i].bounds.right;
                 }
-                if(b[i].bounds.bottom > bounds.bottom){
-                    bounds.bottom = b[i].bounds.bottom;
+                if(paths[i].bounds.bottom > bounds.bottom){
+                    bounds.bottom = paths[i].bounds.bottom;
                 }                
             }            
 
             i = 0;
-            for (var len = b.length; i < len; i++) 
-                if (f = Kc(b[i])) return f;
+            for (var len = paths.length; i < len; i++) 
+                if (var ret = this.getBorderRadiusDataFromShape(paths[i])) return ret;
             return {
-                source: o,
-                X: o,
+                source: null,
+                box: null,
                 bounds: bounds
             };
         },
-        Kc:function (pathData) {
+        getBorderRadiusDataFromShape:function (pathData) {
             function getFirstAndEnd(arr) {
                 if(1 == arr.length){
                     arr.push(arr[0]);
@@ -624,7 +657,7 @@ var LayerStyle;
                 return arr;
             }
             var lefts = [], rights = [], tops = [], bottoms = [];
-            for (var j = 0, k = pathData.B.length; j < k; j++){
+            for (var j = 0, k = pathData.points.length; j < k; j++){
                 if(pathData.points[j].x < pathData.bounds.left + 0.0005){
                     lefts.push(pathData.points[j]);
                 }
@@ -644,7 +677,7 @@ var LayerStyle;
             rights = getFirstAndEnd(sort(rights));
             return (2 != tops.length && 2 != lefts.length && 2 != bottoms.length && 2 != rights.length ? false : {
                 source: 'radius from shape',
-                Corners: new Corners(ic(tops[0], lefts[0]), ic(tops[1], rights[0]), ic(bottoms[1], rights[1]), ic(bottoms[0], lefts[1])),//X
+                box: new Box(Vector.sub(tops[0], lefts[0]), Vector.sub(tops[1], rights[0]), Vector.sub(bottoms[1], rights[1]), Vector.sub(bottoms[0], lefts[1])),//X
                 bounds: pathData.bounds
             });
         }

@@ -69,7 +69,7 @@ UnitNumber.prototype.equal = function(other) {
     );
 };
 
-function CornerArray(v) {
+function UnitNumberArray(v) {//va
     if ('array' == yh.util.getType(v)){
         this.values = v;
     }else {
@@ -79,7 +79,7 @@ function CornerArray(v) {
     }
 }
 
-CornerArray.prototype.toString = function() {
+UnitNumberArray.prototype.toString = function() {
     var idx = 1;
     do {
         var flag = true;
@@ -94,13 +94,13 @@ CornerArray.prototype.toString = function() {
     return data.join(' ');
 };
 
-CornerArray.prototype.equal = function(a) {
+UnitNumberArray.prototype.equal = function(a) {
     if (this.values.length != a.values.length) return false;
     for (var ret = true, i = 0, len = this.values.length; i < len; i++) this.values[i].equal(a.values[i]) || (ret = false);
     return ret;
 };
 
-function Point(x, y, unit) {
+function Vector(x, y, unit) {//wa
     if('number' == typeof y ){
         this.unit = unit || 'px';
         this.x = x;
@@ -111,12 +111,12 @@ function Point(x, y, unit) {
     }
 }
 
-Point.prototype.add=function(n) {
+Vector.prototype.add=function(n) {
   this.x += n;
   this.y += n;
 };
 
-Point.prototype.equal = function(a) {
+Vector.prototype.equal = function(a) {
   if('number' == typeof a){
     return yh.math.equal(this.x, a) && yh.math.equal(this.y, a);
   }else {
@@ -128,36 +128,36 @@ Point.prototype.equal = function(a) {
   }
 };
 
-Point.sub=function (a, b) {
-  return new Point(Math.abs(a.x - b.x), Math.abs(a.y - b.y), 'px');
+Vector.sub=function (a, b) {
+  return new Vector(Math.abs(a.x - b.x), Math.abs(a.y - b.y), 'px');
 }
 
 
-function Corners(tl, tr, br, bl) {
+function Box(tl, tr, br, bl) {//ya
   this.topLeft = tl;//Va
   this.topRight = tr;//Wa
   this.bottomRight = br;/Da
   this.bottomLeft = bl;//Ca
-  this.values = [this.topLeft, this.topRight, this.bottomRight, this.bottomLeft];
+  this.corners = [this.topLeft, this.topRight, this.bottomRight, this.bottomLeft];
 }
 
-Corners.prototype.toString = function() {
-    var xs = this.values.map(function(a) {
+Box.prototype.toString = function() {
+    var xs = this.corners.map(function(a) {
             return new UnitNumber(a.x, a.unit);
         }),
-        ys = this.values.map(function(a) {
+        ys = this.corners.map(function(a) {
             return new UnitNumber(a.y, a.unit);
         });
         
-    var xCorners = new CornerArray(xs),
-      yCorners = new CornerArray(ys),
+    var xCorners = new UnitNumberArray(xs),
+      yCorners = new UnitNumberArray(ys),
       xCornersStr= xCorners.toString(),
       yCornersStr=yCorners.toString();
   return (xCornersStr == yCornersStr ? c : xCornersStr + ' / ' + yCornersStr);
 };
 
-Corners.prototype.isZero = function() {
-  return this.values.reduce(function(flag, b) {
+Box.prototype.isZero = function() {
+  return this.corners.reduce(function(flag, b) {
     return flag && b.equal(0);
   }, true);
 };

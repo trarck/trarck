@@ -35,6 +35,14 @@ Color.lerp=function (a, b, delta) {
     );
 };
 
+function NormalNumber(v) {
+  this.value = v;
+}
+
+NormalNumber.prototype.toString = function() {
+  return yh.math.removeDecimalFirstZero(yh.math.formatDecimaTwoPlace(this.value));
+};
+
 function UnitNumber(value, unit, orientation) {//D
     this.value = value;
     this.unit = unit || 'px';

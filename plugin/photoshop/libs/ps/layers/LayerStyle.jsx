@@ -26,9 +26,9 @@ var LayerStyle;
         this.style.dimensions = [];
         this.style.font = [];
         
-        this.na = [];
-        this.Z = [];
-        this.ba = [];
+        this.blendingModes = [];
+        this.gradientFills = [];
+        this.noiseGradientFills = [];
     };     
     
     LayerStyle.prototype={
@@ -68,17 +68,19 @@ var LayerStyle;
             this.name=yh.checkType(ActionUtils.getPSObjectPropertyChain(layerDescriptor,'name'),'string');
             this.checkLayerEffectMode(this, '', 'layer');
             
-            this.la=false;
+            this.haveNotSupportEffect=false;
             this.kind=this.layer.kind.toString();//ta
             //isText
             this.isText = 'LayerKind.TEXT' === this.kind;
             this.opacity = yh.checkType(this.readActiveValue('opacity') / 255, 'number');
             this.fillOpacity = yh.checkType(this.readActiveValue('fillOpacity') / 255, 'number');
             this.globalAngle = yh.checkType(this.readActiveValue('globalAngle'), 'number');
-            1 > this.opacity && this.style.opacity.push({
-                value: this.opacity,
-                name: 'layer alpha'
-            });
+            if(1 > this.opacity){
+                this.style.opacity.push({
+                    value: this.opacity,
+                    name: 'layer alpha'
+                });
+            }
             if (this.isText && xc) {
                 var color, textItem = this.layer.textItem;
                 textItem.contents || throw 'NoContentsTextLayer';
@@ -176,7 +178,7 @@ var LayerStyle;
                     if('solidColor' == this.getLayerEffectObjectProperty('frameFX.paintType')){
                         color = this.getLayerEffectObjectProperty('frameFX.color', 'color');
                     }else{
-                        this.Z.push('stroke');
+                        this.gradientFills.push('stroke');
                         color = GradientStyle.reduce(this.getGradientData(this.getLayerEffectObjectProperty('frameFX')).gradient);
                     }               
                     strokeData = {
@@ -215,7 +217,7 @@ var LayerStyle;
                             name: 'inner glow'
                         });
                     }else{ 
-                        this.ba.push('inner glow'));
+                        this.noiseGradientFills.push('inner glow'));
                     }
                 }
                 //'outerGlow'
@@ -226,7 +228,7 @@ var LayerStyle;
                             name: 'outer glow'
                         });
                     }else{ 
-                        this.ba.push('outer glow');
+                        this.noiseGradientFills.push('outer glow');
                     }
                 }
     
@@ -302,13 +304,21 @@ var LayerStyle;
             this.isLayerEffectEnable('patternFill') && notSupportEffects.push('pattern overlay');
             if(notSupportEffects.length){
                 console.log('Note: CSS Hat currently cannot render ' + notSupportEffects.join() + ', as it is hard to express in CSS.');
-                this.la = true;
+                this.haveNotSupportEffect = true;
             }
             
-  this.na.length && (I.k('Blending modes are used in ' + this.na.m() + ', but they are impossible to realistically transfer to CSS.'), this.la = m);
-  this.Z.length && (I.k(this.Z.m().ea() + ' ' + ((1 < this.Z.length ? 'have' : 'has')) + ' a gradient fill type, but there is no way to express that in CSS, writing the average color instead.'), this.la = m);
-  this.ba.length && (I.k(this.ba.m().ea() + ' ' + ((1 < this.ba.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.'), this.la = m);
-  I.ka();
+            if(this.blendingModes.length){
+                console.log('Blending modes are used in ' + this.blendingModes.join() + ', but they are impossible to realistically transfer to CSS.');
+                this.haveNotSupportEffect = true;
+            }
+            if(this.gradientFills.length){
+                console.log(this.gradientFills.join().ucfirst() + ' ' + ((1 < this.gradientFills.length ? 'have' : 'has')) + ' a gradient fill type, but there is no way to express that in CSS, writing the average color instead.');
+                this.haveNotSupportEffect = true;
+            }
+            if(this.noiseGradientFills.length){
+                console.log(this.noiseGradientFills.join().ucfirst() + ' ' + ((1 < this.noiseGradientFills.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.');
+                this.haveNotSupportEffect = true;
+            }
         },
 
         
@@ -380,7 +390,9 @@ var LayerStyle;
         },
         
         checkLayerEffectMode:function(key,name){
-           'normal' != this.readActiveValue(((key ? 'layerEffects.' + key + '.' : '')) + 'mode') && this.na.push(name);
+           if('normal' != this.readActiveValue(((key ? 'layerEffects.' + key + '.' : '')) + 'mode')){
+               this.blendingModes.push(name);
+           }
         },
         
         getAdjustmentColor:function() {
@@ -416,7 +428,7 @@ var LayerStyle;
                     inset: !(!inset)//F
                 };
             if(ret.color == null) {
-                this.Z.push(name);
+                this.gradientFills.push(name);
                 var gradientData = this.getGradientData(this.getLayerEffectObjectProperty(key)),
                 ret.color = GradientStyle.reduce(gradientData.gradient));
             }

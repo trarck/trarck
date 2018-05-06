@@ -24,6 +24,11 @@
                 return 'object';
             }
             return type;
+        },
+        function proxy(fun, scope) {
+            return function() {
+                return fun.apply(scope, Array.prototype.slice.call(arguments));
+            };
         }
     };
     //yh.util=util;

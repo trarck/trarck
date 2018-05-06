@@ -1894,7 +1894,7 @@ function rc() {
   this.ba.length && (I.k(this.ba.m().ea() + ' ' + ((1 < this.ba.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.'), this.la = m);
   I.ka();
 }
-function Z(a, b, c, d) {
+function visitorLayerStyle(a, b, c, d) {
   for (var e = 0, f = b.length; e < f; ++e) Ub(d, a)(c, b[e].value, b[e].a);
 }
 function Jc(a, b) {
@@ -2176,7 +2176,7 @@ function Oc(a) {
         k, n, t = p,
         E = 0,
         i = 0;
-    Z(f, f.style.opacity, j, function(a, b, c) {
+    visitorLayerStyle(f, f.style.opacity, j, function(a, b, c) {
       M(a, new ub(new pa(b), c));
     });
     var w = f.style.solidFill;
@@ -2212,7 +2212,7 @@ function Oc(a) {
       }
       C.size && M(j, new Hb(new D(C.size, 'px')));
     }
-    f.p || Z(f, f.style.stroke, j, function(a, b) {
+    f.p || visitorLayerStyle(f, f.style.stroke, j, function(a, b) {
       switch (b.style) {
       case 'centeredFrame':
         I.k('Stroke is centered and there is no good way to emulate this in CSS, so we render it as inner stroke.');
@@ -2226,16 +2226,16 @@ function Oc(a) {
       M(a, new vb(new D(b.size), 'solid', b.color, 'stroke'));
     });
     var Ka = [];
-    Z(f, f.style.dropShadow, j, function(a, b, c) {
+    visitorLayerStyle(f, f.style.dropShadow, j, function(a, b, c) {
       (this.p ? (0.0005 < b.g && Ka.push(c), b = nc(b.angle, b.distance, b.blur + b.g, 0, b.color, p, m), M(a, new Pb(b.d, b.e, b.blur, b.color, c)), t = m) : (b = mc(b, i), M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c))));
     });
-    Z(f, f.style.outerGlow, j, function(a, b, c) {
+    visitorLayerStyle(f, f.style.outerGlow, j, function(a, b, c) {
       (this.p ? (0.0005 < b.g && Ka.push(c), b = nc(b.angle, b.distance, b.blur + b.g, 0, b.color, p, m), I.Pa(b, 'shadowObj'), M(a, new Pb(b.d, b.e, b.blur, b.color, c)), t = m) : (b = mc(b, i), M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c))));
     });
-    f.p || (Z(f, f.style.innerShadow, j, function(a, b, c) {
+    f.p || (visitorLayerStyle(f, f.style.innerShadow, j, function(a, b, c) {
       b = nc(b.angle, b.distance, b.blur, b.g, b.color, m, p);
       M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c));
-    }), Z(f, f.style.innerGlow, j, function(a, b, c) {
+    }), visitorLayerStyle(f, f.style.innerGlow, j, function(a, b, c) {
       b = nc(0, 0, b.blur, b.g, b.color, m, p);
       M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c));
     }));
@@ -2298,7 +2298,7 @@ function Oc(a) {
         }
         M(j, new Qb(gb, Sb));
       }
-      Z(f, f.style.gradientFill, j, function(a, b, c) {
+      visitorLayerStyle(f, f.style.gradientFill, j, function(a, b, c) {
         var d, e = S / 2;
         d = U / 2;
         var f = b.angle,
@@ -2333,10 +2333,10 @@ function Oc(a) {
         }
       });
     }
-    f.p || Z(f, f.style.dimensions, j, function(a, b) {
+    f.p || visitorLayerStyle(f, f.style.dimensions, j, function(a, b) {
       !F(b.width, 0) && !F(b.height, 0) && M(a, new tb(new D(b.width - 2 * E), new D(b.height - 2 * E)));
     });
-    f.p || Z(f, f.style.borderRadius, j, function(a, b, c) {
+    f.p || visitorLayerStyle(f, f.style.borderRadius, j, function(a, b, c) {
       if (!b.J()) {
         if (i > 0.0005) {
           xa(b.Va, i);

@@ -64,7 +64,7 @@ var LayerStyle;
             }
              
             //read id
-            this.layerId=yh.checkType(layerDescriptor.getInteger(charIDToTypeID('LyrI')),'number').toString();
+            this.layerId=yh.checkType(layerDescriptor.getInteger(charIDToTypeID('LyrI')),'number').toString();//gb
             this.name=yh.checkType(ActionUtils.getPSObjectPropertyChain(layerDescriptor,'name'),'string');
             this.checkLayerEffectMode(this, '', 'layer');
             
@@ -403,22 +403,22 @@ var LayerStyle;
             return ret;
         },
         getAdjustmentData:function () {
-          var b = lc().getList(charIDToTypeID('Adjs')).getObjectValue(0);
-          return this.getGradientData(b, true);
+          var adjs = ActionUtils.getActiveLayerDescriptor().getList(charIDToTypeID('Adjs')).getObjectValue(0);
+          return this.getGradientData(adjs, true);
         },
         getInnerShadowData:function (a) {
-          wc(a, 'innerShadow', 'inner shadow');
-          return getLightEffectData(a, 'innerShadow', 'inner shadow', m, m);
+          this.checkLayerEffectMode(a, 'innerShadow', 'inner shadow');
+          return this.getLightEffectData(a, 'innerShadow', 'inner shadow', true, true);
         },
         getInnerGlowData:function (a) {
-          wc(a, 'innerGlow', 'inner glow');
-          return getLightEffectData(a, 'innerGlow', 'inner glow', p, m);
+          this.checkLayerEffectMode(a, 'innerGlow', 'inner glow');
+          return this.getLightEffectData(a, 'innerGlow', 'inner glow', false, true);
         },
         getOuterGlowData:function (a) {
-          wc(a, 'outerGlow', 'outer glow');
-          return getLightEffectData(a, 'outerGlow', 'outer glow');
+          this.checkLayerEffectMode(a, 'outerGlow', 'outer glow');
+          return this.getLightEffectData(a, 'outerGlow', 'outer glow');
         },
-        getLightEffectData:function (key, name, d, inset) {
+        getLightEffectData:function (key, name, ext, inset) {
             var chokeMatte = this.getLayerEffectObjectProperty(key + '.chokeMatte') / 100,
                 blur = this.getLayerEffectObjectProperty(key + '.blur'),
                 ret = {
@@ -434,8 +434,8 @@ var LayerStyle;
             }
             var opacity = this.getLayerEffectObjectProperty(key + '.opacity') / 100;
             ret.color.a = opacity;
-            ret.distance = (d ? this.getLayerEffectObjectProperty(key + '.distance') : 0);
-            ret.angle = (d ? (this.getLayerEffectObjectProperty(key + '.useGlobalAngle') ? this.globalAngle : this.getLayerEffectObjectProperty(key + '.localLightingAngle')) : 0);
+            ret.distance = (ext ? this.getLayerEffectObjectProperty(key + '.distance') : 0);
+            ret.angle = (ext ? (this.getLayerEffectObjectProperty(key + '.useGlobalAngle') ? this.globalAngle : this.getLayerEffectObjectProperty(key + '.localLightingAngle')) : 0);
             return ret;
         },
         

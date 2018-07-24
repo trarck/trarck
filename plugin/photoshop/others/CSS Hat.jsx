@@ -1699,7 +1699,7 @@ function nc(a, b, c, d, e, f, g) {
   };
 };
 
-function rc() {
+function rc() {//LayerStyle
   var a = app.activeDocument.activeLayer;
   'undefined' == typeof a && h(new sc(tc));
   I.ja('LayerStyle');

@@ -13,8 +13,8 @@ function generateCss(options){
     var e = b[4] || 'css';
     Mc = d;
     documents.length || h(new sc('NoDocumentIsOpened'));
-    var layerStyle = new rc(),
-        g = layerStyle.gb || '';
+    var layerStyle = new LayerStyle(),
+        layerId = layerStyle.layerId || '';
     I.ja('LayerStyle.toCssRule');
     var j = new $a(),
         k, n, t = p,

@@ -64,7 +64,7 @@ var LayerStyle;
             }
              
             //read id
-            this.layerId=yh.checkType(layerDescriptor.getInteger(charIDToTypeID('LyrI')),'number').toString();
+            this.layerId=yh.checkType(layerDescriptor.getInteger(charIDToTypeID('LyrI')),'number').toString();//gb
             this.name=yh.checkType(ActionUtils.getPSObjectPropertyChain(layerDescriptor,'name'),'string');
             this.checkLayerEffectMode(this, '', 'layer');
             
@@ -399,8 +399,8 @@ var LayerStyle;
             return ret;
         },
         getAdjustmentData:function () {
-          var b = lc().getList(charIDToTypeID('Adjs')).getObjectValue(0);
-          return this.getGradientData(b, true);
+          var adjs = ActionUtils.getActiveLayerDescriptor().getList(charIDToTypeID('Adjs')).getObjectValue(0);
+          return this.getGradientData(adjs, true);
         },
         getInnerShadowData:function () {
           this.checkLayerEffectMode('innerShadow', 'inner shadow');
@@ -414,7 +414,7 @@ var LayerStyle;
           this.checkLayerEffectMode( 'outerGlow', 'outer glow');
           return this.getLightEffectData('outerGlow', 'outer glow');
         },
-        getLightEffectData:function (key, name, d, inset) {
+        getLightEffectData:function (key, name, ext, inset) {
             var chokeMatte = this.getLayerEffectObjectProperty(key + '.chokeMatte') / 100,
                 blur = this.getLayerEffectObjectProperty(key + '.blur'),
                 ret = {
@@ -430,8 +430,8 @@ var LayerStyle;
             }
             var opacity = this.getLayerEffectObjectProperty(key + '.opacity') / 100;
             ret.color.a = opacity;
-            ret.distance = (d ? this.getLayerEffectObjectProperty(key + '.distance') : 0);
-            ret.angle = (d ? (this.getLayerEffectObjectProperty(key + '.useGlobalAngle') ? this.globalAngle : this.getLayerEffectObjectProperty(key + '.localLightingAngle')) : 0);
+            ret.distance = (ext ? this.getLayerEffectObjectProperty(key + '.distance') : 0);
+            ret.angle = (ext ? (this.getLayerEffectObjectProperty(key + '.useGlobalAngle') ? this.globalAngle : this.getLayerEffectObjectProperty(key + '.localLightingAngle')) : 0);
             return ret;
         },
         

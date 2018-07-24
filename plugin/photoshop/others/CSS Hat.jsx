@@ -2,9 +2,9 @@ function h(a) {
   throw a;
 }
 var l = void 0,
-    m = !0,
+    m = !0,//true
     o = null,
-    p = !1;
+    p = !1;//false
 
 function aa(a) {
   var b = typeof a;

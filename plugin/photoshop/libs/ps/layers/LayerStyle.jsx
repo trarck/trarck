@@ -1,4 +1,4 @@
-//require defines/Terminology
+﻿//require defines/Terminology
 //require Log
 
 var LayerStyle;
@@ -7,7 +7,7 @@ var LayerStyle;
     var Hc=true;
     
     
-    var DefaultColorStops = [new ColorStop(0, new Corlor(0, 0, 0)), new ColorStop(100, new Corlor(255, 255, 255))],
+    var DefaultColorStops = [new ColorStop(0, new Color(0, 0, 0)), new ColorStop(100, new Color(255, 255, 255))],
     DefaultOpacities = [new OpacityStop(0, 1), new OpacityStop(100, 1)];
     
     LayerStyle=function(layer){
@@ -43,7 +43,7 @@ var LayerStyle;
                 this.layerDescriptor=ActionUtils.getActiveLayerDescriptor();
             }
             
-            ActionUtils.getPSObjectPropertyChain(this.layerDescriptor,path, type, defaultValue);
+            return ActionUtils.getPSObjectPropertyChain(this.layerDescriptor,path, type, defaultValue);
         },
         
         initialize:function(){
@@ -57,7 +57,7 @@ var LayerStyle;
             //layerSection
             this.layerSection=this.descriptorData.layerSection;
             if('layerSectionStart' == this.layerSection || 'layerSectionEnd' == this.layerSection){
-                throw 'LayerGroupSelected';
+                throw('LayerGroupSelected');
             }
             if('layerSectionContent' != this.layerSection){
                 throw 'Unexpected layer type: ' + this.layerSection;
@@ -72,8 +72,8 @@ var LayerStyle;
             this.kind=this.layer.kind.toString();//ta
             //isText
             this.isText = 'LayerKind.TEXT' === this.kind;
-            this.opacity = yh.checkType(this.readActiveValue('opacity') / 255, 'number');
-            this.fillOpacity = yh.checkType(this.readActiveValue('fillOpacity') / 255, 'number');
+            this.opacity = yh.checkType(this.readActiveValue('opacity') /255, 'number');
+            this.fillOpacity = yh.checkType(this.readActiveValue('fillOpacity')/255 , 'number');
             this.globalAngle = yh.checkType(this.readActiveValue('globalAngle'), 'number');
             if(1 > this.opacity){
                 this.style.opacity.push({
@@ -83,7 +83,8 @@ var LayerStyle;
             }
             if (this.isText && xc) {
                 var color, textItem = this.layer.textItem;
-                textItem.contents || throw 'NoContentsTextLayer';
+                if(!textItem.contents)
+					throw 'NoContentsTextLayer';
                 var face = textItem.font,
                     size = textItem && textItem.size || 20,
                     family, font, underline = UnderlineType.UNDERLINEOFF;
@@ -108,9 +109,9 @@ var LayerStyle;
                 fontStyle.match(/italic/i) && (style = 'italic', check.push('font style (' + style + ')'));
                 
                 try {
-                    color = new Corlor(this.layer.textItem.color.rgb.red, this.layer.textItem.color.rgb.green, this.layer.textItem.color.rgb.blue, 1);
+                    color = new Color(this.layer.textItem.color.rgb.red, this.layer.textItem.color.rgb.green, this.layer.textItem.color.rgb.blue, 1);
                 } catch (ex) {
-                    color = new Corlor(0, 0, 0, 1);
+                    color = new Color(0, 0, 0, 1);
                 }
                 var fontData = {
                     color: {
@@ -159,7 +160,7 @@ var LayerStyle;
                 if(this.isLayerEffectEnable('gradientFill') ){ 
                     this.checkLayerEffectMode( 'gradientFill', 'gradient fill');
                     var gradientFill = this.getLayerEffectObjectProperty('gradientFill');
-                    var gradientFillData = this.getGradientFillData(gradientFill, false, color);
+                    var gradientFillData = this.getGradientData(gradientFill, false, color);
                     var name = 'gradient overlay';
                     if(color){ 
                         name = this.style.solidFill[this.style.solidFill.length-1].name + ' + ' + name;
@@ -217,7 +218,7 @@ var LayerStyle;
                             name: 'inner glow'
                         });
                     }else{ 
-                        this.noiseGradientFills.push('inner glow'));
+                        this.noiseGradientFills.push('inner glow');
                     }
                 }
                 //'outerGlow'
@@ -319,13 +320,7 @@ var LayerStyle;
                 console.log(this.noiseGradientFills.join().ucfirst() + ' ' + ((1 < this.noiseGradientFills.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.');
                 this.haveNotSupportEffect = true;
             }
-        },
-
-        
-        
-        getGradientFillData:function(gradientFill,useLayerFillOpacity,color){
-            
-        },      
+        }, 
         
         findStopItem:function(arr, localtion, start) {
             if (0 == arr.length) return null;
@@ -377,7 +372,8 @@ var LayerStyle;
                     colorStart: colorItem.index,
                     opacityStart: opacityItem.index,
                     colorStop: new ColorStop(colorItem.value.location, color)
-            };
+				};
+			}
             //'nextStop: no path was successful;
             return null;
         },
@@ -385,8 +381,8 @@ var LayerStyle;
             return this.readActiveValue('layerEffects.' + key, type);
         },
         isLayerEffectEnable:function(effect) {
-            var path = 'layerEffects.' + effect + '.enabled',
-            return this.readActiveValue(path, undefined, true) && this.readActiveValue('layerEffects.' + effect + '.enabled');
+            var path = 'layerEffects.' + effect + '.enabled';
+			return this.readActiveValue(path, undefined, true) && this.readActiveValue('layerEffects.' + effect + '.enabled');
         },
         
         checkLayerEffectMode:function(key,name){
@@ -406,17 +402,17 @@ var LayerStyle;
           var b = lc().getList(charIDToTypeID('Adjs')).getObjectValue(0);
           return this.getGradientData(b, true);
         },
-        getInnerShadowData:function (a) {
-          wc(a, 'innerShadow', 'inner shadow');
-          return getLightEffectData(a, 'innerShadow', 'inner shadow', m, m);
+        getInnerShadowData:function () {
+          this.checkLayerEffectMode('innerShadow', 'inner shadow');
+          return getLightEffectData('innerShadow', 'inner shadow', true, true);
         },
-        getInnerGlowData:function (a) {
-          wc(a, 'innerGlow', 'inner glow');
-          return getLightEffectData(a, 'innerGlow', 'inner glow', p, m);
+        getInnerGlowData:function () {
+          this.checkLayerEffectMode( 'innerGlow', 'inner glow');
+          return getLightEffectData('innerGlow', 'inner glow', false,true);
         },
-        getOuterGlowData:function (a) {
-          wc(a, 'outerGlow', 'outer glow');
-          return getLightEffectData(a, 'outerGlow', 'outer glow');
+        getOuterGlowData:function () {
+          this.checkLayerEffectMode( 'outerGlow', 'outer glow');
+          return this.getLightEffectData('outerGlow', 'outer glow');
         },
         getLightEffectData:function (key, name, d, inset) {
             var chokeMatte = this.getLayerEffectObjectProperty(key + '.chokeMatte') / 100,
@@ -429,8 +425,8 @@ var LayerStyle;
                 };
             if(ret.color == null) {
                 this.gradientFills.push(name);
-                var gradientData = this.getGradientData(this.getLayerEffectObjectProperty(key)),
-                ret.color = GradientStyle.reduce(gradientData.gradient));
+                var gradientData = this.getGradientData(this.getLayerEffectObjectProperty(key));
+                ret.color = GradientStyle.reduce(gradientData.gradient);
             }
             var opacity = this.getLayerEffectObjectProperty(key + '.opacity') / 100;
             ret.color.a = opacity;
@@ -555,7 +551,7 @@ var LayerStyle;
             return ret;
         },
         
-        function getBoundsData() {
+        getBoundsData:function () {
             var bounds = this.readActiveValue('bounds', 'rectangle');
             return {
                 top: bounds.top,
@@ -584,8 +580,8 @@ var LayerStyle;
                     right: -Infinity,
                     top: Infinity,
                     bottom: -Infinity
-                },
-                pointsList = pathComponents.getObjectValue(i).getList(stringIDToTypeID('subpathListKey')).getObjectValue(0).getList(stringIDToTypeID('points')),
+                };
+                pointsList = pathComponents.getObjectValue(i).getList(stringIDToTypeID('subpathListKey')).getObjectValue(0).getList(stringIDToTypeID('points'));
                 var points = [];
                 for (var j = 0; j < pointsList.count; ++j) {
                     var anchorDesc = pointsList.getObjectValue(j).getObjectValue(stringIDToTypeID('anchor')),
@@ -644,9 +640,9 @@ var LayerStyle;
                 }                
             }            
 
-            i = 0;
+            var i = 0,ret;
             for (var len = paths.length; i < len; i++) 
-                if (var ret = this.getBorderRadiusDataFromShape(paths[i])) return ret;
+                if ((ret = this.getBorderRadiusDataFromShape(paths[i]))) return ret;
             return {
                 source: null,
                 box: null,
@@ -658,7 +654,7 @@ var LayerStyle;
                 if(1 == arr.length){
                     arr.push(arr[0]);
                 }else if( 2 < arr.length){
-                    arr.splice(1, arr.length - 2));
+                    arr.splice(1, arr.length - 2);
                 }
                 return arr;
             }

@@ -131,7 +131,7 @@ Vector.prototype.equal = function(a) {
       if(this.equal(0) && equal.o(0)){
           return  true;
       }else{
-          yh.math.equal(this.x, a.x) && yh.math.equal(this.y, a.y) && this.unit == a.unit));
+          yh.math.equal(this.x, a.x) && yh.math.equal(this.y, a.y) && (this.unit == a.unit);
       }
   }
 };
@@ -144,7 +144,7 @@ Vector.sub=function (a, b) {
 function Box(tl, tr, br, bl) {//ya
   this.topLeft = tl;//Va
   this.topRight = tr;//Wa
-  this.bottomRight = br;/Da
+  this.bottomRight = br;//Da
   this.bottomLeft = bl;//Ca
   this.corners = [this.topLeft, this.topRight, this.bottomRight, this.bottomLeft];
 }
@@ -175,15 +175,27 @@ function GradientStyle(){
     this.opacityStops=[];//G
 }
 
+function Stop(location){
+	this.location = location;
+}
+
 function ColorStop(location,color){
     this.location = location;
     this.color = color;
 }
 
+ColorStop.prototype.toString = function() {
+  return '{location: ' + this.location + ', color:' + this.color.toString() + '}';
+};
+
 function OpacityStop(location,opacity){
     this.location = location;
     this.opacity = opacity;
 }
+
+OpacityStop.prototype.toString = function() {
+  return '{location: ' + this.location + ', opacity:' + this.opacity + '}';
+};
 
 GradientStyle.getStopValue=function (location, stops, type) {
     if (0 === stops.length) return ('color' == type ? new G(0, 0, 0, 0) : 0);

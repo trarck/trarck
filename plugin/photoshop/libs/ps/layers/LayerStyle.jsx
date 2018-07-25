@@ -85,28 +85,35 @@ var LayerStyle;
                 var color, textItem = this.layer.textItem;
                 if(!textItem.contents)
 					throw 'NoContentsTextLayer';
-                var face = textItem.font,
+                var face = "default",
                     size = textItem && textItem.size || 20,
-                    family, font, underline = UnderlineType.UNDERLINEOFF;
+                    fontFamily, font, underline = UnderlineType.UNDERLINEOFF;
                 try {
+                    face=textItem.font;
                     underline = textItem && textItem.underline || UnderlineType.UNDERLINEOFF;
                 } catch (ex) {}
-                var k = 'normal',
-                    style = 'normal';
+                var fontWeight= 'normal',
+                    fontStyle = 'normal';
                 try {
                     font = app.fonts[face];
                 } catch (ex) {}
-                var fontName,fontFamily,fontStyle;
+                var fontName,tempStyle;
                 if(font){
-                    fontName = font.name, fontFamily = font.family, fontStyle = font.style
+                    fontName = font.name, fontFamily = font.family, tempStyle = font.style
                 }else{
                     console.log('Font ' + fontName + ' is not available on your computer and because of that, we cannot get it\'s family and style :(.');
-                    fontName = fontFamily = fontStyle = face;
+                    fontName = fontFamily = tempStyle = face;
                 }
 
                 var check= [];
-                fontStyle.match(/bold/i) && (fontWeight = 'bold', check.push('font weight (' + fontWeight + ')'));
-                fontStyle.match(/italic/i) && (style = 'italic', check.push('font style (' + style + ')'));
+                if(tempStyle.match(/bold/i)){
+                    fontWeight = 'bold';
+                    check.push('font weight (' + fontWeight + ')');
+                }
+                if(tempStyle.match(/italic/i)){
+                    fontStyle = 'italic';
+                    check.push('font style (' + style + ')');
+                }
                 
                 try {
                     color = new Color(this.layer.textItem.color.rgb.red, this.layer.textItem.color.rgb.green, this.layer.textItem.color.rgb.blue, 1);
@@ -114,13 +121,11 @@ var LayerStyle;
                     color = new Color(0, 0, 0, 1);
                 }
                 var fontData = {
-                    color: {
-                        color: color
-                    },
+                    color: color,
                     name: fontName || null,
                     family: fontFamily || null,
                     weight: fontWeight || null,
-                    style: style || null,
+                    style: fontStyle || null,
                     size: size || null,
                     underline: (underline ? (underline == UnderlineType.UNDERLINEOFF ? false : true) : null)
                 };

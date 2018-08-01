@@ -7,7 +7,7 @@
           return Math.round(100 * n) / 100;
         },
         round:function (n) {
-            return (0.5 < Math.abs(n) ? Math.round(n) + 'px' : 0);
+            return (0.5 < Math.abs(n) ? Math.round(n): 0);
         },
         equal:function (a, b) {
             return 0.0005 > Math.abs(a - b);

@@ -171,7 +171,7 @@ Array.prototype.forEach || (Array.prototype.forEach = function(a, b) {
     d++;
   }
 });
-Object.prototype.ua || (Object.prototype.ua = function(a, b) {
+Object.prototype.iterator || (Object.prototype.iterator = function(a, b) {
   for (var c in this) this.hasOwnProperty(c) && a.call(b, this[c], c);
 });
 Function.prototype.ab || (Function.prototype.ab = function(a) {
@@ -339,8 +339,8 @@ function ma(a, b) {
   }), '"');
 };
 
-function y(a) {
-  a.ua(function(a, c) {
+function Mixin(a) {
+  a.iterator(function(a, c) {
     this[c] = a;
   }, this);
 };
@@ -689,7 +689,7 @@ function nb(a, b, c, d, e, f) {
     } else if (j[c].b == a && j[c].Q == b) return j[c];
   }
   var j = [];
-  a.ha.ua(function(a) {
+  a.ha.iterator(function(a) {
     var b = d,
         c = a.Ha(function(a) {
         return 'undefined' == typeof a.pa || a.pa == p;
@@ -871,17 +871,17 @@ function tb(a, b, c) {
 }
 u(tb, z);
 tb.prototype.l = function() {
-  return [new y({
+  return [new Mixin({
     b: 'Size',
     a: this.a,
     j: Wa,
     q: new J('Size', 'less', '.size', (this.width.o(this.height) ? this.width.toString() : this.width.toString() + ', ' + this.height.toString()))
-  }), new y({
+  }), new Mixin({
     b: 'Width',
     a: this.a,
     j: new J('Width', 'css', 'width', this.width.toString()),
     q: Xa
-  }), new y({
+  }), new Mixin({
     b: 'Height',
     a: this.a,
     j: new J('Height', 'css', 'height', this.height.toString()),
@@ -896,7 +896,7 @@ function ub(a, b) {
 }
 u(ub, z);
 ub.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'Opacity',
     a: this.a,
     j: new J('Opacity', 'css', 'opacity', this.value.toString()),
@@ -915,7 +915,7 @@ function vb(a, b, c, d) {
 }
 u(vb, z);
 vb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'Border',
     L: 'non_stackable',
     a: this.a,
@@ -941,7 +941,7 @@ Eb.prototype.l = function() {
     }, m);
   }(b ? (b = new J('BorderRadius', 'less', '.rounded', a), c = new J('BorderRadius', 'less', '.border-radius', a)) : (b = new J('BorderRadius', 'less', '.border-radius', a), c = new J('BorderRadius', 'less', '.border-radius', '<mixinTilda>~</mixinTilda><mixinQuote>"</mixinQuote>' + a + '<mixinQuoteEnd>"</mixinQuoteEnd>')));
   var e = /\//.test(a);
-  return [new y({
+  return [new Mixin({
     b: 'BorderRadius',
     Ea: this.a,
     P: new J('BorderRadius', 'moz', '-moz-border-radius', a),
@@ -954,7 +954,7 @@ Eb.prototype.l = function() {
     q: c,
     t: new J('BorderRadius', 'sass', 'border-radius', a),
     M: new J('BorderRadius', 'stylus', 'border-radius', a)
-  }), new y({
+  }), new Mixin({
     b: 'BackgroundClip',
     Ea: 'prevents bg color from leaking outside the border',
     P: new J('BackgroundClip', 'moz', '-moz-background-clip', 'padding'),
@@ -973,7 +973,7 @@ function Fb(a, b) {
 }
 u(Fb, z);
 Fb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'Color',
     a: this.a,
     j: new J('Color', 'css', 'color', this.value.toString())
@@ -987,7 +987,7 @@ function Gb(a, b) {
 }
 u(Gb, z);
 Gb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'FontFamily',
     a: this.a,
     j: new J('FontFamily', 'css', 'font-family', this.fb)
@@ -1001,7 +1001,7 @@ function Hb(a, b) {
 }
 u(Hb, z);
 Hb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'FontSize',
     a: this.a,
     j: new J('FontSize', 'css', 'font-size', this.value.toString())
@@ -1015,7 +1015,7 @@ function Ib(a, b) {
 }
 u(Ib, z);
 Ib.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'FontWeight',
     a: this.a,
     j: new J('FontWeight', 'css', 'font-weight', this.value.toString())
@@ -1029,7 +1029,7 @@ function Jb(a, b) {
 }
 u(Jb, z);
 Jb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'FontStyle',
     a: this.a,
     j: new J('FontStyle', 'css', 'font-style', this.value.toString())
@@ -1043,7 +1043,7 @@ function Kb(a, b) {
 }
 u(Kb, z);
 Kb.prototype.l = function() {
-  if ('no_decoration' != this.value) return new y({
+  if ('no_decoration' != this.value) return new Mixin({
     b: 'TextDecoration',
     a: this.a,
     j: new J('TextDecoration', 'css', 'text-decoration', this.value.toString())
@@ -1057,7 +1057,7 @@ function Lb(a, b) {
 }
 u(Lb, z);
 Lb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'BackgroundColor',
     a: this.a,
     j: new J('BackgroundColor', 'css', 'background-color', this.value.toString())
@@ -1096,7 +1096,7 @@ u(Ob, Mb);
 Ob.prototype.l = function() {
   if (0 >= this.color.c - 0.0005) return o;
   var a = Nb(this, 'BoxShadow');
-  return new y({
+  return new Mixin({
     b: 'BoxShadow',
     L: 'stackable',
     a: this.a,
@@ -1123,7 +1123,7 @@ u(Pb, Mb);
 Pb.prototype.l = function() {
   if (0 >= this.color.c - 0.0005) return o;
   var a = Nb(this, 'TextShadow');
-  return new y({
+  return new Mixin({
     b: 'TextShadow',
     L: 'non_stackable',
     a: this.a,
@@ -1139,7 +1139,7 @@ function Qb(a, b) {
 }
 u(Qb, z);
 Qb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     pa: m,
     b: 'BackgroundImage',
     L: 'merge_same_prefixes',
@@ -1178,7 +1178,7 @@ Rb.prototype.l = function() {
       t: new J('BackgroundImage', 'sass', 'background-image', 'linear-gradient(' + a + ')')
       };
   0 == Math.round((this.I.R + 360) % 360) % 45 && (b.M = new J('BackgroundImage', 'stylus', 'background', 'linear-gradient(' + a + ')'));
-  return new y(b);
+  return new Mixin(b);
 };
 
 function Tb(a, b, c) {
@@ -1189,7 +1189,7 @@ function Tb(a, b, c) {
 }
 u(Tb, z);
 Tb.prototype.l = function() {
-  return new y({
+  return new Mixin({
     b: 'BackgroundImage',
     L: 'merge_same_prefixes',
     a: this.a,

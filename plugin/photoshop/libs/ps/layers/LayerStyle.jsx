@@ -3,16 +3,14 @@
 
 var LayerStyle;
 (function(){
-    var xc=true;
-    var Hc=true;
-    
-    
     var DefaultColorStops = [new ColorStop(0, new Color(0, 0, 0)), new ColorStop(100, new Color(255, 255, 255))],
     DefaultOpacities = [new OpacityStop(0, 1), new OpacityStop(100, 1)];
     
-    LayerStyle=function(layer){
+    LayerStyle=function(layer,dimensions){
         this.layer=layer;
-        
+        this.useDimensions=dimensions||true;
+		this.textInfo=true;
+		
         this.style = {};
         this.style.dropShadow = [];
         this.style.innerShadow = [];
@@ -81,7 +79,7 @@ var LayerStyle;
                     name: 'layer alpha'
                 });
             }
-            if (this.isText && xc) {
+            if (this.isText && this.textInfo) {
                 var color, textItem = this.layer.textItem;
                 if(!textItem.contents)
 					throw 'NoContentsTextLayer';
@@ -284,7 +282,7 @@ var LayerStyle;
                     name: 'border radius'
                 });
             }
-            if(Hc){
+            if(this.useDimensions){
                 //bounds
                 if(borderRadiusData.bounds){
                     this.style.dimensions.push({

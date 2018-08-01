@@ -1,27 +1,28 @@
 function visitorLayerStyle(layerStyle, effects, c, handle) {//Z
-    for (var i = 0, len = effects.length; i < len; ++i) yh.util.proxy(handle, layerStyle)(c, effects[i].value, effects[i].name);
+    for (var i = 0, len = effects.length; i < len; ++i) 
+		yh.util.proxy(handle, layerStyle)(c, effects[i].value, effects[i].name);
 }
 
 function generateCss(options){
-    I.bb();
   try {
-    var b = a.split(','),
-        c = 'true' == b[0],
-        d = 'true' == b[1];
-    Hc = 'true' == b[2];
-    Nc = 'true' == b[3];
-    var e = b[4] || 'css';
-    Mc = d;
-    documents.length || h(new sc('NoDocumentIsOpened'));
+    var b = options.split(','),
+        comments = 'true' == b[0],//c
+        vendorExtensions = 'true' == b[1];//d
+    dimensions = 'true' == b[2];//Hc
+    outputWholeRule = 'true' == b[3];//Nc
+    var genType = b[4] || 'css';//e
+    if(documents.length==0){
+		throw('NoDocumentIsOpened');
+	}
     var layerStyle = new LayerStyle(),
         layerId = layerStyle.layerId || '';
-    I.ja('LayerStyle.toCssRule');
+    console.log('LayerStyle.toCssRule');
     var j = new $a(),
         k, n, t = p,
         E = 0,
         i = 0;
-    visitorLayerStyle(layerStyle, layerStyle.style.opacity, j, function(a, b, c) {
-      M(a, new ub(new pa(b), c));
+    visitorLayerStyle(layerStyle, layerStyle.style.opacity, context, function(context, value, name) {
+      M(context, new ub(new pa(value), name));
     });
     var w = layerStyle.style.solidFill;
     if (0 < w.length) {
@@ -84,7 +85,7 @@ function generateCss(options){
       M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c));
     }));
     Ka.length && I.k('Choke used in text layer\'s ' + Ka.m() + ', but it is not supported in CSS, ignoring.');
-    layerStyle.p && (t && Mc) && I.k('IE9 doesn\'t support text shadow (and known hacks are slow), skipping.');
+    layerStyle.p && (t && vendorExtensions) && I.k('IE9 doesn\'t support text shadow (and known hacks are slow), skipping.');
     if (!layerStyle.p) {
       var S = 100,
           U = 100;
@@ -94,7 +95,7 @@ function generateCss(options){
         !isNaN(ca) && 0 < ca && (S = ca);
         !isNaN(ia) && 0 < ia && (U = ia);
       }
-      if (Mc && layerStyle.style.gradientFill.length) {
+      if (vendorExtensions && layerStyle.style.gradientFill.length) {
         var C = [],
             Sb;
         for (k = layerStyle.style.gradientFill.length - 1; 0 <= k; k--) C.push(layerStyle.style.gradientFill[k].value), Sb = layerStyle.style.gradientFill[k].a;
@@ -169,7 +170,7 @@ function generateCss(options){
           f = f + '% ' + f + '%';
           f = b.scale * 0.01 * Math.min(S, U);
           f = ua(f) + ' ' + ua(f);
-          Mc && (!F(b.offset.horizontal, 50) && !F(b.offset.vertical, 50) && !F(b.scale, 100)) && I.k('Firefox has no way to specify gradient with nonstandard scale and position - take care and test, you\'re in uncharted waters.');
+          vendorExtensions && (!F(b.offset.horizontal, 50) && !F(b.offset.vertical, 50) && !F(b.scale, 100)) && I.k('Firefox has no way to specify gradient with nonstandard scale and position - take care and test, you\'re in uncharted waters.');
           M(a, new Tb(d + ', ' + f + ', ' + e, d + ', circle, ' + e, c));
           break;
         default:
@@ -193,7 +194,7 @@ function generateCss(options){
     });
     I.ka();
     var zb;
-    if (Nc) {
+    if (outputWholeRule) {
       var ec = layerStyle.name,
           Ab, Va = [],
           Bb = m;

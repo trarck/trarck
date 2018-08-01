@@ -1,10 +1,10 @@
-﻿ var g_YHLibsFolderPath="/j/project/trarckgit/plugin/photoshop/libs/";
+﻿ var g_YHLibsFolderPath="/d/projects/trarck/plugin/photoshop/libs/";
  $.evalFile(g_YHLibsFolderPath + "yh/index.jsx");
  $.evalFile(g_YHLibsFolderPath + "ps/actions/ActionUtils.jsx");
 // visitorLayers(app.activeDocument);
 
 $.writeln(jc(0.2));
- //test();
+ test();
  
  function jc(a) {
   return 0 * (1 - (a - -50) / 100) + 100 * ((a - -50) / 100);

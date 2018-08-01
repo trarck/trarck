@@ -25,7 +25,7 @@
             }
             return type;
         },
-        function proxy(fun, scope) {
+        proxy:function (fun, scope) {
             return function() {
                 return fun.apply(scope, Array.prototype.slice.call(arguments));
             };

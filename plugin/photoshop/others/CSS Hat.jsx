@@ -19,7 +19,7 @@ function aa(a) {
   else if ('function' == b && 'undefined' == typeof a.call) return 'object';
   return b;
 }
-function u(a, b) {
+function extend(a, b) {
   function c() {}
   c.prototype = b.prototype;
   a.xb = b.prototype;
@@ -229,14 +229,14 @@ Array.prototype.eb || (Array.prototype.eb = function() {
 Array.prototype.Ma || (Array.prototype.Ma = function() {
   return (this.length == 0 ? o : this[this.length - 1]);
 });
-Array.prototype.m || (Array.prototype.m = function() {
+Array.prototype.join || (Array.prototype.join = function() {
   return (this.length == 0 ? '' : (this.length == 1 ? this[0] : this.slice(0, this.length - 1).join(', ') + ' and ' + this[this.length - 1]));
 });
-Array.prototype.Ha || (Array.prototype.Ha = function(a) {
+Array.prototype.find || (Array.prototype.find = function(a) {
   for (var b = 0, c = this.length; b < c; b++) if (a(this[b], b)) return this[b];
   return o;
 });
-Array.prototype.wa || (Array.prototype.wa = function(a) {
+Array.prototype.remove || (Array.prototype.remove = function(a) {
   for (var b = this.length; b--;) a(this[b], b) && this.splice(b, 1);
 });
 String.prototype.rb || (String.prototype.rb = function() {
@@ -339,21 +339,21 @@ function ma(a, b) {
   }), '"');
 };
 
-function Mixin(a) {
+function StyleObj(a) {
   a.iterator(function(a, c) {
     this[c] = a;
   }, this);
 };
 
-function z(a) {
-  this.a = a;
+function BaseDeclaration(name) {
+  this.description = description;//a
 };
 
-function pa(a) {
-  this.value = a;
+function OpacityValue(value) {
+  this.value = value;
 }
-pa.prototype.toString = function() {
-  return qa(A(this.value));
+OpacityValue.prototype.toString = function() {
+  return removeDecimalFirstZero(formatDecimaTwoPlace(this.value));
 };
 
 function D(a, b, c) {
@@ -373,7 +373,7 @@ D.prototype.toString = function() {
   case 'in':
   case 'pc':
   case 'pt':
-    return qa(A(this.value)) + this.n;
+    return removeDecimalFirstZero(formatDecimaTwoPlace(this.value)) + this.n;
   case 'pt':
   case '%':
     return Math.round(this.value) + this.n;
@@ -442,7 +442,7 @@ ya.prototype.toString = function() {
       c = a.toString();
   return (c == b.toString() ? c : a.toString() + ' / ' + b.toString());
 };
-ya.prototype.J = function() {
+ya.prototype.StyleProperty = function() {
   return this.S.reduce(function(a, b) {
     return a && b.o(0);
   }, m);
@@ -457,7 +457,7 @@ function G(a, b, c, d) {
 function Ba(a) {
   return new G(a.y, a.u, a.s, a.c);
 }
-function Ca(a, b) {
+function alphaBlend(a, b) {
   var c = Da(a, b, b.c);
   c.c = a.c + (1 - a.c) * b.c;
   return c;
@@ -470,7 +470,7 @@ G.prototype.toString = function() {
     var a = '#' + (16777216 + (this.y << 16) + (this.u << 8) + this.s).toString(16).slice(1);
     return (a[1] == a[2] && a[3] == a[4] && a[5] == a[6] ? '#' + a[1] + a[3] + a[5] : a);
   }
-  return 'rgba(' + qa(Math.round(this.y)) + ',' + qa(Math.round(this.u)) + ',' + qa(Math.round(this.s)) + ',' + qa(A(this.c)) + ')';
+  return 'rgba(' + removeDecimalFirstZero(Math.round(this.y)) + ',' + removeDecimalFirstZero(Math.round(this.u)) + ',' + removeDecimalFirstZero(Math.round(this.s)) + ',' + removeDecimalFirstZero(formatDecimaTwoPlace(this.c)) + ')';
 };
 
 function Ea(a) {
@@ -481,7 +481,7 @@ function H(a, b) {
   this.location = a;
   this.color = b;
 }
-u(H, Ea);
+extend(H, Ea);
 H.prototype.toString = function() {
   return '{location: ' + this.location + ', color:' + this.color.toString() + '}';
 };
@@ -490,7 +490,7 @@ function Fa(a, b) {
   this.location = a;
   this.opacity = b;
 }
-u(Fa, Ea);
+extend(Fa, Ea);
 Fa.prototype.toString = function() {
   return '{location: ' + this.location + ', opacity:' + this.opacity + '}';
 };
@@ -540,7 +540,7 @@ function Ja(a, b, c) {
   I.$a(p, 'valueAtLocation passed through');
   return ('color' == c ? new G(0, 0, 0, 0) : 0);
 }
-function Ma(a) {
+function GradientStyle.reduce(a) {
   function b(a, b) {
     var c = a[b],
         g = (0 < b ? a[b - 1] : o),
@@ -613,43 +613,43 @@ function Ra(a) {
   };
 };
 
-function J(a, b, c, d) {
-  this.O = a;
-  this.Q = b;
-  this.b = c;
-  this.value = d;
+function StyleProperty(name, type, key, value) {
+  this.name = name;//O
+  this.type = type;//Q
+  this.key = key;//b
+  this.value = value;
 }
-J.prototype.J = p;
-var Wa = new J('Empty', 'css', '.empty', o);
-Wa.J = m;
-var Xa = new J('Empty', 'less', '.empty', o);
-Xa.J = m;
-var Ya = new J('Empty', 'sass', '.empty', o);
-Ya.J = m;
+StyleProperty.prototype.empty = p;
+var CssEmpty = new StyleProperty('Empty', 'css', '.empty', o);
+CssEmpty.empty = m;
+var LessEmpty = new StyleProperty('Empty', 'less', '.empty', o);
+LessEmpty.empty = m;
+var SassEmpty = new StyleProperty('Empty', 'sass', '.empty', o);
+SassEmpty.empty = m;
 
-function Za(a, b, c, d, e) {
-  this.O = b;
-  this.Q = a;
-  this.b = c;
-  this.value = d;
+function StyleRule(type, name, key, value, e) {
+  this.name = name;
+  this.type = type;
+  this.key = key;
+  this.value = value;
   this.x = e;
-  this.da = p;
+  this.da = false;
 };
 
-function $a() {
-  this.ha = {};
+function StyleSheet() {
+  this.data = {};
 }
-function M(a, b) {
+function addStyle(a, b) {
   if ('undefined' != typeof b) {
     var c = b.l();
     c && (c instanceof Array || (c = [c]), c.forEach(function(a) {
-      'array' == aa(this.ha[a.b]) || (this.ha[a.b] = []);
-      this.ha[a.b].push(a);
+      'array' == aa(this.data[a.key]) || (this.data[a.key] = []);
+      this.data[a.key].push(a);
     }, a));
   }
 }
-var ab = 'Size width height opacity border .rounded .border-radius -moz-border-radius -webkit-border-radius border-radius -moz-background-clip -webkit-background-clip background-clip color font-family font-size font-weight font-style TextDecoration background-color .drop-shadow .box-shadow .shadow -moz-box-shadow -webkit-box-shadow box-shadow text-shadow background-image background BackgroundImage'.split(' '),
-    bb = {
+var Attributes = 'Size width height opacity border .rounded .border-radius -moz-border-radius -webkit-border-radius border-radius -moz-background-clip -webkit-background-clip background-clip color font-family font-size font-weight font-style TextDecoration background-color .drop-shadow .box-shadow .shadow -moz-box-shadow -webkit-box-shadow box-shadow text-shadow background-image background BackgroundImage'.split(' '),
+    DefaultOptions = {
     Xa: p,
     pa: p,
     C: p
@@ -682,254 +682,300 @@ function lb(a) {
 function mb(a) {
   return '<comment>' + a + '</comment>';
 }
-function nb(a, b, c, d, e, f) {
-  function g(a, b) {
-    for (var c = 0, d = j.length; c < d; c++) if ('any' == b) {
-      if (j[c].b == a) return j[c];
-    } else if (j[c].b == a && j[c].Q == b) return j[c];
+function nb(styleSheet/*a*/, outputWhole/*b*/,selector/*c*/, styleType/*d*/, commentEnable/*e*/, vendorExtensions/*f*/) {
+  function g(key, type) {
+    for (var c = 0, d = allRules.length; c < d; c++) if ('any' == type) {
+      if (allRules[c].key == key) return allRules[c];
+    } else if (allRules[c].key == key && allRules[c].type == type) return allRules[c];
   }
-  var j = [];
-  a.ha.iterator(function(a) {
-    var b = d,
-        c = a.Ha(function(a) {
-        return 'undefined' == typeof a.pa || a.pa == p;
+  var allRules = [];
+  styleSheet.data.iterator(function(styleObjs) {
+    var c = styleObjs.find(function(obj) {
+        return 'undefined' == typeof obj.pa || obj.pa == false;
       });
-    if (a.length && c) {
-      var i = o;
-      ('less' == b && 'undefined' != typeof c.q ? i = N(bb, c.aa) : (('sass' == b || 'scss' == b) && 'undefined' != typeof c.t ? i = N(bb, c.oa) : (('stylus_plain' == b || 'stylus_css' == b) && 'undefined' != typeof c.M ? i = N(bb, c.ob) : (i = N(bb, c.cb), b = 'css'))));
-      i.Xa && 1 < a.length && (b = 'css');
-      var k = c.L || 'non_stackable',
-          n = p;
-      a.forEach(function(a) {
-        function c(a, b, d, f, i) {
-          if (d.J) I.log('empty property');
-          else if (d.O) {
+    if (styleObjs.length && c) {
+      var i = null;
+      if('less' == styleType && 'undefined' != typeof c.less ){
+		i = mixin(DefaultOptions, c.aa);
+	  }else if(('sass' == styleType || 'scss' == styleType) && 'undefined' != typeof c.sass){
+		i = mixin(DefaultOptions, c.oa) 
+	  }else if(('stylus_plain' == styleType || 'stylus_css' == styleType) && 'undefined' != typeof c.stylus ){
+		i = mixin(DefaultOptions, c.ob) 
+	  }else{
+		i = mixin(DefaultOptions, c.cb);
+		styleType = 'css'
+	  }
+	  
+      i.Xa && 1 < styleObjs.length && (styleType = 'css');
+      var stackable = c.stackable || 'non_stackable',
+          n = false;
+      styleObjs.forEach(function(obj) {
+        function c(stackable, type, prop, comment, i) {
+          if (prop.empty) I.log('empty property');
+          else if (prop.name) {
             b = {
-              value: d.value,
-              a: (e ? f : ''),
+              value: prop.value,
+              description: (commentEnable ? comment : ''),
               x: i,
-              jb: b,
-              L: a
+              type: type,
+              stackable: stackable
             };
             f = o;
-            switch (a) {
+            switch (stackable) {
             case 'merge_same_prefixes':
-              f = g(d.b, d.Q);
+              f = g(prop.key, prop.type);
               break;
             case 'stackable':
-              f = g(d.b, 'any');
+              f = g(prop.key, 'any');
               break;
             case 'non_stackable':
               break;
             default:
-              I.log('Invalid value of stackable: ' + a);
+              I.log('Invalid value of stackable: ' + stackable);
             }
             if (f) {
-              f.x = N(f.x, i);
+              f.x = mixin(f.x, i);
               f.value.push(b);
             } else {
-              f = new Za(d.Q, d.O, d.b, [b], i);
-              j.push(f);
+              f = new StyleRule(prop.type, prop.name, prop.key, [b], i);
+              allRules.push(f);
             }
           } else I.log('groupKey not present for property ' + b + ' - ' + a + ':' + I.Sa(d));
         }
-        var i = a.a,
-            s = a.Ea,
-            q = o,
-            K = o,
-            r = o;
-        if (b == 'less' && typeof a.q != 'undefined') {
-          q = a.q;
-          K = 'less';
-          r = N(bb, a.aa);
-        } else if ((b == 'sass' || b == 'scss') && typeof a.t != 'undefined') {
-          q = a.t;
-          K = d;
-          r = N(bb, a.oa);
-        } else if ((b == 'stylus_plain' || b == 'stylus_css') && typeof a.M != 'undefined') {
-          q = a.M;
-          K = d;
-          r = N(bb, a.ob);
+        var description = a.description,
+            comment = a.comment,
+            prop = null,
+            subType = null,
+            options = null;
+        if (b == 'less' && typeof a.less != 'undefined') {
+          prop = a.less;
+          subType = 'less';
+          options = mixin(DefaultOptions, a.aa);
+        } else if ((b == 'sass' || b == 'scss') && typeof a.sass != 'undefined') {
+          prop = a.sass;
+          subType = styleType;
+          options = mixin(DefaultOptions, a.oa);
+        } else if ((b == 'stylus_plain' || b == 'stylus_css') && typeof a.stylus != 'undefined') {
+          prop = a.stylus;
+          subType = styleType;
+          options = mixin(DefaultOptions, a.ob);
         } else {
-          q = a.j;
-          K = 'css';
-          r = N(bb, a.cb);
+          prop = a.j;
+          subType = 'css';
+          options = mixin(DefaultOptions, a.cb);
         }
-        if (f && K == 'css') {
-          a.Qa && c(k, 'css', a.Qa, i, r);
-          a.P && c(k, 'css', a.P, i, r);
-          a.va && c(k, 'css', a.va, i, r);
-          a.U && c(k, 'css', a.U, i, r);
+        if (vendorExtensions && subType == 'css') {
+          if(a.ms) 
+			  c(stackable, 'css', a.ms, description, options);//Qa
+          if(a.moz)
+			  c(stackable, 'css', a.moz, description, options);//P
+          if(a.opera )
+			  c(stackable, 'css', a.opera, description, options);//va
+          if(a.webkit)
+			  c(stackable, 'css', a.webkit, description, options);//U
         }
-        q && q.J == p && c(k, K, q, s || i, r);
-        K != 'css' && k == 'merge_same_prefixes' && (n = m);
+        if(prop && prop.empty == false ){
+			c(stackable, subType, prop, comment || description, options);
+		}
+        if(subType != 'css' && stackable == 'merge_same_prefixes' ){
+			n = true;
+		}
       }, this);
-      n && j.wa(function(a) {
-        if (a.O == c.b) {
-          a.value.wa(function(a) {
-            if (a.jb == 'css') return m;
-          });
-          return a.value.length == 0;
-        }
-        return p;
-      });
+      if(n){
+		allRules.remove(function(a) {
+			if (a.name == c.name) {
+			  a.value.remove(function(a) {
+				if (a.type == 'css') return true;
+			  });
+			  return a.value.length == 0;
+			}
+			return false;
+		});
+	  }
     }
-  }, a);
-  for (var k = [], n = 0, t = ab.length; n < t; n++) for (var E = ab[n], i = 0, w = j.length; i < w; i++) {
-    var s = j[i];
-    if (!s.da && (s.b == E || s.O == E)) s.da = m, k.push(s);
+  }, styleSheet);
+  var supportRules = [];
+  for (var n = 0, t = Attributes.length; n < t; n++){
+	  for (var attr = Attributes[n], i = 0, w = allRules.length; i < w; i++) {
+		var s = allRules[i];
+		if (!s.da && (s.key == attr || s.name == attr)) {
+			s.da = true;
+			supportRules.push(s);
+		}
+	  }
   }
+  
   i = 0;
-  for (w = j.length; i < w; i++) s = j[i], s.da || I.log('Developer: please add property \'' + s.b + '\' (or \'' + s.O + '\') into Css.Rule._propertyOrder'), s.da = p;
+  for (w = allRules.length; i < w; i++){
+	  s = allRules[i];
+	  if(!s.da){
+		  console.log('Developer: please add property \'' + s.key + '\' (or \'' + s.name + '\') into Css.Rule._propertyOrder')
+	  }
+	  s.da = false;
+  }
   n = '';
-  b && (n = '\t');
-  var r = n,
-      q = [];
-  if ('css' == d) b && q.push('' + cb(c) + ' ' + lb('{') + '\n'), k.forEach(function(a) {
-    q.push('' + r + db(a.b) + eb(':') + ' ');
-    var b = [];
-    a.value.forEach(function(c, d) {
-      var e = d == a.value.length - 1;
-      c.a && b.push(c.a);
-      q.push(hb(c.value) + ((e ? kb() + ((b.length ? ' ' + mb('/* ' + b.m() + ' */') : '')) + '\n' : ib() + ' ')));
-    }, this);
-  }, a), b && q.push(lb('}') + '\n');
-  else if ('less' == d) I.k('NOTE: CSS Hat generates code for ' + ob(pb, 'LESS Hat') + ' mixin library \u2014 include it in your project.'), b && q.push('' + cb(c) + ' ' + lb('{') + '\n'), k.forEach(function(a) {
-    var b = p,
-        c = (a.x.C ? '<mixinTilda>~</mixinTilda><mixinQuote>"</mixinQuote>' : ''),
-        d = (a.x.C ? '<mixinQuoteEnd>"</mixinQuoteEnd>' : ''),
-        e = 'less' == a.Q,
-        f = ((e ? jb() : '')) + kb(),
-        g = (1 < a.value.length && !a.x.C ? '\n' + r : '');
-    q.push('' + r + db(a.b) + ((e ? '<mixinParen>(</mixinParen>' : eb(':') + ' ')) + g);
-    var i = [];
-    a.value.forEach(function(e, j) {
-      var k = 0 == j,
-          n = j == a.value.length - 1;
-      e.a && i.push(e.a);
-      q.push(((k ? c : '')) + hb(e.value) + ((n ? d + f : ', ')) + ((n && a.x.C && i.length ? ' ' + mb('// ' + i.m()) : '')) + ((e.a && !a.x.C ? (n ? ' ' + mb('// ' + e.a) : ' ' + mb('/* ' + e.a + ' */')) : '')) + ((n ? '\n' : g)));
-      'background-image' == e.value && (b = m);
-    }, this);
-    b && I.k('NOTE: LESS Elements doesn\'t have a mixin for background image, you might want to turn vendor prefixes on.');
-  }, a), b && q.push(lb('}') + '\n');
-  else if ('sass' == d || 'scss' == d) {
+  if(outputWhole){
+	n = '\t';
+  }
+  var sep = n,
+      result = [];
+  if ('css' == styleType){
+		if(outputWhole){
+			result.push('' + selector + ' ' + '{' + '\n');
+		}
+		supportRules.forEach(function(rule) {
+			result.push('' + sep + rule.key + ':' + ' ');
+			var comments = [];
+			rule.value.forEach(function(val, index) {
+			  var last = index == rule.value.length - 1;
+			  if(val.description){
+				  comments.push(c.description);
+			  }
+			  result.push(val.value + (last ? (comments.length ? ' ' + '/* ' + comments.join() + ' */' : '') + '\n' :' '));
+			}, this);
+		}, styleSheet);
+		
+	    if(outputWhole){
+		  result.push(lb('}') + '\n');
+	    }
+  }else if ('less' == styleType){	
+	if(outputWhole){
+		result.push('' + selector + ' ' + '{' + '\n');
+	}
+	supportRules.forEach(function(rule) {
+		var b = p,
+			c = (rule.x.C ? '~"' : ''),
+			d = (rule.x.C ? '"' : ''),
+			isLess = 'less' == rule.type,
+			f = ((isLess ? jb() : '')) + kb(),
+			g = (1 < rule.value.length && !rule.x.C ? '\n' + sep : '');
+		result.push('' + sep + rule.key + ((isLess ? '<mixinParen>(</mixinParen>' : eb(':') + ' ')) + g);
+		var i = [];
+		rule.value.forEach(function(e, j) {
+		  var k = 0 == j,
+			  n = j == rule.value.length - 1;
+		  e.description && i.push(e.description);
+		  result.push(((k ? c : '')) + hb(e.value) + ((n ? d + f : ', ')) + ((n && rule.x.C && i.length ? ' ' + mb('// ' + i.join()) : '')) + ((e.description && !rule.x.C ? (n ? ' ' + mb('// ' + e.description) : ' ' + mb('/* ' + e.description + ' */')) : '')) + ((n ? '\n' : g)));
+		  'background-image' == e.value && (b = m);
+		}, this);
+		outputWhole && I.k('NOTE: LESS Elements doesn\'t have a mixin for background image, you might want to turn vendor prefixes on.');
+	  }, styleSheet);
+	  if(outputWhole)
+		  result.push('}' + '\n');
+  else if ('sass' == styleType || 'scss' == styleType) {
     I.k('NOTE: CSS Hat generates code for ' + ob(qb, 'Compass') + ' ' + ob(rb, 'CSS3') + ' framework.');
     var v = [],
-        n = ('scss' == d ? ' ' + lb('{') : ''),
-        t = ('scss' == d ? lb('}') + '\n' : ''),
-        C = ('scss' == d ? eb(';') : '');
-    b && q.push('' + cb(c) + n + '\n');
-    k.forEach(function(a) {
-      if (0 == a.value.length) I.log('note: triple ' + a.b + ' with no values');
+        n = ('scss' == styleType ? ' ' + lb('{') : ''),
+        t = ('scss' == styleType ? lb('}') + '\n' : ''),
+        C = ('scss' == styleType ? eb(';') : '');
+    outputWhole && result.push('' + cb(selector) + n + '\n');
+    supportRules.forEach(function(a) {
+      if (0 == a.value.length) I.log('note: triple ' + a.key + ' with no values');
       else {
-        var b = 'sass' == a.Q,
-            c = (1 < a.value.length ? ('scss' == d ? '\n' + r + '\t' : ' ') : ' '),
+        var b = 'sass' == a.type,
+            c = (1 < a.value.length ? ('scss' == styleType ? '\n' + sep + '\t' : ' ') : ' '),
             e = p;
-        (b ? (e = a.b, q.push('' + r + '<include>@include</include> ' + db(a.b) + '<mixinParen>(</mixinParen>')) : q.push('' + r + db(a.b) + eb(':') + c));
+        (b ? (e = a.key, result.push('' + sep + '<include>@include</include> ' + db(a.key) + '<mixinParen>(</mixinParen>')) : result.push('' + sep + db(a.key) + eb(':') + c));
         var f = [];
         a.value.forEach(function(d, g) {
           var i = g == a.value.length - 1;
-          d.a && f.push(d.a);
+          d.description && f.push(d.description);
           if (b) {
             if (d.x.qa) e = d.x.qa;
-            q.push(hb(d.value) + ((i ? jb() + C + ((f.length ? ' ' + mb('// ' + f.m()) : '')) + '\n' : ib() + ' ')));
-          } else q.push(hb(d.value) + ((i ? C + ((f.length ? ' ' + mb('// ' + f.m()) : '')) + '\n' : ib() + c)));
+            result.push(hb(d.value) + ((i ? jb() + C + ((f.length ? ' ' + mb('// ' + f.join()) : '')) + '\n' : ib() + ' ')));
+          } else result.push(hb(d.value) + ((i ? C + ((f.length ? ' ' + mb('// ' + f.join()) : '')) + '\n' : ib() + c)));
         }, this);
         e && v.push(e);
       }
-    }, a);
-    b && q.push(t);
-  } else if ('stylus_plain' == d || 'stylus_css' == d) {
+    }, styleSheet);
+    outputWhole && result.push(t);
+  } else if ('stylus_plain' == styleType || 'stylus_css' == styleType) {
     I.k('NOTE: CSS Hat generates code for ' + ob(sb, 'Stylus nib') + ' framework.');
-    var n = ('stylus_css' == d ? ' ' + lb('{') : ''),
-        t = ('stylus_css' == d ? lb('}') + '\n' : ''),
-        da = ('stylus_css' == d ? eb(':') : ''),
-        C = ('stylus_css' == d ? kb() : '');
-    b && q.push('' + cb(c) + n + '\n');
-    k.forEach(function(a) {
-      if (0 == a.value.length) I.log('note: triple ' + a.b + ' with no values');
+    var n = ('stylus_css' == styleType ? ' ' + lb('{') : ''),
+        t = ('stylus_css' == styleType ? lb('}') + '\n' : ''),
+        da = ('stylus_css' == styleType ? eb(':') : ''),
+        C = ('stylus_css' == styleType ? kb() : '');
+    outputWhole && result.push('' + cb(selector) + n + '\n');
+    supportRules.forEach(function(a) {
+      if (0 == a.value.length) I.log('note: triple ' + a.key + ' with no values');
       else {
-        q.push('' + r + db(a.b) + da + ' ');
+        result.push('' + sep + db(a.key) + da + ' ');
         var b = [];
         a.value.forEach(function(c, d) {
           var e = d == a.value.length - 1;
-          c.a && b.push(c.a);
-          q.push(hb(c.value) + ((e ? C + ((b.length ? ' ' + mb('// ' + b.m()) : '')) + '\n' : ib() + ' ')));
+          c.description && b.push(c.description);
+          result.push(hb(c.value) + ((e ? C + ((b.length ? ' ' + mb('// ' + b.join()) : '')) + '\n' : ib() + ' ')));
         }, this);
       }
-    }, a);
-    b && q.push(t);
+    }, styleSheet);
+    outputWhole && result.push(t);
   }
-  return q.join('');
+  return result.join('');
 };
 
-function tb(a, b, c) {
-  this.a = c;
-  this.width = a;
-  this.height = b;
-  this.a = c;
+function SizeDeclaration(width, height, description) {
+  this.description = description;
+  this.width = width;
+  this.height = height;
 }
-u(tb, z);
-tb.prototype.l = function() {
-  return [new Mixin({
-    b: 'Size',
-    a: this.a,
-    j: Wa,
-    q: new J('Size', 'less', '.size', (this.width.o(this.height) ? this.width.toString() : this.width.toString() + ', ' + this.height.toString()))
-  }), new Mixin({
-    b: 'Width',
-    a: this.a,
-    j: new J('Width', 'css', 'width', this.width.toString()),
-    q: Xa
-  }), new Mixin({
-    b: 'Height',
-    a: this.a,
-    j: new J('Height', 'css', 'height', this.height.toString()),
-    q: Xa
+extend(SizeDeclaration, BaseDeclaration);
+SizeDeclaration.prototype.getProperties = function() {
+  return [new StyleObj({
+    name: 'Size',
+    description: this.description,
+    css: CssEmpty,
+    less: new StyleProperty('Size', 'less', '.size', (this.width.o(this.height) ? this.width.toString() : this.width.toString() + ', ' + this.height.toString()))
+  }), new StyleObj({
+    name: 'Width',
+    description: this.description,
+    css: new StyleProperty('Width', 'css', 'width', this.width.toString()),
+    less: LessEmpty
+  }), new StyleObj({
+    name: 'Height',
+    description: this.description,
+    css: new StyleProperty('Height', 'css', 'height', this.height.toString()),
+    less: LessEmpty
   })];
 };
 
-function ub(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function OpacityDeclaration(value, description) {
+  this.description = description;
+  this.value = value;
 }
-u(ub, z);
-ub.prototype.l = function() {
-  return new Mixin({
-    b: 'Opacity',
-    a: this.a,
-    j: new J('Opacity', 'css', 'opacity', this.value.toString()),
-    Oa: new J('Opacity', 'less', '.opacity', this.value.toString()),
-    t: new J('Opacity', 'sass', 'opacity', this.value.toString()),
-    M: new J('Opacity', 'stylus', 'opacity', this.value.toString())
+extend(OpacityDeclaration, BaseDeclaration);
+OpacityDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'Opacity',
+    description: this.description,
+    css: new StyleProperty('Opacity', 'css', 'opacity', this.value.toString()),
+    Oa: new StyleProperty('Opacity', 'less', '.opacity', this.value.toString()),
+    sass: new StyleProperty('Opacity', 'sass', 'opacity', this.value.toString()),
+    stylus: new StyleProperty('Opacity', 'stylus', 'opacity', this.value.toString())
   });
 };
 
-function vb(a, b, c, d) {
-  this.a = d;
-  this.width = a;
-  this.type = b;
-  this.color = c;
-  this.a = d;
+function BorderDeclaration(width, type, color, description) {//vb
+  this.description = description;
+  this.width = width;
+  this.type = type;
+  this.color = color;
 }
-u(vb, z);
-vb.prototype.l = function() {
-  return new Mixin({
-    b: 'Border',
-    L: 'non_stackable',
-    a: this.a,
-    j: new J('Border', 'css', 'border', this.width.toString() + ' ' + this.type + ' ' + this.color.toString())
+extend(BorderDeclaration, BaseDeclaration);
+BorderDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'Border',
+    stackable: 'non_stackable',
+    description: this.description,
+    css: new StyleProperty('Border', 'css', 'border', this.width.toString() + ' ' + this.type + ' ' + this.color.toString())
   });
 };
 
-function Eb(a, b) {
-  this.a = b;
+function BorderRadiusDeclaration(a, description) {//Eb
+  this.description = description;
   this.Ta = a;
-  this.a = b;
 }
-u(Eb, z);
-Eb.prototype.l = function() {
+extend(BorderRadiusDeclaration, BaseDeclaration);
+BorderRadiusDeclaration.prototype.getProperties = function() {
   var a = '',
       b, c, a = this.Ta.toString();
   b = this.Ta;
@@ -939,149 +985,141 @@ Eb.prototype.l = function() {
     b = b.S.reduce(function(a, b) {
       return a && b.o(d);
     }, m);
-  }(b ? (b = new J('BorderRadius', 'less', '.rounded', a), c = new J('BorderRadius', 'less', '.border-radius', a)) : (b = new J('BorderRadius', 'less', '.border-radius', a), c = new J('BorderRadius', 'less', '.border-radius', '<mixinTilda>~</mixinTilda><mixinQuote>"</mixinQuote>' + a + '<mixinQuoteEnd>"</mixinQuoteEnd>')));
+  }(b ? (b = new StyleProperty('BorderRadius', 'less', '.rounded', a), c = new StyleProperty('BorderRadius', 'less', '.border-radius', a)) : (b = new StyleProperty('BorderRadius', 'less', '.border-radius', a), c = new StyleProperty('BorderRadius', 'less', '.border-radius', '<mixinTilda>~</mixinTilda><mixinQuote>"</mixinQuote>' + a + '<mixinQuoteEnd>"</mixinQuoteEnd>')));
   var e = /\//.test(a);
-  return [new Mixin({
-    b: 'BorderRadius',
-    Ea: this.a,
-    P: new J('BorderRadius', 'moz', '-moz-border-radius', a),
-    U: new J('BorderRadius', 'webkit', '-webkit-border-radius', a),
-    j: new J('BorderRadius', 'css', 'border-radius', a),
+  return [new StyleObj({
+    name: 'BorderRadius',
+    comment: this.description,
+    moz: new StyleProperty('BorderRadius', 'moz', '-moz-border-radius', a),
+    webkit: new StyleProperty('BorderRadius', 'webkit', '-webkit-border-radius', a),
+    css: new StyleProperty('BorderRadius', 'css', 'border-radius', a),
     Oa: b,
     aa: {
       C: e
     },
-    q: c,
-    t: new J('BorderRadius', 'sass', 'border-radius', a),
-    M: new J('BorderRadius', 'stylus', 'border-radius', a)
-  }), new Mixin({
-    b: 'BackgroundClip',
-    Ea: 'prevents bg color from leaking outside the border',
-    P: new J('BackgroundClip', 'moz', '-moz-background-clip', 'padding'),
-    U: new J('BackgroundClip', 'webkit', '-webkit-background-clip', 'padding-box'),
-    j: new J('BackgroundClip', 'css', 'background-clip', 'padding-box'),
-    t: new J('BackgroundClip', 'sass', 'background-clip', 'padding-box'),
-    M: new J('BackgroundClip', 'stylus', 'background-clip', 'padding-box'),
-    q: Xa
+    less: c,
+    sass: new StyleProperty('BorderRadius', 'sass', 'border-radius', a),
+    stylus: new StyleProperty('BorderRadius', 'stylus', 'border-radius', a)
+  }), new StyleObj({
+    name: 'BackgroundClip',
+    comment: 'prevents bg color from leaking outside the border',
+    moz: new StyleProperty('BackgroundClip', 'moz', '-moz-background-clip', 'padding'),
+    webkit: new StyleProperty('BackgroundClip', 'webkit', '-webkit-background-clip', 'padding-box'),
+    css: new StyleProperty('BackgroundClip', 'css', 'background-clip', 'padding-box'),
+    sass: new StyleProperty('BackgroundClip', 'sass', 'background-clip', 'padding-box'),
+    stylus: new StyleProperty('BackgroundClip', 'stylus', 'background-clip', 'padding-box'),
+    less: LessEmpty
   })];
 };
 
-function Fb(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function ColorDeclaration(value, description) {//Fb
+  this.description = description;
+  this.value = value;
 }
-u(Fb, z);
-Fb.prototype.l = function() {
-  return new Mixin({
-    b: 'Color',
-    a: this.a,
-    j: new J('Color', 'css', 'color', this.value.toString())
+extend(ColorDeclaration, BaseDeclaration);
+ColorDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'Color',
+    description: this.description,
+    css: new StyleProperty('Color', 'css', 'color', this.value.toString())
   });
 };
 
-function Gb(a, b) {
-  this.a = b;
-  this.fb = a;
-  this.a = b;
+function FontFamilyDeclaration(value, description) {//Gb
+  this.description = description;
+  this.value = value;
 }
-u(Gb, z);
-Gb.prototype.l = function() {
-  return new Mixin({
-    b: 'FontFamily',
-    a: this.a,
-    j: new J('FontFamily', 'css', 'font-family', this.fb)
+extend(FontFamilyDeclaration, BaseDeclaration);
+FontFamilyDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'FontFamily',
+    description: this.description,
+    css: new StyleProperty('FontFamily', 'css', 'font-family', this.value)
   });
 };
 
-function Hb(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function FontSizeDeclaration(value, description) {//Hb
+  this.description = description;
+  this.value = value;
 }
-u(Hb, z);
-Hb.prototype.l = function() {
-  return new Mixin({
-    b: 'FontSize',
-    a: this.a,
-    j: new J('FontSize', 'css', 'font-size', this.value.toString())
+extend(FontSizeDeclaration, BaseDeclaration);
+FontSizeDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'FontSize',
+    description: this.description,
+    css: new StyleProperty('FontSize', 'css', 'font-size', this.value.toString())
   });
 };
 
-function Ib(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function FontWeightDeclaration(value, description) {//Ib
+  this.description = description;
+  this.value = value;
 }
-u(Ib, z);
-Ib.prototype.l = function() {
-  return new Mixin({
-    b: 'FontWeight',
-    a: this.a,
-    j: new J('FontWeight', 'css', 'font-weight', this.value.toString())
+extend(FontWeightDeclaration, BaseDeclaration);
+FontWeightDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'FontWeight',
+    description: this.description,
+    css: new StyleProperty('FontWeight', 'css', 'font-weight', this.value.toString())
   });
 };
 
-function Jb(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function FontStyleDeclaration(value, description) {//Jb
+  this.description = description;
+  this.value = value;
 }
-u(Jb, z);
-Jb.prototype.l = function() {
-  return new Mixin({
-    b: 'FontStyle',
-    a: this.a,
-    j: new J('FontStyle', 'css', 'font-style', this.value.toString())
+extend(FontStyleDeclaration, BaseDeclaration);
+FontStyleDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'FontStyle',
+    description: this.description,
+    css: new StyleProperty('FontStyle', 'css', 'font-style', this.value.toString())
   });
 };
 
-function Kb(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function TextDecorationDeclaration(value, description) {//Kb
+  this.description = description;
+  this.value = value;
 }
-u(Kb, z);
-Kb.prototype.l = function() {
-  if ('no_decoration' != this.value) return new Mixin({
-    b: 'TextDecoration',
-    a: this.a,
-    j: new J('TextDecoration', 'css', 'text-decoration', this.value.toString())
+extend(TextDecorationDeclaration, BaseDeclaration);
+TextDecorationDeclaration.prototype.getProperties = function() {
+  if ('no_decoration' != this.value) return new StyleObj({
+    name: 'TextDecoration',
+    description: this.description,
+    css: new StyleProperty('TextDecoration', 'css', 'text-decoration', this.value.toString())
   });
 };
 
-function Lb(a, b) {
-  this.a = b;
-  this.value = a;
-  this.a = b;
+function BackgroundColorDeclaration(value, description) {//Lb
+  this.description = description;
+  this.value = value;
 }
-u(Lb, z);
-Lb.prototype.l = function() {
-  return new Mixin({
-    b: 'BackgroundColor',
-    a: this.a,
-    j: new J('BackgroundColor', 'css', 'background-color', this.value.toString())
+extend(BackgroundColorDeclaration, BaseDeclaration);
+BackgroundColorDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'BackgroundColor',
+    description: this.description,
+    css: new StyleProperty('BackgroundColor', 'css', 'background-color', this.value.toString())
   });
 };
 
-function Mb(a, b, c, d, e, f, g) {
-  this.a = g;
+function Mb(a, b, c, d, e, f, g) {//Mb
+  this.description = g;
   this.F = a;
   this.d = b;
   this.e = c;
   this.blur = d;
   this.g = e;
   this.color = f;
-  this.a = g;
 }
-u(Mb, z);
+extend(Mb, BaseDeclaration);
 
 function Nb(a, b) {
   var c = (a.F ? 'inset ' : ''),
       c = (a.g.o(0) ? c + a.d.toString() + ' ' + a.e.toString() + ' ' + a.blur.toString() + ' ' + a.color.toString() : c + a.d.toString() + ' ' + a.e.toString() + ' ' + a.blur.toString() + ' ' + a.g.toString() + ' ' + a.color.toString()),
-      d = new J(b, 'less', '.box-shadow', c),
-      e = new J(b, 'less', '.box-shadow', c);
-  a.F == p && (1 > a.color.y && (1 > a.color.u && 1 > a.color.s) && a.g.o(0)) && (e = new J(b, 'less', '.drop-shadow', a.d.toString() + ', ' + a.e.toString() + ', ' + a.blur.toString() + ', ' + a.color.c.toString()));
+      d = new StyleProperty(b, 'less', '.box-shadow', c),
+      e = new StyleProperty(b, 'less', '.box-shadow', c);
+  a.F == p && (1 > a.color.y && (1 > a.color.u && 1 > a.color.s) && a.g.o(0)) && (e = new StyleProperty(b, 'less', '.drop-shadow', a.d.toString() + ', ' + a.e.toString() + ', ' + a.blur.toString() + ', ' + a.color.c.toString()));
   return {
     K: c,
     kb: e,
@@ -1089,122 +1127,119 @@ function Nb(a, b) {
   };
 };
 
-function Ob(a, b, c, d, e, f, g) {
+function BoxShadowDeclaration(a, b, c, d, e, f, g) {//Ob
   Mb.call(this, a, b, c, d, e, f, g);
 }
-u(Ob, Mb);
-Ob.prototype.l = function() {
+extend(BoxShadowDeclaration, Mb);
+BoxShadowDeclaration.prototype.getProperties = function() {
   if (0 >= this.color.c - 0.0005) return o;
   var a = Nb(this, 'BoxShadow');
-  return new Mixin({
-    b: 'BoxShadow',
-    L: 'stackable',
-    a: this.a,
-    P: new J('BoxShadow', 'moz', '-moz-box-shadow', a.K),
-    U: new J('BoxShadow', 'webkit', '-webkit-box-shadow', a.K),
-    j: new J('BoxShadow', 'css', 'box-shadow', a.K),
+  return new StyleObj({
+    name: 'BoxShadow',
+    stackable: 'stackable',
+    description: this.description,
+    moz: new StyleProperty('BoxShadow', 'moz', '-moz-box-shadow', a.K),
+    webkit: new StyleProperty('BoxShadow', 'webkit', '-webkit-box-shadow', a.K),
+    css: new StyleProperty('BoxShadow', 'css', 'box-shadow', a.K),
     vb: {
-      Xa: m
+      Xa: true
     },
     Oa: a.kb,
     aa: {
-      C: m
+      C: true
     },
-    q: a.lb,
-    t: new J('BoxShadow', 'sass', 'box-shadow', a.K),
-    M: new J('BoxShadow', 'stylus', 'box-shadow', a.K)
+    less: a.lb,
+    sass: new StyleProperty('BoxShadow', 'sass', 'box-shadow', a.K),
+    stylus: new StyleProperty('BoxShadow', 'stylus', 'box-shadow', a.K)
   });
 };
 
-function Pb(a, b, c, d, e) {
+function TextShadowDeclaration(a, b, c, d, e) {//Pb
   Mb.call(this, p, a, b, c, new D(0), d, e);
 }
-u(Pb, Mb);
-Pb.prototype.l = function() {
+extend(TextShadowDeclaration, Mb);
+TextShadowDeclaration.prototype.getProperties = function() {
   if (0 >= this.color.c - 0.0005) return o;
   var a = Nb(this, 'TextShadow');
-  return new Mixin({
-    b: 'TextShadow',
-    L: 'non_stackable',
-    a: this.a,
-    j: new J('TextShadow', 'css', 'text-shadow', a.K),
-    t: new J('TextShadow', 'sass', 'text-shadow', a.K)
+  return new StyleObj({
+    name: 'TextShadow',
+    stackable: 'non_stackable',
+    description: this.description,
+    css: new StyleProperty('TextShadow', 'css', 'text-shadow', a.K),
+    sass: new StyleProperty('TextShadow', 'sass', 'text-shadow', a.K)
   });
 };
 
-function Qb(a, b) {
-  this.a = b;
-  this.pb = a;
-  this.a = b;
+function BackgroundImageDeclaration(value, name) {//Qb
+  this.description = name;
+  this.value = value;
 }
-u(Qb, z);
-Qb.prototype.l = function() {
-  return new Mixin({
-    pa: m,
-    b: 'BackgroundImage',
-    L: 'merge_same_prefixes',
-    a: this.a,
-    Qa: new J('BackgroundImage', 'ms', 'background-image', '<base64>' + this.pb + '</base64>'),
-    q: Xa,
-    t: Ya
+extend(BackgroundImageDeclaration, BaseDeclaration);
+BackgroundImageDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    pa: true,
+    name: 'BackgroundImage',
+    stackable: 'merge_same_prefixes',
+    description: this.description,
+    ms: new StyleProperty('BackgroundImage', 'ms', 'background-image', '<base64>' + this.value + '</base64>'),
+    less: LessEmpty,
+    sass: SassEmpty
   });
 };
 
-function Rb(a, b, c) {
-  this.a = c;
+function BackgroundImageLinearGradientDeclaration(a, b, name) {//Rb
+  this.description = name;
   this.I = a;
   this.La = b;
-  this.a = c;
 }
-u(Rb, z);
-Rb.prototype.l = function() {
-  var a = ((0 == Math.round((this.I.R + 360) % 360) % 45 ? Ha(this.I) : A((this.I.R + 360) % 360) + 'deg')) + ', ' + this.La,
-      b = ((0 == Math.round((this.I.R + 360) % 360) % 45 ? Ha(this.I) : A((90 - this.I.R + 360) % 360) + 'deg')) + ', ' + this.La,
+extend(BackgroundImageLinearGradientDeclaration, BaseDeclaration);
+BackgroundImageLinearGradientDeclaration.prototype.getProperties = function() {
+  var a = ((0 == Math.round((this.I.R + 360) % 360) % 45 ? Ha(this.I) : formatDecimaTwoPlace((this.I.R + 360) % 360) + 'deg')) + ', ' + this.La,
+      b = ((0 == Math.round((this.I.R + 360) % 360) % 45 ? Ha(this.I) : formatDecimaTwoPlace((90 - this.I.R + 360) % 360) + 'deg')) + ', ' + this.La,
       b = {
-      b: 'BackgroundImage',
-      L: 'merge_same_prefixes',
-      a: this.a,
-      P: new J('BackgroundImage', 'moz', 'background-image', '-moz-linear-gradient(' + a + ')'),
-      va: new J('BackgroundImage', 'opera', 'background-image', '-o-linear-gradient(' + a + ')'),
-      U: new J('BackgroundImage', 'webkit', 'background-image', '-webkit-linear-gradient(' + a + ')'),
-      j: new J('BackgroundImage', 'css', 'background-image', 'linear-gradient(' + b + ')'),
+      name: 'BackgroundImage',
+      stackable: 'merge_same_prefixes',
+      description: this.description,
+      moz: new StyleProperty('BackgroundImage', 'moz', 'background-image', '-moz-linear-gradient(' + a + ')'),
+      opera: new StyleProperty('BackgroundImage', 'opera', 'background-image', '-o-linear-gradient(' + a + ')'),
+      webkit: new StyleProperty('BackgroundImage', 'webkit', 'background-image', '-webkit-linear-gradient(' + a + ')'),
+      css: new StyleProperty('BackgroundImage', 'css', 'background-image', 'linear-gradient(' + b + ')'),
       aa: {
-        C: m
+        C: true
       },
-      q: new J('BackgroundImage', 'less', '.background-image', 'linear-gradient(' + b + ')'),
+      less: new StyleProperty('BackgroundImage', 'less', '.background-image', 'linear-gradient(' + b + ')'),
       oa: {
         qa: 'images'
       },
-      t: new J('BackgroundImage', 'sass', 'background-image', 'linear-gradient(' + a + ')')
+      sass: new StyleProperty('BackgroundImage', 'sass', 'background-image', 'linear-gradient(' + a + ')')
       };
-  0 == Math.round((this.I.R + 360) % 360) % 45 && (b.M = new J('BackgroundImage', 'stylus', 'background', 'linear-gradient(' + a + ')'));
-  return new Mixin(b);
+  0 == Math.round((this.I.R + 360) % 360) % 45 && (b.M = new StyleProperty('BackgroundImage', 'stylus', 'background', 'linear-gradient(' + a + ')'));
+  return new StyleObj(b);
 };
 
-function Tb(a, b, c) {
-  this.a = c;
+function BackgroundImageRadialGradientDeclaration(a, b, name) {//Tb
+  this.description = name;
   this.Y = a;
   this.mb = b;
-  this.a = c;
 }
-u(Tb, z);
-Tb.prototype.l = function() {
-  return new Mixin({
-    b: 'BackgroundImage',
-    L: 'merge_same_prefixes',
-    a: this.a,
-    P: new J('BackgroundImage', 'moz', 'background-image', '-moz-radial-gradient(' + this.mb + ')'),
-    va: new J('BackgroundImage', 'opera', 'background-image', '-o-radial-gradient(' + this.Y + ')'),
-    U: new J('BackgroundImage', 'webkit', 'background-image', '-webkit-radial-gradient(' + this.Y + ')'),
-    j: new J('BackgroundImage', 'css', 'background-image', 'radial-gradient(' + this.Y + ')'),
+extend(BackgroundImageRadialGradientDeclaration, BaseDeclaration);
+BackgroundImageRadialGradientDeclaration.prototype.getProperties = function() {
+  return new StyleObj({
+    name: 'BackgroundImage',
+    stackable: 'merge_same_prefixes',
+    description: this.description,
+    moz: new StyleProperty('BackgroundImage', 'moz', 'background-image', '-moz-radial-gradient(' + this.mb + ')'),
+    opera: new StyleProperty('BackgroundImage', 'opera', 'background-image', '-o-radial-gradient(' + this.Y + ')'),
+    webkit: new StyleProperty('BackgroundImage', 'webkit', 'background-image', '-webkit-radial-gradient(' + this.Y + ')'),
+    css: new StyleProperty('BackgroundImage', 'css', 'background-image', 'radial-gradient(' + this.Y + ')'),
     aa: {
-      C: m
+      C: true
     },
-    q: new J('BackgroundImage', 'less', '.background-image', 'radial-gradient(' + this.Y + ')'),
+    less: new StyleProperty('BackgroundImage', 'less', '.background-image', 'radial-gradient(' + this.Y + ')'),
     oa: {
       qa: 'images'
     },
-    t: new J('BackgroundImage', 'sass', 'background-image', 'radial-gradient(' + this.Y + ')')
+    sass: new StyleProperty('BackgroundImage', 'sass', 'background-image', 'radial-gradient(' + this.Y + ')')
   });
 };
 var I = {
@@ -1302,7 +1337,7 @@ function Vb(a, b) {
   for (var c = 0, d = arguments.length; c < d; c++) if ('undefined' != typeof arguments[c]) for (var e in arguments[c]) a[e] = arguments[c][e];
   return a;
 }
-function N(a) {
+function mixin(a) {
   var b = Array.prototype.slice.call(arguments);
   b.unshift({});
   return Vb.apply(l, b);
@@ -1517,13 +1552,13 @@ function ob(a, b) {
   return '<a href="' + a + '"><u>' + b + '</u></a>';
 };
 
-function A(a) {
+function formatDecimaTwoPlace(a) {
   return Math.round(100 * a) / 100;
 }
 function ua(a) {
   return (0.5 < Math.abs(a) ? Math.round(a) + 'px' : 0);
 }
-function qa(a) {
+function removeDecimalFirstZero(a) {
   return a.toString().replace(/^[0]\./g, '.');
 }
 function F(a, b) {
@@ -1676,26 +1711,34 @@ function readActiveValue(a, b, c) {//W
   return getPSObjectPropertyChain(d, a, b, c);
 };
 
-function mc(a, b) {
-  var c;
-  if (0 < b) {
-    c = Ba(a.color);
-    var d = a.g - b,
-        e = Math.max(0, d);
-    0 > d && (c.c *= 1 - Math.min(1, -d / a.blur));
-    c = nc(a.angle, a.distance, a.blur, e, c, p, p);
-  } else c = nc(a.angle, a.distance, a.blur, a.g, a.color, p, p);
-  return c;
+function mc(lightEffect, distance) {
+  var color;
+  if (0 < distance) {
+    color = Color.clone(lightEffect.color);
+    var dis = lightEffect.chokeMatte - distance,
+        chokeMatte = Math.max(0, chokeMatte);
+    if(0 > chokeMatte){
+		color.a *= 1 - Math.min(1, -dis / lightEffect.blur));
+	}
+    return nc(lightEffect.angle, lightEffect.distance, lightEffect.blur, chokeMatte, color, false, false);
+  } else {
+	  return nc(lightEffect.angle, lightEffect.distance, lightEffect.blur, lightEffect.chokeMatte, lightEffect.color, false, false);
+  }
 }
-function nc(a, b, c, d, e, f, g) {
-  !g && oc && (1 > b && 1 <= c && 1.0005 > d + c) && (e.c *= Math.max(Math.min(d, 1), 0.5), d = 1, c = 0);
+//nc(value.angle, value.distance, value.blur + value.chokeMatte, 0, value.color, false, true);
+function nc(angle, distance, blur, chokeMatte, color, inset, ignore) {
+  if(!ignore && (1 > distance && 1 <= blur && 1.0005 > chokeMatte + blur)){
+	  color.a *= Math.max(Math.min(chokeMatte, 1), 0.5);
+	  chokeMatte = 1;
+	  blur = 0;
+  }
   return {
-    F: (f ? m : p),
-    d: new D(-(Math.round(10 * b * Math.cos(a * Math.PI / 180)) / 10)),
-    e: new D(Math.round(10 * b * Math.sin(a * Math.PI / 180)) / 10),
-    blur: new D(c),
-    g: new D((0.0005 < d ? d : 0)),
-    color: e
+    inset: (inset ? true : false),
+    d: new UnitNumber(-(Math.round(10 * distance * Math.cos(angle * Math.PI / 180)) / 10)),
+    e: new UnitNumber(Math.round(10 * distance * Math.sin(angle * Math.PI / 180)) / 10),
+    blur: new UnitNumber(blur),
+    chokeMatte: new UnitNumber((0.0005 < chokeMatte ? chokeMatte : 0)),
+    color: color
   };
 };
 
@@ -1762,7 +1805,7 @@ function rc() {//LayerStyle
     e = [];
     g.match(/bold/i) && (k = 'bold', e.push('font weight (' + k + ')'));
     g.match(/italic/i) && (n = 'italic', e.push('font style (' + n + ')'));
-    e.length && I.k(e.m().ea() + ' ' + ((1 < e.length ? 'are' : 'is')) + ' guessed from font name.');
+    e.length && I.k(e.join().ea() + ' ' + ((1 < e.length ? 'are' : 'is')) + ' guessed from font name.');
     try {
       c = new G(this.$.textItem.color.rgb.red, this.$.textItem.color.rgb.green, this.$.textItem.color.rgb.blue, 1);
     } catch (E) {
@@ -1808,7 +1851,7 @@ function rc() {//LayerStyle
     }));
     I.f('frameFX');
     var i;
-    isLayerEffectEnable('frameFX') && (checkLayerEffectMode(this, 'frameFX', 'stroke'), ('solidColor' == getLayerEffectObjectProperty('frameFX.paintType') ? i = getLayerEffectObjectProperty('frameFX.color', 'color') : (this.Z.push('stroke'), i = Ma(getGradientData(this, getLayerEffectObjectProperty('frameFX')).gradient))), i = {
+    isLayerEffectEnable('frameFX') && (checkLayerEffectMode(this, 'frameFX', 'stroke'), ('solidColor' == getLayerEffectObjectProperty('frameFX.paintType') ? i = getLayerEffectObjectProperty('frameFX.color', 'color') : (this.Z.push('stroke'), i = GradientStyle.reduce(getGradientData(this, getLayerEffectObjectProperty('frameFX')).gradient))), i = {
       size: parseFloat(getLayerEffectObjectProperty('frameFX.size')),
       color: i,
       style: getLayerEffectObjectProperty('frameFX.style')
@@ -1888,10 +1931,10 @@ function rc() {//LayerStyle
   isLayerEffectEnable('bevelEmboss') && i.push('bevel & emboss');
   isLayerEffectEnable('chromeFX') && i.push('satin');
   isLayerEffectEnable('patternFill') && i.push('pattern overlay');
-  i.length && (I.k('Note: CSS Hat currently cannot render ' + i.m() + ', as it is hard to express in CSS.'), this.la = m);
-  this.na.length && (I.k('Blending modes are used in ' + this.na.m() + ', but they are impossible to realistically transfer to CSS.'), this.la = m);
-  this.Z.length && (I.k(this.Z.m().ea() + ' ' + ((1 < this.Z.length ? 'have' : 'has')) + ' a gradient fill type, but there is no way to express that in CSS, writing the average color instead.'), this.la = m);
-  this.ba.length && (I.k(this.ba.m().ea() + ' ' + ((1 < this.ba.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.'), this.la = m);
+  i.length && (I.k('Note: CSS Hat currently cannot render ' + i.join() + ', as it is hard to express in CSS.'), this.la = m);
+  this.na.length && (I.k('Blending modes are used in ' + this.na.join() + ', but they are impossible to realistically transfer to CSS.'), this.la = m);
+  this.Z.length && (I.k(this.Z.join().ea() + ' ' + ((1 < this.Z.length ? 'have' : 'has')) + ' a gradient fill type, but there is no way to express that in CSS, writing the average color instead.'), this.la = m);
+  this.ba.length && (I.k(this.ba.join().ea() + ' ' + ((1 < this.ba.length ? 'have' : 'has')) + ' a noise gradient fill type, but there is no way to express that in CSS.'), this.la = m);
   I.ka();
 }
 function visitorLayerStyle(a, b, c, d) {
@@ -1957,7 +2000,7 @@ function getLightEffectData(a, b, c, d, e) {
       color: getLayerEffectObjectProperty(b + '.color', 'color'),
       F: !(!e)
       };
-  e.color == o && (a.Z.push(c), c = getGradientData(a, getLayerEffectObjectProperty(b)), e.color = Ma(c.gradient));
+  e.color == o && (a.Z.push(c), c = getGradientData(a, getLayerEffectObjectProperty(b)), e.color = GradientStyle.reduce(c.gradient));
   c = getLayerEffectObjectProperty(b + '.opacity') / 100;
   e.color.c = c;
   e.distance = (d ? getLayerEffectObjectProperty(b + '.distance') : 0);
@@ -1991,7 +2034,7 @@ function getGradientData(a, b, c, d) {//Ac
   I.f('overlay with color');
   if (d) {
     c = 0;
-    for (e = a.D.length; c < e; c++) f = Ca(a.D[c].color, d), a.D[c].color = f;
+    for (e = a.D.length; c < e; c++) f = alphaBlend(a.D[c].color, d), a.D[c].color = f;
     c = 0;
     for (e = a.G.length; c < e; c++) f = a.G[c].opacity, f += (1 - f) * d.c, a.G[c].opacity = f;
   }
@@ -2158,108 +2201,145 @@ var tc = 'NoLayerSelected',
     vc = 'UnexpectedLayerType',
     yc = 'NoContentsTextLayer';
 
-function Oc(a) {
+function Oc(options) {
   I.bb();
   try {
-    var b = a.split(','),
-        c = 'true' == b[0],
-        d = 'true' == b[1];
-    Hc = 'true' == b[2];
-    Nc = 'true' == b[3];
-    var e = b[4] || 'css';
-    Mc = d;
-    documents.length || h(new sc('NoDocumentIsOpened'));
-    var f = new rc(),
-        g = f.gb || '';
-    I.ja('LayerStyle.toCssRule');
-    var j = new $a(),
+    var opts = options.split(','),
+        commentAble = 'true' == opts[0],//c
+        vendorExtensions = 'true' == opts[1];//d
+    dimensions = 'true' == opts[2];//Hc
+    outputWholeRule = 'true' == opts[3];//Nc
+    var genType = opts[4] || 'css';//e
+    if(documents.length==0){
+		throw('NoDocumentIsOpened');
+	}
+    var layerStyle = new LayerStyle(),
+        layerId = layerStyle.layerId || '';
+    console.log('LayerStyle.toCssRule');
+    var styleSheet = new StyleSheet(),
         k, n, t = p,
         E = 0,
-        i = 0;
-    visitorLayerStyle(f, f.style.opacity, j, function(a, b, c) {
-      M(a, new ub(new pa(b), c));
+        outsetFrame = 0;
+    visitorLayerStyle(layerStyle, layerStyle.style.opacity, styleSheet, function(styleSheet, value, description) {
+      addStyle(styleSheet, new OpacityDeclaration(new OpacityValue(value), description));
     });
-    var w = f.style.solidFill;
-    if (0 < w.length) {
-      var s = w[0].value.color,
-          r = [w[0].a];
+    var solidFills = layerStyle.style.solidFill;
+    if (0 < solidFills.length) {
+      var color = solidFills[0].value.color,
+          commnets = [solidFills[0].description];
       k = 1;
-      for (n = w.length; k < n; ++k) s = Ca(s, w[k].value.color), r.push(w[k].a);
-      if (f.p) {
-        var q = f.style.gradientFill;
-        if (0 < q.length) {
-          I.k('CSS cannot express gradient over text, used average gradient color instead.');
+      for (n = solidFills.length; k < n; ++k){
+		  color = Color.alphaBlend(color, solidFills[k].value.color);	
+		  commnets.push(solidFills[k].description);
+	  }
+	  
+      if (layerStyle.isText) {
+        var fills = layerStyle.style.gradientFill;
+        if (0 < fills.length) {
           k = 0;
-          for (n = q.length; k < n; ++k) s = Ca(s, Ma(q[k].value.gradient)), r.push(q[k].a);
+          for (n = fills.length; k < n; ++k) {
+			  color = alphaBlend(color, GradientStyle.reduce(fills[k].value.gradient));
+			  commnets.push(fills[k].a);
+		  }
         }
-        M(j, new Fb(s, r.join(' + ')));
-      } else M(j, new Lb(s, r.join(' + ')));
+        addStyle(styleSheet, new ColorDeclaration(color, commnets.join(' + ')));
+      } else{
+		  addStyle(styleSheet, new BackgroundColorDeclaration(color, commnets.join(' + ')));
+	  }
     }
-    var v = f.style.font;
-    if (0 < v.length) {
-      var C = v[0].value;
-      if (C.fa) {
-        var da = '<quote>"</quote>' + C.fa + '<quoteEnd>"</quoteEnd>',
-            a = o,
-            K = ('bold' == C.tb ? 'bold' : 'normal'),
-            za = ('italic' == C.style ? 'italic' : 'normal');
-        (C.fa.match(/sans/i) ? a = 'sans-serif' : C.fa.match(/serif/i) && (a = 'serif'));
-        a && (da += ', ' + a);
-        M(j, new Gb(da));
-        'normal' != K && M(j, new Ib(K));
-        'normal' != za && M(j, new Jb(za));
-        C.sb && M(j, new Kb('underline'));
+    var fonts = layerStyle.style.font;
+    if (0 < fonts.length) {
+      var font = fonts[0].value;
+      if (font.family) {
+        var family = '"' + font.family + '"',
+            fixFamily =null,
+            weight = ('bold' == font.weight ? 'bold' : 'normal'),
+            fontStyle = ('italic' == font.style ? 'italic' : 'normal');
+        if(font.family.match(/sans/i)){
+			a = 'sans-serif';
+		}else if( font.family.match(/serif/i)){
+			a = 'serif';
+		}
+        if(a){
+			family += ', ' + a;
+		}
+        addStyle(styleSheet, new FontFamilyDeclaration(family));
+		
+        if('normal' != weight){
+			addStyle(styleSheet, new FontWeightDeclaration(weight));
+		}
+		
+        if('normal' != fontStyle){
+			addStyle(styleSheet, new FontStyleDeclaration(fontStyle));
+		}
+		
+        if(font.underline){
+			addStyle(styleSheet, new TextDecorationDeclaration('underline'));
+		}
       }
-      C.size && M(j, new Hb(new D(C.size, 'px')));
+      if(font.size){
+		  addStyle(styleSheet, new FontSizeDeclaration(new UnitNumber(font.size, 'px')));
+	  }
     }
-    f.p || visitorLayerStyle(f, f.style.stroke, j, function(a, b) {
-      switch (b.style) {
-      case 'centeredFrame':
-        I.k('Stroke is centered and there is no good way to emulate this in CSS, so we render it as inner stroke.');
-        break;
-      case 'insetFrame':
-        E += b.size;
-        break;
-      case 'outsetFrame':
-        i += b.size;
-      }
-      M(a, new vb(new D(b.size), 'solid', b.color, 'stroke'));
+    if(!layerStyle.isText){
+		visitorLayerStyle(layerStyle, layerStyle.style.stroke, styleSheet, function(styleSheet, value) {
+		  switch (value.style) {
+		  case 'centeredFrame':
+			console.log('Stroke is centered and there is no good way to emulate this in CSS, so we render it as inner stroke.');
+			break;
+		  case 'insetFrame':
+			insetFrame += value.size;
+			break;
+		  case 'outsetFrame':
+			outsetFrame += value.size;
+		  }
+		  addStyle(styleSheet, new BorderDeclaration(new D(b.size), 'solid', b.color, 'stroke'));
+		});
+	}
+    var chokes = [];
+    visitorLayerStyle(layerStyle, layerStyle.style.dropShadow, styleSheet, function(styleSheet, value, description) {
+		if(this.isText){
+			if(0.0005 < value.chokeMatte)
+				chokes.push(description);
+			value = nc(value.angle, value.distance, value.blur + value.chokeMatte, 0, value.color, false, true);
+			addStyle(styleSheet, new TextShadowDeclaration(value.d, value.e, value.blur, value.color, description));
+			t = true ;
+		}
+		else{	  
+			(value = mc(value, outsetFrame), addStyle(styleSheet, value, description, new BoxShadowDeclaration(value.F, value.d, value.e, value.blur, value.chokeMatte, value.color, c))));
+		}
     });
-    var Ka = [];
-    visitorLayerStyle(f, f.style.dropShadow, j, function(a, b, c) {
-      (this.p ? (0.0005 < b.g && Ka.push(c), b = nc(b.angle, b.distance, b.blur + b.g, 0, b.color, p, m), M(a, new Pb(b.d, b.e, b.blur, b.color, c)), t = m) : (b = mc(b, i), M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c))));
+    visitorLayerStyle(layerStyle, layerStyle.style.outerGlow, styleSheet, function(a, b, c) {
+      (this.isText ? (0.0005 < b.chokeMatte && chokes.push(c), b = nc(b.angle, b.distance, b.blur + b.chokeMatte, 0, b.color, false, true), I.Pa(b, 'shadowObj'), addStyle(a, new TextShadowDeclaration(b.d, b.e, b.blur, b.color, c)), t = true) : (b = mc(b, outsetFrame), addStyle(a, new BoxShadowDeclaration(b.F, b.d, b.e, b.blur, b.chokeMatte, b.color, c))));
     });
-    visitorLayerStyle(f, f.style.outerGlow, j, function(a, b, c) {
-      (this.p ? (0.0005 < b.g && Ka.push(c), b = nc(b.angle, b.distance, b.blur + b.g, 0, b.color, p, m), I.Pa(b, 'shadowObj'), M(a, new Pb(b.d, b.e, b.blur, b.color, c)), t = m) : (b = mc(b, i), M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c))));
-    });
-    f.p || (visitorLayerStyle(f, f.style.innerShadow, j, function(a, b, c) {
-      b = nc(b.angle, b.distance, b.blur, b.g, b.color, m, p);
-      M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c));
-    }), visitorLayerStyle(f, f.style.innerGlow, j, function(a, b, c) {
-      b = nc(0, 0, b.blur, b.g, b.color, m, p);
-      M(a, new Ob(b.F, b.d, b.e, b.blur, b.g, b.color, c));
+    layerStyle.isText || (visitorLayerStyle(layerStyle, layerStyle.style.innerShadow, styleSheet, function(a, b, c) {
+      b = nc(b.angle, b.distance, b.blur, b.chokeMatte, b.color, true, false);
+      addStyle(a, new BoxShadowDeclaration(b.F, b.d, b.e, b.blur, b.chokeMatte, b.color, c));
+    }), visitorLayerStyle(layerStyle, layerStyle.style.innerGlow, styleSheet, function(a, b, c) {
+      b = nc(0, 0, b.blur, b.chokeMatte, b.color, true, false);
+      addStyle(a, new BoxShadowDeclaration(b.F, b.d, b.e, b.blur, b.chokeMatte, b.color, c));
     }));
-    Ka.length && I.k('Choke used in text layer\'s ' + Ka.m() + ', but it is not supported in CSS, ignoring.');
-    f.p && (t && Mc) && I.k('IE9 doesn\'t support text shadow (and known hacks are slow), skipping.');
-    if (!f.p) {
+    chokes.length && I.k('Choke used in text layer\'s ' + chokes.join() + ', but it is not supported in CSS, ignoring.');
+    layerStyle.isText && (t && vendorExtensions) && I.k('IE9 doesn\'t support text shadow (and known hacks are slow), skipping.');
+    if (!layerStyle.isText) {
       var S = 100,
           U = 100;
-      if (f.style.dimensions.length) {
-        var ca = f.style.dimensions[0].value.width,
-            ia = f.style.dimensions[0].value.height;
+      if (layerStyle.style.dimensions.length) {
+        var ca = layerStyle.style.dimensions[0].value.width,
+            ia = layerStyle.style.dimensions[0].value.height;
         !isNaN(ca) && 0 < ca && (S = ca);
         !isNaN(ia) && 0 < ia && (U = ia);
       }
-      if (Mc && f.style.gradientFill.length) {
+      if (vendorExtensions && layerStyle.style.gradientFill.length) {
         var C = [],
             Sb;
-        for (k = f.style.gradientFill.length - 1; 0 <= k; k--) C.push(f.style.gradientFill[k].value), Sb = f.style.gradientFill[k].a;
+        for (k = layerStyle.style.gradientFill.length - 1; 0 <= k; k--) C.push(layerStyle.style.gradientFill[k].value), Sb = layerStyle.style.gradientFill[k].a;
         var gb;
         a: {
           k = S;
           for (var da = U, K = [], za = [], ca = 0, Aa = C.length; ca < Aa; ca++) {
             for (var B = C[ca], ia = 'hat' + ca, a = '', b = 0, L = B.i.length; b < L; b++) var V = B.i[b],
-                a = a + ('<stop offset="' + Math.round(V.location) + '%" stop-color="' + new G(V.color.y, V.color.u, V.color.s, 1).toString() + '" stop-opacity="' + A(V.color.c) + '"/>\n');
+                a = a + ('<stop offset="' + Math.round(V.location) + '%" stop-color="' + new G(V.color.y, V.color.u, V.color.s, 1).toString() + '" stop-opacity="' + formatDecimaTwoPlace(V.color.c) + '"/>\n');
             var fb;
             switch (B.type) {
             case 'linear':
@@ -2296,9 +2376,9 @@ function Oc(a) {
           for (ra = L; B < ra.length;) wb = ra.charCodeAt(B++), Sa = ra.charCodeAt(B++), Ta = ra.charCodeAt(B++), cc = wb >> 2, dc = (wb & 3) << 4 | Sa >> 4, xb = (Sa & 15) << 2 | Ta >> 6, Ua = Ta & 63, (isNaN(Sa) ? xb = Ua = 64 : isNaN(Ta) && (Ua = 64)), Aa = Aa + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(cc) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(dc) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(xb) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(Ua);
           gb = 'url(data:image/svg+xml;base64,' + Aa + ')';
         }
-        M(j, new Qb(gb, Sb));
+        addStyle(styleSheet, new BackgroundImageDeclaration(gb, Sb));
       }
-      visitorLayerStyle(f, f.style.gradientFill, j, function(a, b, c) {
+      visitorLayerStyle(layerStyle, layerStyle.style.gradientFill, styleSheet, function(a, b, c) {
         var d, e = S / 2;
         d = U / 2;
         var f = b.angle,
@@ -2309,48 +2389,48 @@ function Oc(a) {
         e >= 180 && (e = e - 360);
         d = i * Math.cos((e + 90) * Math.PI / 180) / g;
         for (var f = b.scale / 100, g = [], e = [], i = 0, j = b.i.length; i < j; i++) {
-          g.push(b.i[i].color.toString() + ' ' + A((b.i[i].location - 50) * f + 50 + 100 * d) + '%');
-          e.push(b.i[i].color.toString() + ' ' + A(b.i[i].location) + '%');
+          g.push(b.i[i].color.toString() + ' ' + formatDecimaTwoPlace((b.i[i].location - 50) * f + 50 + 100 * d) + '%');
+          e.push(b.i[i].color.toString() + ' ' + formatDecimaTwoPlace(b.i[i].location) + '%');
         }
         d = g.join(', ');
         e = e.join(', ');
         switch (b.type) {
         case 'reflected':
         case 'linear':
-          M(a, new Rb(new Ga(b.angle), d, c));
+          addStyle(a, new BackgroundImageLinearGradientDeclaration(new Ga(b.angle), d, c));
           break;
         case 'radial':
-          d = Jc(jc(b.offset.horizontal), m) + ' ' + Jc(jc(b.offset.vertical), p);
+          d = Jc(jc(b.offset.horizontal), true) + ' ' + Jc(jc(b.offset.vertical), p);
           f = Math.round(b.scale * 0.5);
           f = f + '% ' + f + '%';
           f = b.scale * 0.01 * Math.min(S, U);
           f = ua(f) + ' ' + ua(f);
-          Mc && (!F(b.offset.horizontal, 50) && !F(b.offset.vertical, 50) && !F(b.scale, 100)) && I.k('Firefox has no way to specify gradient with nonstandard scale and position - take care and test, you\'re in uncharted waters.');
-          M(a, new Tb(d + ', ' + f + ', ' + e, d + ', circle, ' + e, c));
+          vendorExtensions && (!F(b.offset.horizontal, 50) && !F(b.offset.vertical, 50) && !F(b.scale, 100)) && I.k('Firefox has no way to specify gradient with nonstandard scale and position - take care and test, you\'re in uncharted waters.');
+          addStyle(a, new BackgroundImageRadialGradientDeclaration(d + ', ' + f + ', ' + e, d + ', circle, ' + e, c));
           break;
         default:
           I.k('We are sorry, ' + b.type + ' gradient style is currently not supported. Write us at team@csspiffle.com.');
         }
       });
     }
-    f.p || visitorLayerStyle(f, f.style.dimensions, j, function(a, b) {
-      !F(b.width, 0) && !F(b.height, 0) && M(a, new tb(new D(b.width - 2 * E), new D(b.height - 2 * E)));
+    layerStyle.isText || visitorLayerStyle(layerStyle, layerStyle.style.dimensions, styleSheet, function(a, b) {
+      !F(b.width, 0) && !F(b.height, 0) && addStyle(a, new SizeDeclaration(new D(b.width - 2 * insetFrame), new D(b.height - 2 * insetFrame)));
     });
-    f.p || visitorLayerStyle(f, f.style.borderRadius, j, function(a, b, c) {
-      if (!b.J()) {
+    layerStyle.isText || visitorLayerStyle(layerStyle, layerStyle.style.borderRadius, styleSheet, function(a, b, c) {
+      if (!b.StyleProperty()) {
         if (i > 0.0005) {
           xa(b.Va, i);
           xa(b.Wa, i);
           xa(b.Ca, i);
           xa(b.Da, i);
         }(b.source == 'radius from layer name' ? c = 'from layer name' : b.source == 'radius from shape' && (c = 'from vector shape'));
-        M(a, new Eb(b, c));
+        addStyle(a, new BorderRadiusDeclaration(b, c));
       }
     });
     I.ka();
     var zb;
-    if (Nc) {
-      var ec = f.name,
+    if (outputWholeRule) {
+      var ec = layerStyle.name,
           Ab, Va = [],
           Bb = m;
       ec.split(/ +/).forEach(function(a) {
@@ -2390,11 +2470,11 @@ function Oc(a) {
         '' === Db && (Db = 'layer');
         Cb = '.' + Db;
       }
-      zb = nb(j, m, Cb, e, c, d);
-    } else zb = nb(j, p, l, e, c, d);
+      zb = nb(styleSheet, m, Cb, genType, commentAble, vendorExtensions);
+    } else zb = nb(styleSheet, p, l, genType, commentAble, vendorExtensions);
     return {
       response: zb,
-      layerId: g,
+      layerId: layerId,
       error: '',
       knownError: '',
       fullError: '',

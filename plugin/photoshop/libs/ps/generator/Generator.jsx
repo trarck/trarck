@@ -1,6 +1,6 @@
-function visitorLayerStyle(layerStyle, effects, c, handle) {//Z
+function visitorLayerStyle(layerStyle, effects, styleSheet, handle) {//Z
     for (var i = 0, len = effects.length; i < len; ++i) 
-		yh.util.proxy(handle, layerStyle)(c, effects[i].value, effects[i].name);
+		yh.util.proxy(handle, layerStyle)(styleSheet, effects[i].value, effects[i].description);
 }
 
 function generateCss(options){

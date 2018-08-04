@@ -69,14 +69,14 @@ var LayerStyle;
             this.haveNotSupportEffect=false;
             this.kind=this.layer.kind.toString();//ta
             //isText
-            this.isText = 'LayerKind.TEXT' === this.kind;
+            this.isText = 'LayerKind.TEXT' === this.kind;//p
             this.opacity = yh.checkType(this.readActiveValue('opacity') /255, 'number');
             this.fillOpacity = yh.checkType(this.readActiveValue('fillOpacity')/255 , 'number');
             this.globalAngle = yh.checkType(this.readActiveValue('globalAngle'), 'number');
             if(1 > this.opacity){
                 this.style.opacity.push({
                     value: this.opacity,
-                    name: 'layer alpha'
+                    description: 'layer alpha'
                 });
             }
             if (this.isText && this.textInfo) {
@@ -121,25 +121,25 @@ var LayerStyle;
                 var fontData = {
                     color: color,
                     name: fontName || null,
-                    family: fontFamily || null,
-                    weight: fontWeight || null,
-                    style: fontStyle || null,
+                    family: fontFamily || null,//fa
+                    weight: fontWeight || null,//tb
+                    style: fontStyle || null,//
                     size: size || null,
-                    underline: (underline ? (underline == UnderlineType.UNDERLINEOFF ? false : true) : null)
+                    underline: (underline ? (underline == UnderlineType.UNDERLINEOFF ? false : true) : null)//sb
                 };
                 this.style.solidFill.push({
                     value: fontData.color,
-                    name: 'text color'
+                    description: 'text color'
                 });
                 this.style.font.push({
                     value: fontData,
-                    name: 'font'
+                    description: 'font'
                 });
                 
             } else if('LayerKind.SOLIDFILL' == this.kind && 0.01 < this.fillOpacity){ 
                 this.style.solidFill.push({
                     value: this.getAdjustment(),
-                    name: 'layer fill content'
+                    description: 'layer fill content'
                 });
             }
             //'layerFxEnabled'
@@ -156,7 +156,7 @@ var LayerStyle;
                     color = solidFill.color;
                     this.style.solidFill.push({
                         value: solidFill,
-                        name: 'color overlay'
+                        description: 'color overlay'
                     });
                 }
                 //'gradientFillFx'
@@ -164,14 +164,14 @@ var LayerStyle;
                     this.checkLayerEffectMode( 'gradientFill', 'gradient fill');
                     var gradientFill = this.getLayerEffectObjectProperty('gradientFill');
                     var gradientFillData = this.getGradientData(gradientFill, false, color);
-                    var name = 'gradient overlay';
+                    var desc = 'gradient overlay';
                     if(color){ 
-                        name = this.style.solidFill[this.style.solidFill.length-1].name + ' + ' + name;
+                        desc = this.style.solidFill[this.style.solidFill.length-1].desc + ' + ' + desc;
                         this.style.solidFill.pop();                        
                     }
                     this.style.gradientFill.push({
                         value: gradientFillData,
-                        name: name
+                        description: desc
                     });
                 }
                 //'frameFX'
@@ -194,7 +194,7 @@ var LayerStyle;
                     strokeData.color.c = c;
                     this.style.stroke.push({
                         value: strokeData,
-                        name: 'stroke'
+                        description: 'stroke'
                     });
                 }
                 //'dropShadow'
@@ -203,14 +203,14 @@ var LayerStyle;
                     var dropShadow = this.getLightEffectData('dropShadow', 'drop shadow', true);
                     this.style.dropShadow.push({
                         value: dropShadow,
-                        name: 'drop shadow'
+                        description: 'drop shadow'
                     });
                 }
                 //'innerShadow'
                 if(this.isLayerEffectEnable('innerShadow')){
                     this.style.innerShadow.push({
                         value: this.getInnerShadowData(),
-                        name: 'inner shadow'
+                        description: 'inner shadow'
                     });
                 }
                 //'innerGlow'
@@ -218,7 +218,7 @@ var LayerStyle;
                     if(this.getLayerEffectObjectProperty('innerGlow.color', 'color') || this.getGradientData(this.getLayerEffectObjectProperty('innerGlow'))){
                         this.style.innerGlow.push({
                             value: this.getInnerGlowData(),
-                            name: 'inner glow'
+                            description: 'inner glow'
                         });
                     }else{ 
                         this.noiseGradientFills.push('inner glow');
@@ -229,7 +229,7 @@ var LayerStyle;
                     if(this.getLayerEffectObjectProperty('outerGlow.color', 'color') || this.getGradientData(this.getLayerEffectObjectProperty('outerGlow'))){
                         this.style.outerGlow.push({
                             value: this.getOuterGlowData(),
-                            name: 'outer glow'
+                            description: 'outer glow'
                         });
                     }else{ 
                         this.noiseGradientFills.push('outer glow');
@@ -255,7 +255,7 @@ var LayerStyle;
             if('LayerKind.GRADIENTFILL' == this.kind && 0.01 < this.fillOpacity ){
                 this.style.gradientFill.push({
                     value: this.getAdjustmentData(),
-                    name: 'layer fill content'
+                    description: 'layer fill content'
                 });
             }
             //'borderRadius'
@@ -279,7 +279,7 @@ var LayerStyle;
             if(borderRadiusData.box){
                 this.style.borderRadius.push({
                     value: borderRadiusData.box,
-                    name: 'border radius'
+                    description: 'border radius'
                 });
             }
             if(this.useDimensions){
@@ -292,12 +292,12 @@ var LayerStyle;
                             width: borderRadiusData.bounds.right - borderRadiusData.bounds.left,
                             height: borderRadiusData.bounds.bottom - borderRadiusData.bounds.top
                         },
-                        name: 'dimensions'
+                        description: 'dimensions'
                     });
                 }else{
                     this.style.dimensions.push({
                         value: this.getBoundsData(),
-                        name: 'dimensions'
+                        description: 'dimensions'
                     });
                 }
             }

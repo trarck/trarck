@@ -32,13 +32,76 @@
         
         Compression:Compression,
        
-        zeroSuppress:function  (num, digit) {
+        zeroPad:function  (num, digit) {
             var tmp = num.toString();
             while (tmp.length < digit) {
                 tmp = "0" + tmp;
             }
             return tmp;
         },
+		
+		exportChild:function(layer,doc,options,fileNamePrefix){
+			layer.visible=true;
+			
+			var layerName = layer.name;  // store layer name before change doc
+			var duppedDocumentTmp = doc.duplicate();
+			
+			if ((FileType.Psd == options.fileType)||(FileType.Png24 == options.fileType)||(FileType.Png8 == options.fileType)) { // PSD: Keep transparency
+				
+				LayerHelper.removeAllInvisible(duppedDocumentTmp);
+
+				//this.parseLayer(duppedDocumentTmp.activeLayer,duppedDocumentTmp);
+
+				//PNGFileOptions
+				if ((FileType.Png24 == options.fileType)||(FileType.Png8 == options.fileType)) { // PNGFileOptions
+					if ((FileType.Png8 == options.fileType)) { //transparancy checked?
+						
+						if (activeDocument.activeLayer.isBackgroundLayer == false) { //is it anything but a background layer?
+						
+							app.activeDocument.trim(TrimType.TRANSPARENT);
+							
+						}
+						
+					}
+					if ((FileType.Png24 == options.fileType)) { //transparancy checked?
+						
+						if (activeDocument.activeLayer.isBackgroundLayer == false) { //is it anything but a background layer?
+						
+							app.activeDocument.trim(TrimType.TRANSPARENT);
+							
+						}
+						
+					}
+				}
+			
+				
+			
+			} else { // just flatten
+				duppedDocumentTmp.flatten();
+			}
+		
+			var fileName ="";
+			
+			if(options.createLayerFileName){
+				fileName=options.createLayerFileName(layerName,layer,layerIndex);
+			}else{
+				fileName=fileNamePrefix;
+				//fileName += "_" + zeroPad(i, 4);
+				fileName += layerName;//"_" + layerName;
+			}
+
+			fileName = fileName.replace(/[:\/\\*\?\"\<\>\|]/g, "_");  // '/\:*?"<>|' -> '_'
+			/*
+				if (fileName.length > 120) {
+					fileName = fileName.substring(0,120);
+				}
+				*/
+		
+			DocumentUtil.saveFile(duppedDocumentTmp, fileName, options);
+			duppedDocumentTmp.close(SaveOptions.DONOTSAVECHANGES);
+			
+			layer.visible=false;
+		},
     
         exportChildren:function (dupObj, orgObj, options, dupDocRef, fileNamePrefix) {
             for( var i = 0; i < dupObj.artLayers.length; i++) {
@@ -52,65 +115,7 @@
                     continue;
                 }
 
-                dupObj.artLayers[i].visible = true;
-
-                var layerName = dupObj.artLayers[i].name;  // store layer name before change doc
-                var duppedDocumentTmp = dupDocRef.duplicate();
-                if ((FileType.Psd == options.fileType)||(FileType.Png24 == options.fileType)||(FileType.Png8 == options.fileType)) { // PSD: Keep transparency
-                    
-                    LayerHelper.removeAllInvisible(duppedDocumentTmp);
-
-                    this.parseLayer(duppedDocumentTmp.activeLayer,duppedDocumentTmp);
-
-                    //PNGFileOptions
-                    if ((FileType.Png24 == options.fileType)||(FileType.Png8 == options.fileType)) { // PNGFileOptions
-                        if ((FileType.Png8 == options.fileType)) { //transparancy checked?
-                            
-                            if (activeDocument.activeLayer.isBackgroundLayer == false) { //is it anything but a background layer?
-                            
-                                app.activeDocument.trim(TrimType.TRANSPARENT);
-                                
-                            }
-                            
-                        }
-                        if ((FileType.Png24 == options.fileType)) { //transparancy checked?
-                            
-                            if (activeDocument.activeLayer.isBackgroundLayer == false) { //is it anything but a background layer?
-                            
-                                app.activeDocument.trim(TrimType.TRANSPARENT);
-                                
-                            }
-                            
-                        }
-                    }
-                
-                    
-                
-                } else { // just flatten
-                    duppedDocumentTmp.flatten();
-                }
-            
-                var fileNameBody ="";
-                
-                if(options.createLayerFileName){
-                    fileNameBody=options.createLayerFileName(layerName,i,dupObj.artLayers[i]);
-                }else{
-                    fileNameBody=fileNamePrefix;
-                    //fileNameBody += "_" + zeroSuppress(i, 4);
-                    fileNameBody += layerName;//"_" + layerName;
-                }
-
-                fileNameBody = fileNameBody.replace(/[:\/\\*\?\"\<\>\|]/g, "_");  // '/\:*?"<>|' -> '_'
-                /*
-                    if (fileNameBody.length > 120) {
-                        fileNameBody = fileNameBody.substring(0,120);
-                    }
-                    */
-            
-                DocumentUtil.saveFile(duppedDocumentTmp, fileNameBody, options);
-                duppedDocumentTmp.close(SaveOptions.DONOTSAVECHANGES);
-
-                dupObj.artLayers[i].visible = false;
+                this.exportChild(dupObj.artLayers[i],dupDocRef,options,fileNamePrefix);
             }
         
             for( var i = 0; i < dupObj.layerSets.length; i++) {
@@ -119,19 +124,19 @@
                         continue;
                     }
                 }
-                var fileNameBody = "";
+                var fileName= "";
                 if(options.createLayerSetPrefixName){
-                    fileNameBody=options.createLayerSetPrefixName(i,dupObj.layerSets[i]);
+                    fileName=options.createLayerSetPrefixName(dupObj.layerSets[i]);
                 }else{
-                    fileNameBody=fileNamePrefix;
-                    fileNameBody += "";//"_" + zeroSuppress(i, 4) + "s";
+                    fileName=fileNamePrefix;
+                    fileName += "";//"_" + zeroPad(i, 4) + "s";
                 }
     
-                this.exportChildren(dupObj.layerSets[i], orgObj.layerSets[i], options, dupDocRef, fileNameBody);  // recursive call
+                this.exportChildren(dupObj.layerSets[i], orgObj.layerSets[i], options, dupDocRef, fileName);  // recursive call
             }
         },
     
-        start:function(doc,options){
+        exportDocument:function(doc,options){
 
             var docName = doc.name;  // save the app.activeDocument name before duplicate.
 
@@ -146,11 +151,29 @@
                 app.activeDocument = doc;
                 var duppedDocument = doc.duplicate();
                 duppedDocument.activeLayer = duppedDocument.layers[duppedDocument.layers.length-1]; // for removing
-                LayerHelper.setInvisibleAllArtLayers(duppedDocument);
+                LayerHelper.hideAllArtLayers(duppedDocument);
                 this.exportChildren(duppedDocument, doc, options, duppedDocument, options.fileNamePrefix);
                 duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
             }
         },
+		
+		exportLayer:function(layer,doc,options){
+			app.activeDocument = doc;
+			var duppedDocument = doc.duplicate();
+			var dumpLayer=null;
+			for(var i=0;i<doc.layers.length;++i){
+				if(doc.layers[i]==layer){
+					dumpLayer=duppedDocument.layers[i];
+					duppedDocument.activeLayer =dumpLayer;					
+				}
+			}
+			
+			if(dumpLayer!=null){
+				LayerHelper.hideAllArtLayers(duppedDocument);				
+				this.exportChild(dumpLayer,duppedDocument,options,"");
+				duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
+			}
+		},
     
         //对layer进行处理
         parseLayer:function(layer,doc){

@@ -211,7 +211,7 @@ function exportFromChaFile(chaFile,name){
         parsePart(data[layerName],layer,doc);
     };
 
-	layerExport.start(currentDoc,exportInfo);
+	layerExport.exportDocument(currentDoc,exportInfo);
 
 //    parsePart(data["SecondWeapon2"],currentDoc.activeLayer);
 

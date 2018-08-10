@@ -71,7 +71,7 @@ var DocumentUtil={
 		var id43 = charIDToTypeID( "DIDr" );
 		desc4.putBoolean( id43, false );
 		var id44 = charIDToTypeID( "In  " );
-		desc4.putPath( id44, new File( options.outDir + "/" + filename + ".png") );
+		desc4.putPath( id44, new File( options.destination + "/" + filename + ".png") );
 		var id45 = stringIDToTypeID( "SaveForWeb" );
 		desc3.putObject( id6, id45, desc4 );
 		executeAction( id5, desc3, DialogModes.NO );
@@ -114,7 +114,7 @@ var DocumentUtil={
 		var id24 = charIDToTypeID( "DIDr" );
 		desc4.putBoolean( id24, false );
 		var id25 = charIDToTypeID( "In  " );
-		desc4.putPath( id25, new File( options.outDir + "/" + filename + ".png") );
+		desc4.putPath( id25, new File( options.destination + "/" + filename + ".png") );
 		var id26 = stringIDToTypeID( "SaveForWeb" );
 		desc3.putObject( id7, id26, desc4 );
 		executeAction( id6, desc3, DialogModes.NO );
@@ -124,21 +124,21 @@ var DocumentUtil={
 		switch (options.fileType) {
 			case FileType.Jpeg:
 				docRef.bitsPerChannel = BitsPerChannelType.EIGHT;
-				var saveFile = new File(options.outDir + "/" + filename + ".jpg");
+				var saveFile = new File(options.destination + "/" + filename + ".jpg");
 				jpgSaveOptions = new JPEGSaveOptions();
 				jpgSaveOptions.embedColorProfile = options.icc;
 				jpgSaveOptions.quality = options.jpegQuality;
 				docRef.saveAs(saveFile, jpgSaveOptions, true, Extension.LOWERCASE);
 				break;
 			case FileType.Psd:
-				var saveFile = new File(options.outDir + "/" + filename + ".psd");
+				var saveFile = new File(options.destination + "/" + filename + ".psd");
 				psdSaveOptions = new PhotoshopSaveOptions();
 				psdSaveOptions.embedColorProfile = options.icc;
 				psdSaveOptions.maximizeCompatibility = options.psdMaxComp;
 				docRef.saveAs(saveFile, psdSaveOptions, true, Extension.LOWERCASE);
 				break;
 			case FileType.Tiff:
-				var saveFile = new File(options.outDir + "/" + filename + ".tif");
+				var saveFile = new File(options.destination + "/" + filename + ".tif");
 				tiffSaveOptions = new TiffSaveOptions();
 				tiffSaveOptions.embedColorProfile = options.icc;
 				tiffSaveOptions.imageCompression = options.tiffCompression;
@@ -150,7 +150,7 @@ var DocumentUtil={
 			case FileType.Pdf:
 				if (docRef.bitsPerChannel == BitsPerChannelType.THIRTYTWO)
 					docRef.bitsPerChannel = BitsPerChannelType.SIXTEEN;
-				var saveFile = new File(options.outDir + "/" + filename + ".pdf");
+				var saveFile = new File(options.destination + "/" + filename + ".pdf");
 				pdfSaveOptions = new PDFSaveOptions();
 				pdfSaveOptions.embedColorProfile = options.icc;
 				pdfSaveOptions.encoding = options.pdfEncoding;
@@ -161,14 +161,14 @@ var DocumentUtil={
 				break;
 			case FileType.Targa:
 				docRef.bitsPerChannel = BitsPerChannelType.EIGHT;
-				var saveFile = new File(options.outDir + "/" + filename + ".tga");
+				var saveFile = new File(options.destination + "/" + filename + ".tga");
 				targaSaveOptions = new TargaSaveOptions();
 				targaSaveOptions.resolution = options.targaDepth;
 				docRef.saveAs(saveFile, targaSaveOptions, true, Extension.LOWERCASE);
 				break;
 			case FileType.Bmp:
 				docRef.bitsPerChannel = BitsPerChannelType.EIGHT;
-				var saveFile = new File(options.outDir + "/" + filename + ".bmp");
+				var saveFile = new File(options.destination + "/" + filename + ".bmp");
 				bmpSaveOptions = new BMPSaveOptions();
 				bmpSaveOptions.depth = options.bmpDepth;
 				docRef.saveAs(saveFile, bmpSaveOptions, true, Extension.LOWERCASE);
@@ -176,7 +176,7 @@ var DocumentUtil={
 			case FileType.Png8:
 				this.saveFilePng8(docRef, filename, options);
 				
-				//var saveFile = new File(options.outDir + "/" + filename + ".png");
+				//var saveFile = new File(options.destination + "/" + filename + ".png");
 				//bmpSaveOptions = new BMPSaveOptions();
 				//bmpSaveOptions.depth = options.bmpDepth;
 				//docRef.saveAs(saveFile, bmpSaveOptions, true, Extension.LOWERCASE);
@@ -184,7 +184,7 @@ var DocumentUtil={
 			case FileType.Png24:
 				this.saveFilePng24(docRef, filename, options);           
 			
-				//var saveFile = new File(options.outDir + "/" + filename + ".png");
+				//var saveFile = new File(options.destination + "/" + filename + ".png");
 				//bmpSaveOptions = new BMPSaveOptions();
 				//bmpSaveOptions.depth = options.bmpDepth;
 				//docRef.saveAs(saveFile, bmpSaveOptions, true, Extension.LOWERCASE);

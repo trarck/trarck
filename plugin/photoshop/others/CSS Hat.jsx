@@ -366,7 +366,7 @@ D.prototype.toString = function() {
   if (F(this.value, 0)) return '0';
   switch (this.n) {
   case 'px':
-    return ua(this.value);
+    return roundCss(this.value);
   case 'em':
   case 'mm':
   case 'cm':
@@ -495,11 +495,11 @@ Fa.prototype.toString = function() {
   return '{location: ' + this.location + ', opacity:' + this.opacity + '}';
 };
 
-function Ga(a) {
-  this.R = a;
+function Align(a) {
+  this.angle = a;
 }
-function Ha(a) {
-  switch (Math.round((a.R + 360) % 360)) {
+function alignToCss(a) {
+  switch (Math.round((a.angle + 360) % 360)) {
   case 0:
     return 'left';
   case 45:
@@ -603,13 +603,13 @@ function Qa(a, b, c, d, e) {
   I.db('nextStop: no path was successful');
   return o;
 }
-function Ra(a) {
-  var a = (a + 360) % 360,
-      b = Math.cos((45 - a % 90) * Math.PI / 180) * Math.sqrt(2),
-      a = (a + 90) * Math.PI / 180;
+function angleToVector2(angle) {
+  var angle = (angle + 360) % 360,
+      s = Math.cos((45 - angle % 90) * Math.PI / 180) * Math.sqrt(2),
+      angle = (angle + 90) * Math.PI / 180;
   return {
-    d: b * Math.sin(a),
-    e: b * Math.cos(a)
+    x: s * Math.sin(angle),
+    y: s * Math.cos(angle)
   };
 };
 
@@ -682,7 +682,7 @@ function lb(a) {
 function mb(a) {
   return '<comment>' + a + '</comment>';
 }
-function nb(styleSheet/*a*/, outputWhole/*b*/,selector/*c*/, styleType/*d*/, commentEnable/*e*/, vendorExtensions/*f*/) {
+function generateCssRule(styleSheet/*a*/, outputWhole/*b*/,selector/*c*/, styleType/*d*/, commentEnable/*e*/, vendorExtensions/*f*/) {//nb
   function g(key, type) {
     for (var c = 0, d = allRules.length; c < d; c++) if ('any' == type) {
       if (allRules[c].key == key) return allRules[c];
@@ -1194,8 +1194,8 @@ function BackgroundImageLinearGradientDeclaration(a, b, name) {//Rb
 }
 extend(BackgroundImageLinearGradientDeclaration, BaseDeclaration);
 BackgroundImageLinearGradientDeclaration.prototype.getProperties = function() {
-  var a = ((0 == Math.round((this.I.R + 360) % 360) % 45 ? Ha(this.I) : formatDecimaTwoPlace((this.I.R + 360) % 360) + 'deg')) + ', ' + this.La,
-      b = ((0 == Math.round((this.I.R + 360) % 360) % 45 ? Ha(this.I) : formatDecimaTwoPlace((90 - this.I.R + 360) % 360) + 'deg')) + ', ' + this.La,
+  var a = ((0 == Math.round((this.I.angle + 360) % 360) % 45 ? alignToCss(this.I) : formatDecimaTwoPlace((this.I.angle + 360) % 360) + 'deg')) + ', ' + this.La,
+      b = ((0 == Math.round((this.I.angle + 360) % 360) % 45 ? alignToCss(this.I) : formatDecimaTwoPlace((90 - this.I.angle + 360) % 360) + 'deg')) + ', ' + this.La,
       b = {
       name: 'BackgroundImage',
       stackable: 'merge_same_prefixes',
@@ -1213,7 +1213,7 @@ BackgroundImageLinearGradientDeclaration.prototype.getProperties = function() {
       },
       sass: new StyleProperty('BackgroundImage', 'sass', 'background-image', 'linear-gradient(' + a + ')')
       };
-  0 == Math.round((this.I.R + 360) % 360) % 45 && (b.M = new StyleProperty('BackgroundImage', 'stylus', 'background', 'linear-gradient(' + a + ')'));
+  0 == Math.round((this.I.angle + 360) % 360) % 45 && (b.M = new StyleProperty('BackgroundImage', 'stylus', 'background', 'linear-gradient(' + a + ')'));
   return new StyleObj(b);
 };
 
@@ -1555,19 +1555,19 @@ function ob(a, b) {
 function formatDecimaTwoPlace(a) {
   return Math.round(100 * a) / 100;
 }
-function ua(a) {
+function roundCss(a) {
   return (0.5 < Math.abs(a) ? Math.round(a) + 'px' : 0);
 }
 function removeDecimalFirstZero(a) {
   return a.toString().replace(/^[0]\./g, '.');
 }
-function F(a, b) {
+function equal(a, b) {
   return 0.0005 > Math.abs(a - b);
 }
 function ic(a, b) {
   return new wa(Math.abs(a.d - b.d), Math.abs(a.e - b.e), 'px');
 }
-function jc(a) {
+function mid(a) {
   return 0 * (1 - (a - -50) / 100) + 100 * ((a - -50) / 100);
 };
 var pb = 'http://lesshat.com',
@@ -1711,7 +1711,7 @@ function readActiveValue(a, b, c) {//W
   return getPSObjectPropertyChain(d, a, b, c);
 };
 
-function mc(lightEffect, distance) {
+function MakeBoxLightEffect(lightEffect, distance) {//mc
   var color;
   if (0 < distance) {
     color = Color.clone(lightEffect.color);
@@ -1720,22 +1720,22 @@ function mc(lightEffect, distance) {
     if(0 > chokeMatte){
 		color.a *= 1 - Math.min(1, -dis / lightEffect.blur));
 	}
-    return nc(lightEffect.angle, lightEffect.distance, lightEffect.blur, chokeMatte, color, false, false);
+    return MakeLightEffect(lightEffect.angle, lightEffect.distance, lightEffect.blur, chokeMatte, color, false, false);
   } else {
-	  return nc(lightEffect.angle, lightEffect.distance, lightEffect.blur, lightEffect.chokeMatte, lightEffect.color, false, false);
+	  return MakeLightEffect(lightEffect.angle, lightEffect.distance, lightEffect.blur, lightEffect.chokeMatte, lightEffect.color, false, false);
   }
 }
-//nc(value.angle, value.distance, value.blur + value.chokeMatte, 0, value.color, false, true);
-function nc(angle, distance, blur, chokeMatte, color, inset, ignore) {
+
+function MakeLightEffect(angle, distance, blur, chokeMatte, color, inset, ignore) {
   if(!ignore && (1 > distance && 1 <= blur && 1.0005 > chokeMatte + blur)){
 	  color.a *= Math.max(Math.min(chokeMatte, 1), 0.5);
 	  chokeMatte = 1;
 	  blur = 0;
   }
   return {
-    inset: (inset ? true : false),
-    d: new UnitNumber(-(Math.round(10 * distance * Math.cos(angle * Math.PI / 180)) / 10)),
-    e: new UnitNumber(Math.round(10 * distance * Math.sin(angle * Math.PI / 180)) / 10),
+    inset: (inset ? true : false),//F
+    x: new UnitNumber(-(Math.round(10 * distance * Math.cos(angle * Math.PI / 180)) / 10)),//d
+    y: new UnitNumber(Math.round(10 * distance * Math.sin(angle * Math.PI / 180)) / 10),//e
     blur: new UnitNumber(blur),
     chokeMatte: new UnitNumber((0.0005 < chokeMatte ? chokeMatte : 0)),
     color: color
@@ -1940,7 +1940,7 @@ function rc() {//LayerStyle
 function visitorLayerStyle(a, b, c, d) {
   for (var e = 0, f = b.length; e < f; ++e) Ub(d, a)(c, b[e].value, b[e].a);
 }
-function Jc(a, b) {
+function valueToPosition(a, b) {//Jc
   var c = '';
   switch (Math.round(a)) {
   case 50:
@@ -2180,7 +2180,7 @@ function Kc(a) {
     bounds: a.bounds
   });
 };
-var Lc = 'nobr a abbr address area article aside audio b base bdi bdo blockquote body br button canvas caption cite code col colgroup command data datalist dd del details dfn div dl dt em embed eventsource fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link mark map menu meta meter nav noscript object ol optgroup option output p param pre progress q ruby rp rt s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr'.split(' ');
+var HtmlElements = 'nobr a abbr address area article aside audio b base bdi bdo blockquote body br button canvas caption cite code col colgroup command data datalist dd del details dfn div dl dt em embed eventsource fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link mark map menu meta meter nav noscript object ol optgroup option output p param pre progress q ruby rp rt s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr'.split(' ');
 var oc = m,
     Mc = p,
     Hc = m,
@@ -2202,7 +2202,6 @@ var tc = 'NoLayerSelected',
     yc = 'NoContentsTextLayer';
 
 function Oc(options) {
-  I.bb();
   try {
     var opts = options.split(','),
         commentAble = 'true' == opts[0],//c
@@ -2217,7 +2216,7 @@ function Oc(options) {
         layerId = layerStyle.layerId || '';
     console.log('LayerStyle.toCssRule');
     var styleSheet = new StyleSheet(),
-        k, n, t = p,
+        k, n, textShadow = false,
         E = 0,
         outsetFrame = 0;
     visitorLayerStyle(layerStyle, layerStyle.style.opacity, styleSheet, function(styleSheet, value, description) {
@@ -2296,144 +2295,181 @@ function Oc(options) {
 		  addStyle(styleSheet, new BorderDeclaration(new D(b.size), 'solid', b.color, 'stroke'));
 		});
 	}
-    var chokes = [];
+	
+    var chokeDescriptions = [];
     visitorLayerStyle(layerStyle, layerStyle.style.dropShadow, styleSheet, function(styleSheet, value, description) {
 		if(this.isText){
 			if(0.0005 < value.chokeMatte)
-				chokes.push(description);
-			value = nc(value.angle, value.distance, value.blur + value.chokeMatte, 0, value.color, false, true);
-			addStyle(styleSheet, new TextShadowDeclaration(value.d, value.e, value.blur, value.color, description));
-			t = true ;
-		}
-		else{	  
-			(value = mc(value, outsetFrame), addStyle(styleSheet, value, description, new BoxShadowDeclaration(value.F, value.d, value.e, value.blur, value.chokeMatte, value.color, c))));
+				chokeDescriptions.push(description);
+			value = MakeLightEffect(value.angle, value.distance, value.blur + value.chokeMatte, 0, value.color, false, true);
+			addStyle(styleSheet, new TextShadowDeclaration(value.x, value.y, value.blur, value.color, description));
+			textShadow = true ;
+		}else{	  
+			value = MakeBoxLightEffect(value, outsetFrame);
+			addStyle(styleSheet, value, description, new BoxShadowDeclaration(value.inset, value.x, value.y, value.blur, value.chokeMatte, value.color, description));
 		}
     });
-    visitorLayerStyle(layerStyle, layerStyle.style.outerGlow, styleSheet, function(a, b, c) {
-      (this.isText ? (0.0005 < b.chokeMatte && chokes.push(c), b = nc(b.angle, b.distance, b.blur + b.chokeMatte, 0, b.color, false, true), I.Pa(b, 'shadowObj'), addStyle(a, new TextShadowDeclaration(b.d, b.e, b.blur, b.color, c)), t = true) : (b = mc(b, outsetFrame), addStyle(a, new BoxShadowDeclaration(b.F, b.d, b.e, b.blur, b.chokeMatte, b.color, c))));
+	
+    visitorLayerStyle(layerStyle, layerStyle.style.outerGlow, styleSheet, function(styleSheet, value, description) {
+      if(this.isText){
+		  if(0.0005 < value.chokeMatte){
+			chokeDescriptions.push(description)
+		  } 
+		  value = MakeLightEffect(value.angle, value.distance, value.blur + value.chokeMatte, 0, value.color, false, true);
+		  addStyle(styleSheet, new TextShadowDeclaration(value.x, value.y, value.blur, value.color, description));
+		  textShadow = true;
+	  }else{
+		  value = MakeBoxLightEffect(value, outsetFrame);
+		  addStyle(styleSheet, new BoxShadowDeclaration(value.inset, value.x, value.y, value.blur, value.chokeMatte, value.color, description));
+	  }
     });
-    layerStyle.isText || (visitorLayerStyle(layerStyle, layerStyle.style.innerShadow, styleSheet, function(a, b, c) {
-      b = nc(b.angle, b.distance, b.blur, b.chokeMatte, b.color, true, false);
-      addStyle(a, new BoxShadowDeclaration(b.F, b.d, b.e, b.blur, b.chokeMatte, b.color, c));
-    }), visitorLayerStyle(layerStyle, layerStyle.style.innerGlow, styleSheet, function(a, b, c) {
-      b = nc(0, 0, b.blur, b.chokeMatte, b.color, true, false);
-      addStyle(a, new BoxShadowDeclaration(b.F, b.d, b.e, b.blur, b.chokeMatte, b.color, c));
-    }));
-    chokes.length && I.k('Choke used in text layer\'s ' + chokes.join() + ', but it is not supported in CSS, ignoring.');
-    layerStyle.isText && (t && vendorExtensions) && I.k('IE9 doesn\'t support text shadow (and known hacks are slow), skipping.');
+	
+    if(!layerStyle.isText ){ 
+		visitorLayerStyle(layerStyle, layerStyle.style.innerShadow, styleSheet, function(styleSheet, value, description) {
+		  value = MakeLightEffect(value.angle, value.distance, value.blur, value.chokeMatte, value.color, true, false);
+		  addStyle(styleSheet, new BoxShadowDeclaration(value.inset, value.x, value.y, value.blur, value.chokeMatte, value.color, description));
+		});
+		
+		visitorLayerStyle(layerStyle, layerStyle.style.innerGlow, styleSheet, function(styleSheet, value, description) {
+		  value = MakeLightEffect(0, 0, value.blur, value.chokeMatte, value.color, true, false);
+		  addStyle(styleSheet, new BoxShadowDeclaration(value.inset, value.x, value.y, value.blur, value.chokeMatte, value.color, description));
+		});
+	}
+	
+    if(chokeDescriptions.length ){
+		console.log('Choke used in text layer\'s ' + chokeDescriptions.join() + ', but it is not supported in CSS, ignoring.');
+	}
+	
+    if(layerStyle.isText && (textShadow && vendorExtensions) ){
+		console.log('IE9 doesn\'t support text shadow (and known hacks are slow), skipping.');
+	}
+	
     if (!layerStyle.isText) {
-      var S = 100,
-          U = 100;
+      var width = 100,
+          height = 100;
       if (layerStyle.style.dimensions.length) {
-        var ca = layerStyle.style.dimensions[0].value.width,
-            ia = layerStyle.style.dimensions[0].value.height;
-        !isNaN(ca) && 0 < ca && (S = ca);
-        !isNaN(ia) && 0 < ia && (U = ia);
+        var psWidth = layerStyle.style.dimensions[0].value.width,
+            psHeight = layerStyle.style.dimensions[0].value.height;
+        if(!isNaN(psWidth) && 0 < psWidth){
+			width = psWidth;
+		}
+        
+		if(!isNaN(psHeight) && 0 < psHeight){
+			height = psHeight;
+		}
       }
-      if (vendorExtensions && layerStyle.style.gradientFill.length) {
-        var C = [],
-            Sb;
-        for (k = layerStyle.style.gradientFill.length - 1; 0 <= k; k--) C.push(layerStyle.style.gradientFill[k].value), Sb = layerStyle.style.gradientFill[k].a;
-        var gb;
-        a: {
-          k = S;
-          for (var da = U, K = [], za = [], ca = 0, Aa = C.length; ca < Aa; ca++) {
-            for (var B = C[ca], ia = 'hat' + ca, a = '', b = 0, L = B.i.length; b < L; b++) var V = B.i[b],
-                a = a + ('<stop offset="' + Math.round(V.location) + '%" stop-color="' + new G(V.color.y, V.color.u, V.color.s, 1).toString() + '" stop-opacity="' + formatDecimaTwoPlace(V.color.c) + '"/>\n');
-            var fb;
-            switch (B.type) {
-            case 'linear':
-            case 'reflected':
-              var La = Ra(B.angle),
-                  la = B.scale / 100;
-              fb = '<linearGradient id="' + ia + '" gradientUnits="objectBoundingBox" x1="' + (50 * la * -La.d + 50 + B.offset.horizontal) + '%" y1="' + (50 * la * -La.e + 50 + B.offset.vertical) + '%" x2="' + (50 * la * La.d + 50 + B.offset.horizontal) + '%" y2="' + (50 * la * La.e + 50 + B.offset.vertical) + '%">\n' + a + '   </linearGradient>\n';
-              break;
-            case 'radial':
-              var pc = 50 + B.offset.horizontal,
-                  qc = 50 + B.offset.vertical,
-                  la = Math.round(0.5 * B.scale);
-              fb = '<radialGradient id="' + ia + '" gradientUnits="userSpaceOnUse" cx="' + pc + '%" cy="' + qc + '%" r="' + la + '%" >\n' + a + '</radialGradient>\n';
-              break;
-            default:
-              var bc = 'Sorry, ' + B.type + ' gradient type is not supported for SVG export.';
-              I.k(bc);
-              gb = '/* ' + bc + ' */';
-              break a;
-            }
-            K.push(fb);
-            za.push('<rect x="0" y="0" width="' + Math.round(k) + '" height="' + Math.round(da) + '" fill="url(#' + ia + ')" />');
-          }
-          var ra = '<?xml version="1.0" ?>\n<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ' + Math.round(k) + ' ' + Math.round(da) + '" preserveAspectRatio="none">' + K.join('\n') + '\n' + za.join('\n') + '\n</svg>',
-              Aa = '',
-              wb, Sa, Ta, cc, dc, xb, Ua, B = 0,
-              yb;
-          yb = ra.replace(/\r\n/g, '\n');
-          L = '';
-          for (V = 0; V < yb.length; V++) {
-            var ga = yb.charCodeAt(V);
-            (128 > ga ? L += String.fromCharCode(ga) : ((127 < ga && 2048 > ga ? L += String.fromCharCode(ga >> 6 | 192) : (L += String.fromCharCode(ga >> 12 | 224), L += String.fromCharCode(ga >> 6 & 63 | 128))), L += String.fromCharCode(ga & 63 | 128)));
-          }
-          for (ra = L; B < ra.length;) wb = ra.charCodeAt(B++), Sa = ra.charCodeAt(B++), Ta = ra.charCodeAt(B++), cc = wb >> 2, dc = (wb & 3) << 4 | Sa >> 4, xb = (Sa & 15) << 2 | Ta >> 6, Ua = Ta & 63, (isNaN(Sa) ? xb = Ua = 64 : isNaN(Ta) && (Ua = 64)), Aa = Aa + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(cc) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(dc) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(xb) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(Ua);
-          gb = 'url(data:image/svg+xml;base64,' + Aa + ')';
-        }
-        addStyle(styleSheet, new BackgroundImageDeclaration(gb, Sb));
-      }
-      visitorLayerStyle(layerStyle, layerStyle.style.gradientFill, styleSheet, function(a, b, c) {
-        var d, e = S / 2;
-        d = U / 2;
-        var f = b.angle,
-            g = Ra(f),
-            g = Math.sqrt((S * (g.d + 1) * 0.5 - e) * (S * (g.d + 1) * 0.5 - e) + (U * (g.e + 1) * 0.5 - d) * (U * (g.e + 1) * 0.5 - d)),
-            i = Math.sqrt((jc(b.offset.horizontal) * 0.01 * S - e - 0) * (jc(b.offset.horizontal) * 0.01 * S - e - 0) + (jc(b.offset.vertical) * 0.01 * U - d - 0) * (jc(b.offset.vertical) * 0.01 * U - d - 0)),
-            e = f - (Math.atan2(jc(b.offset.horizontal) * 0.01 * S - e, jc(b.offset.vertical) * 0.01 * U - d) / Math.PI * 180 + 360) % 360;
-        e >= 180 && (e = e - 360);
-        d = i * Math.cos((e + 90) * Math.PI / 180) / g;
-        for (var f = b.scale / 100, g = [], e = [], i = 0, j = b.i.length; i < j; i++) {
-          g.push(b.i[i].color.toString() + ' ' + formatDecimaTwoPlace((b.i[i].location - 50) * f + 50 + 100 * d) + '%');
-          e.push(b.i[i].color.toString() + ' ' + formatDecimaTwoPlace(b.i[i].location) + '%');
+	  
+      // if (vendorExtensions && layerStyle.style.gradientFill.length) {
+        // var gradientFills = [],
+            // description;
+        // for (k = layerStyle.style.gradientFill.length - 1; 0 <= k; k--){
+			// gradientFills.push(layerStyle.style.gradientFill[k].value);
+			// description = layerStyle.style.gradientFill[k].description;
+		// }
+        // var gb;
+        // a: {
+          // k = width;
+          // for (var da = height, K = [], za = [], ca = 0, Aa = gradientFills.length; ca < Aa; ca++) {
+            // for (var B = gradientFills[ca], ia = 'hat' + ca, a = '', b = 0, L = B.colorStops.length; b < L; b++) var V = B.colorStops[b],
+                // a = a + ('<stop offset="' + Math.round(V.location) + '%" stop-color="' + new G(V.color.y, V.color.u, V.color.s, 1).toString() + '" stop-opacity="' + formatDecimaTwoPlace(V.color.c) + '"/>\n');
+            // var fb;
+            // switch (B.type) {
+            // case 'linear':
+            // case 'reflected':
+              // var La = Ra(B.angle),
+                  // la = B.scale / 100;
+              // fb = '<linearGradient id="' + ia + '" gradientUnits="objectBoundingBox" x1="' + (50 * la * -La.d + 50 + B.offset.horizontal) + '%" y1="' + (50 * la * -La.e + 50 + B.offset.vertical) + '%" x2="' + (50 * la * La.d + 50 + B.offset.horizontal) + '%" y2="' + (50 * la * La.e + 50 + B.offset.vertical) + '%">\n' + a + '   </linearGradient>\n';
+              // break;
+            // case 'radial':
+              // var pc = 50 + B.offset.horizontal,
+                  // qc = 50 + B.offset.vertical,
+                  // la = Math.round(0.5 * B.scale);
+              // fb = '<radialGradient id="' + ia + '" gradientUnits="userSpaceOnUse" cx="' + pc + '%" cy="' + qc + '%" r="' + la + '%" >\n' + a + '</radialGradient>\n';
+              // break;
+            // default:
+              // var bc = 'Sorry, ' + B.type + ' gradient type is not supported for SVG export.';
+              // I.k(bc);
+              // gb = '/* ' + bc + ' */';
+              // break a;
+            // }
+            // K.push(fb);
+            // za.push('<rect x="0" y="0" width="' + Math.round(k) + '" height="' + Math.round(da) + '" fill="url(#' + ia + ')" />');
+          // }
+          // var ra = '<?xml version="1.0" ?>\n<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ' + Math.round(k) + ' ' + Math.round(da) + '" preserveAspectRatio="none">' + K.join('\n') + '\n' + za.join('\n') + '\n</svg>',
+              // Aa = '',
+              // wb, Sa, Ta, cc, dc, xb, Ua, B = 0,
+              // yb;
+          // yb = ra.replace(/\r\n/g, '\n');
+          // L = '';
+          // for (V = 0; V < yb.length; V++) {
+            // var ga = yb.charCodeAt(V);
+            // (128 > ga ? L += String.fromCharCode(ga) : ((127 < ga && 2048 > ga ? L += String.fromCharCode(ga >> 6 | 192) : (L += String.fromCharCode(ga >> 12 | 224), L += String.fromCharCode(ga >> 6 & 63 | 128))), L += String.fromCharCode(ga & 63 | 128)));
+          // }
+          // for (ra = L; B < ra.length;) wb = ra.charCodeAt(B++), Sa = ra.charCodeAt(B++), Ta = ra.charCodeAt(B++), cc = wb >> 2, dc = (wb & 3) << 4 | Sa >> 4, xb = (Sa & 15) << 2 | Ta >> 6, Ua = Ta & 63, (isNaN(Sa) ? xb = Ua = 64 : isNaN(Ta) && (Ua = 64)), Aa = Aa + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(cc) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(dc) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(xb) + 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.charAt(Ua);
+          // gb = 'url(data:image/svg+xml;base64,' + Aa + ')';
+        // }
+        // addStyle(styleSheet, new BackgroundImageDeclaration(gb, description));
+      // }
+      visitorLayerStyle(layerStyle, layerStyle.style.gradientFill, styleSheet, function(styleSheet, value, description) {
+        var halfHeight, halfWidth = width / 2;
+        halfHeight = height / 2;
+        var angle = value.angle,
+            angleCoord = angleToVector2(angle),
+            length = Math.sqrt((width * (angleCoord.x + 1) * 0.5 - halfWidth) * (width * (angleCoord.x + 1) * 0.5 - halfWidth) + (height * (angleCoord.y + 1) * 0.5 - halfHeight) * (height * (angleCoord.y + 1) * 0.5 - halfHeight)),
+            offsetLength = Math.sqrt((mid(value.offset.horizontal) * 0.01 * width - halfWidth - 0) * (mid(value.offset.horizontal) * 0.01 * width - halfWidth - 0) + (mid(value.offset.vertical) * 0.01 * height - halfHeight - 0) * (mid(value.offset.vertical) * 0.01 * height - halfHeight - 0)),
+            deltaAngle = angle - (Math.atan2(mid(value.offset.horizontal) * 0.01 * width - halfWidth, mid(value.offset.vertical) * 0.01 * height - halfHeight) / Math.PI * 180 + 360) % 360;
+        deltaAngle >= 180 && (deltaAngle = deltaAngle - 360);
+        var beginLocation = offsetLength * Math.cos((deltaAngle + 90) * Math.PI / 180) / length;
+        for (var scale = value.scale / 100, g = [], e = [], i = 0, j = value.colorStops.length; i < j; i++) {
+          g.push(value.colorStops[i].color.toString() + ' ' + formatDecimaTwoPlace((value.colorStops[i].location - 50) * scale + 50 + 100 * beginLocation) + '%');
+          e.push(value.colorStops[i].color.toString() + ' ' + formatDecimaTwoPlace(value.colorStops[i].location) + '%');
         }
         d = g.join(', ');
         e = e.join(', ');
-        switch (b.type) {
+        switch (value.type) {
         case 'reflected':
         case 'linear':
-          addStyle(a, new BackgroundImageLinearGradientDeclaration(new Ga(b.angle), d, c));
+          addStyle(styleSheet, new BackgroundImageLinearGradientDeclaration(new Align(value.angle), d, description));
           break;
         case 'radial':
-          d = Jc(jc(b.offset.horizontal), true) + ' ' + Jc(jc(b.offset.vertical), p);
-          f = Math.round(b.scale * 0.5);
+          d = valueToPosition(mid(value.offset.horizontal), true) + ' ' + valueToPosition(mid(value.offset.vertical), false);
+          f = Math.round(value.scale * 0.5);
           f = f + '% ' + f + '%';
-          f = b.scale * 0.01 * Math.min(S, U);
-          f = ua(f) + ' ' + ua(f);
-          vendorExtensions && (!F(b.offset.horizontal, 50) && !F(b.offset.vertical, 50) && !F(b.scale, 100)) && I.k('Firefox has no way to specify gradient with nonstandard scale and position - take care and test, you\'re in uncharted waters.');
-          addStyle(a, new BackgroundImageRadialGradientDeclaration(d + ', ' + f + ', ' + e, d + ', circle, ' + e, c));
+          f = value.scale * 0.01 * Math.min(width, height);
+          f = roundCss(f) + ' ' + roundCss(f);
+          vendorExtensions && (!equal(value.offset.horizontal, 50) && !equal(value.offset.vertical, 50) && !equal(value.scale, 100)) && I.k('Firefox has no way to specify gradient with nonstandard scale and position - take care and test, you\'re in uncharted waters.');
+          addStyle(styleSheet, new BackgroundImageRadialGradientDeclaration(d + ', ' + f + ', ' + e, d + ', circle, ' + e, description));
           break;
         default:
-          I.k('We are sorry, ' + b.type + ' gradient style is currently not supported. Write us at team@csspiffle.com.');
+          I.k('We are sorry, ' + value.type + ' gradient style is currently not supported. Write us at team@csspiffle.com.');
         }
       });
-    }
-    layerStyle.isText || visitorLayerStyle(layerStyle, layerStyle.style.dimensions, styleSheet, function(a, b) {
-      !F(b.width, 0) && !F(b.height, 0) && addStyle(a, new SizeDeclaration(new D(b.width - 2 * insetFrame), new D(b.height - 2 * insetFrame)));
-    });
-    layerStyle.isText || visitorLayerStyle(layerStyle, layerStyle.style.borderRadius, styleSheet, function(a, b, c) {
-      if (!b.StyleProperty()) {
-        if (i > 0.0005) {
-          xa(b.Va, i);
-          xa(b.Wa, i);
-          xa(b.Ca, i);
-          xa(b.Da, i);
-        }(b.source == 'radius from layer name' ? c = 'from layer name' : b.source == 'radius from shape' && (c = 'from vector shape'));
-        addStyle(a, new BorderRadiusDeclaration(b, c));
-      }
-    });
-    I.ka();
-    var zb;
+   
+		
+		visitorLayerStyle(layerStyle, layerStyle.style.dimensions, styleSheet, function(styleSheet, value) {
+		  !equal(value.width, 0) && !equal(value.height, 0) && addStyle(styleSheet, new SizeDeclaration(new D(value.width - 2 * insetFrame), new D(value.height - 2 * insetFrame)));
+		});
+		
+		visitorLayerStyle(layerStyle, layerStyle.style.borderRadius, styleSheet, function(styleSheet, value, description) {
+		  if (!value.StyleProperty()) {
+			if (i > 0.0005) {
+			  xa(value.Va, i);
+			  xa(value.Wa, i);
+			  xa(value.Ca, i);
+			  xa(value.Da, i);
+			}(value.source == 'radius from layer name' ? description = 'from layer name' : value.source == 'radius from shape' && (description = 'from vector shape'));
+			addStyle(styleSheet, new BorderRadiusDeclaration(value, description));
+		  }
+		});
+	}
+
+	
+    var data;
     if (outputWholeRule) {
-      var ec = layerStyle.name,
-          Ab, Va = [],
-          Bb = m;
-      ec.split(/ +/).forEach(function(a) {
+      var layerName = layerStyle.name,
+          selectorName, selectorNames = [],
+          hasSelector = true;
+      layerName.split(/ +/).forEach(function(a) {
         switch (a.Ia()) {
         case '.':
         case '#':
@@ -2443,43 +2479,52 @@ function Oc(options) {
         case '^=':
         case '$=':
         case '*=':
-          Va.push(a);
+          selectorNames.push(a);
           break;
         default:
-          if (a == '^=' || a == '$=' || a == '*=' || a == '+') Va.push(a);
+          if (a == '^=' || a == '$=' || a == '*=' || a == '+') 
+			  selectorNames.push(a);
           else {
-            a.match(/,|^[0-9+]$/) && (Bb = p);
+            if(a.match(/,|^[0-9+]$/)){
+				hasSelector = false;
+			}
             var b = a.match(/\w+/);
             if (b) {
-              a: {
-                for (var c = 0, d = Lc.length; c < d; c++) if (b[0].toLowerCase() == Lc[c]) {
-                  b = m;
-                  break a;
+              
+                for (var c = 0, d = HtmlElements.length; c < d; c++){
+					if (b[0].toLowerCase() == HtmlElements[c]) {
+						b = true;
+						break a;
+					}
+					b = false;
                 }
-                b = p;
-              }(b ? Va.push(a.toLowerCase()) : Bb = p);
+                
+              if(b){
+				selectorNames.push(a.toLowerCase());
+			  } else{
+				  hasSelector = false;
+			  }
             }
           }
         }
       });
-      Ab = (Bb ? Va.join(' ') : o);
+      selectorName = (hasSelector ? selectorNames.join(' ') : null);
       var Cb;
-      if (Ab != o) Cb = Ab;
+      if (selectorName != o) Cb = selectorName;
       else {
         var Db = ec.toLowerCase().replace(/^[^a-zA-Z]+/, '').replace(/([^0-9a-zA-Z]+)$/, '').replace(RegExp('[^0-9a-zA-Z]+', 'g'), '-');
         '' === Db && (Db = 'layer');
         Cb = '.' + Db;
       }
-      zb = nb(styleSheet, m, Cb, genType, commentAble, vendorExtensions);
-    } else zb = nb(styleSheet, p, l, genType, commentAble, vendorExtensions);
+      data = generateCssRule(styleSheet, m, Cb, genType, commentAble, vendorExtensions);
+    } else data = generateCssRule(styleSheet, p, l, genType, commentAble, vendorExtensions);
     return {
-      response: zb,
+      response: data,
       layerId: layerId,
       error: '',
       knownError: '',
-      fullError: '',
-      log: I.Ja(),
-      warn: I.Ka()
+      fullError: ''
+
     };
   } catch (sa) {
     return {
@@ -2487,9 +2532,7 @@ function Oc(options) {
       layerId: '',
       error: ('KnownError' == sa.name ? 'Known error: ' + sa.Fa + ' - ' + sa.message : I.Ga(sa)),
       knownError: ('KnownError' == sa.name ? sa.Fa : ''),
-      fullError: '',
-      log: I.Ja(),
-      warn: I.Ka()
+      fullError: ''
     };
   }
 }

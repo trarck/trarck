@@ -500,17 +500,17 @@ var LayerStyle;
             gradientStyle.sort();
             var opacityStops = (0 == gradientStyle.opacityStops.length ? DefaultOpacities : gradientStyle.opacityStops);
             var colorStops = (0 == gradientStyle.colorStops.length ? DefaultColorStops : gradientStyle.colorStops);
-            for (var location = opacityStart = colorStart = -1, mergedColors = [], iter;
+            for (var location = opacityStart = colorStart = -1, colorStops = [], iter;
             (iter = this.nextStop(colorStops, opacityStops, location, colorStart, opacityStart)) !== null;){ 
                 colorStart = iter.colorStart;
                 opacityStart = iter.opacityStart;
                 location = iter.colorStop.location;
-                mergedColors.push(iter.colorStop)
+                colorStops.push(iter.colorStop)
             }
    
             var ret = {
                 gradient: gradientStyle,
-                mergedColors: mergedColors,
+                colorStops: colorStops,//i
                 type: type,
                 reverse: reverse,
                 offset: offset,
@@ -518,11 +518,11 @@ var LayerStyle;
             };
             //'invert'
             if (ret.reverse) {
-                var len = ret.mergedColors.length;
+                var len = ret.colorStops.length;
                 for (var i= 0; i < len; i++){
-                    ret.mergedColors[i].location = 100 - ret.mergedColors[i].location;
+                    ret.colorStops[i].location = 100 - ret.colorStops[i].location;
                 }
-                ret.mergedColors.sort(function(a, b) {
+                ret.colorStops.sort(function(a, b) {
                     return a.location - b.location;
                 });
             }
@@ -534,13 +534,13 @@ var LayerStyle;
                 case 'reflected':
                     //'type = reflected'
                     ret.angle = ActionUtils.getPSObjectPropertyChain(gradientObject, 'angle');
-                    var len = ret.mergedColors.length;
-                    for (var i = 0; i < len; i++) ret.mergedColors[i].location = 50 + ret.mergedColors[i].location / 2;
+                    var len = ret.colorStops.length;
+                    for (var i = 0; i < len; i++) ret.colorStops[i].location = 50 + ret.colorStops[i].location / 2;
                     for (var j = 0; j < len; j++){
-                        if(50.0005 < ret.mergedColors[j].location){
-                            ret.mergedColors.unshift({
-                                color: ret.mergedColors[j].color,
-                                location: 100 - ret.mergedColors[j].location
+                        if(50.0005 < ret.colorStops[j].location){
+                            ret.colorStops.unshift({
+                                color: ret.colorStops[j].color,
+                                location: 100 - ret.colorStops[j].location
                             });
                         }
                     }

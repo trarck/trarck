@@ -192,7 +192,7 @@ function exportFromChaFile(chaFile,name){
     var exportInfo={
         fileNamePrefix:"",
         fileType:LayerExport.FileType.Png24,
-        destination:"/e/lua/dtcqtool/fca/work/new_heroes/"+name,
+        outDir:"/e/lua/dtcqtool/fca/work/new_heroes/"+name,
         interlaced:false, 
         transparency:true,
         visibleOnly:true

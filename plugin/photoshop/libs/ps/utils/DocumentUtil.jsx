@@ -114,7 +114,11 @@ var DocumentUtil={
 		var id24 = charIDToTypeID( "DIDr" );
 		desc4.putBoolean( id24, false );
 		var id25 = charIDToTypeID( "In  " );
-		desc4.putPath( id25, new File( options.destination + "/" + fileName + ".png") );
+        if(options.destination){
+            desc4.putPath( id25, new File( options.destination + "/" + fileName + ".png") );
+        }else{
+            desc4.putPath( id25, new File( fileName ) );
+        }
 		var id26 = stringIDToTypeID( "SaveForWeb" );
 		desc3.putObject( id7, id26, desc4 );
 		executeAction( id6, desc3, DialogModes.NO );

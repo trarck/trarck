@@ -24,7 +24,7 @@
 
     LayerExport.FileType=FileType;
 
-    LayerExport.FileType=FileType;
+    LayerExport.Compression=Compression;
 
     LayerExport.prototype={
         

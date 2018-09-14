@@ -5,14 +5,24 @@ $.evalFile(g_LibsScriptFolderPath + "ps/Log.jsx");
 $.evalFile(g_LibsScriptFolderPath + "ps/defines/Constants.jsx");
 $.evalFile(g_LibsScriptFolderPath + "ps/utils/DocumentUtil.jsx");
 
-var IosIconCreator;
+var IosLaunchCreator;
 (function(){
-    var IconSizes=[1024,180,167,152,144,120,114,100,87,80,76,72,60,58,57,50,40,29,20];
-    IosIconCreator=function(options){
+    var LaunchSizes=[ [1125,2436]
+    ,[2436,1125],[1242,2208],[750,1334],[2208,1242],[640,960],[640,1136],[768,1024],[1536,2048],[1024,768],[2048,1536],
+       [320,480],[640,960],[768,1004],[1536,2008],[1024,748],[2048,1496]
+    ];
+    var LaunchType={
+        Portrait:1,
+        Landscape:2
+    };
+
+    IosLaunchCreator=function(options){
         this.options=options;
     };
 
-    IosIconCreator.prototype={
+    IosLaunchCreator.LaunchType=LaunchType;
+    
+    IosLaunchCreator.prototype={
          generate:function(){
             if(!this.options.inputFile){
                 inputFile=File.openDialog('Please select icon file:');
@@ -28,17 +38,21 @@ var IosIconCreator;
         
             var doc=app.open(inputFile)
             
-            for(var i=0;i<IconSizes.length;i++){
-                this.createIcon(doc,IconSizes[i],IconSizes[i]);
+            for(var i=0;i<LaunchSizes.length;i++){
+                this.createLaunch(doc,LaunchSizes[i][0],LaunchSizes[i][1]);
             }            
         },
-    
-        createIcon:function(doc,width,height){
+        
+        getLanunchType:function(width,height){
+            return width>height?LaunchType.Landscape:LaunchType.Portrait;
+        },
+        
+        createLaunch:function(doc,width,height){
             app.activeDocument = doc;
             var duppedDocument = doc.duplicate();
-            duppedDocument.resizeImage(UnitValue(width,"px"),UnitValue(height,"px"),null,ResampleMethod.BICUBIC);
+            duppedDocument.resizeCanvas(UnitValue(width,"px"),UnitValue(height,"px"),AnchorPosition.MIDDLECENTER);
             
-            var fileName=this.options.baseName+"-"+width;
+            var fileName=this.options.baseName+"-"+width+"x"+height;
             var saveOptions={
                 fileType:FileType.Png24,
                 transparency:true,
@@ -46,12 +60,12 @@ var IosIconCreator;
                 destination:this.options.outDir
             }
             DocumentUtil.saveFile(duppedDocument, fileName, saveOptions);
-            duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
+           duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
         }
 		
     };    
 })();
-var ic=new IosIconCreator({
+var ic=new IosLaunchCreator({
     //inputFile:"/d/t/1.png",
     //outDir:"d:\\t",
     baseName:"zz"

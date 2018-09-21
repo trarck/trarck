@@ -9,7 +9,7 @@ var IosLaunchCreator;
 (function(){
     var LaunchSizes=[ [1125,2436]
     ,[2436,1125],[1242,2208],[750,1334],[2208,1242],[640,960],[640,1136],[768,1024],[1536,2048],[1024,768],[2048,1536],
-       [320,480],[640,960],[768,1004],[1536,2008],[1024,748],[2048,1496]
+       [320,480],[960,640],[768,1004],[1536,2008],[1024,748],[2048,1496]
     ];
     var LaunchType={
         Portrait:1,
@@ -50,8 +50,16 @@ var IosLaunchCreator;
         createLaunch:function(doc,width,height){
             app.activeDocument = doc;
             var duppedDocument = doc.duplicate();
-            duppedDocument.resizeCanvas(UnitValue(width,"px"),UnitValue(height,"px"),AnchorPosition.MIDDLECENTER);
             
+            //检查输入图片方向
+            var inputLaunchType=this.options.launchType || LaunchType.Landscape;
+            var outLaunchType=this.getLanunchType(width,height)
+            if (inputLaunchType!=outLaunchType){
+                duppedDocument.rotateCanvas(90)
+            }
+            
+            //duppedDocument.resizeCanvas(UnitValue(width,"px"),UnitValue(height,"px"),AnchorPosition.MIDDLECENTER);
+            duppedDocument.resizeImage(UnitValue(width,"px"),UnitValue(height,"px"),null,ResampleMethod.BICUBIC);
             var fileName=this.options.baseName+"-"+width+"x"+height;
             var saveOptions={
                 fileType:FileType.Png24,
@@ -60,8 +68,44 @@ var IosLaunchCreator;
                 destination:this.options.outDir
             }
             DocumentUtil.saveFile(duppedDocument, fileName, saveOptions);
-           duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
-        }
+            duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
+        },
+        createUseCut:function(doc,width,height){
+            app.activeDocument = doc;
+            var duppedDocument = doc.duplicate();
+            //检查输入图片方向
+            var inputLaunchType=this.options.launchType || LaunchType.Landscape;
+            
+            //duppedDocument.resizeCanvas(UnitValue(width,"px"),UnitValue(height,"px"),AnchorPosition.MIDDLECENTER);
+            duppedDocument.resizeImage(UnitValue(width,"px"),UnitValue(height,"px"),null,ResampleMethod.BICUBIC);
+            var fileName=this.options.baseName+"-"+width+"x"+height;
+            var saveOptions={
+                fileType:FileType.Png24,
+                transparency:true,
+                interlaced:true,
+                destination:this.options.outDir
+            }
+            DocumentUtil.saveFile(duppedDocument, fileName, saveOptions);
+            duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
+        },
+        createUseScale:function(doc,width,height){
+            app.activeDocument = doc;
+            var duppedDocument = doc.duplicate();
+            //检查输入图片方向
+            var inputLaunchType=this.options.launchType || LaunchType.Landscape;
+            
+            //duppedDocument.resizeCanvas(UnitValue(width,"px"),UnitValue(height,"px"),AnchorPosition.MIDDLECENTER);
+            duppedDocument.resizeImage(UnitValue(width,"px"),UnitValue(height,"px"),null,ResampleMethod.BICUBIC);
+            var fileName=this.options.baseName+"-"+width+"x"+height;
+            var saveOptions={
+                fileType:FileType.Png24,
+                transparency:true,
+                interlaced:true,
+                destination:this.options.outDir
+            }
+            DocumentUtil.saveFile(duppedDocument, fileName, saveOptions);
+            duppedDocument.close( SaveOptions.DONOTSAVECHANGES );
+        },
 		
     };    
 })();

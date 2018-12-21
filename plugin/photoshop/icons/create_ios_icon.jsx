@@ -22,7 +22,7 @@ var IosIconCreator;
             }
                 
             if(!this.options.baseName){
-                this.options.baseName=inputFile.name;
+                this.options.baseName=inputFile.name.substr(0,inputFile.name.indexOf("."));
             }
             
             if(!this.options.outDir){

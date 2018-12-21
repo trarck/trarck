@@ -20,7 +20,11 @@ var IosIconCreator;
             }else{
                     inputFile=new File(this.options.inputFile);
             }
-        
+                
+            if(!this.options.baseName){
+                this.options.baseName=inputFile.name;
+            }
+            
             if(!this.options.outDir){
                 outDir=Folder.selectDialog('Please select out folder:');
                 this.options.outDir=outDir.fullName
@@ -54,7 +58,7 @@ var IosIconCreator;
 var ic=new IosIconCreator({
     //inputFile:"/d/t/1.png",
     //outDir:"d:\\t",
-    baseName:"zz"
+    baseName:null
     });
 ic.generate();
 

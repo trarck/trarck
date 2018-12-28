@@ -45,8 +45,8 @@ var IosIconCreator;
             var fileName=this.options.baseName+"-"+width;
             var saveOptions={
                 fileType:FileType.Png24,
-                transparency:true,
-                interlaced:true,
+                transparency:false,
+                interlaced:false,
                 destination:this.options.outDir
             }
             DocumentUtil.saveFile(duppedDocument, fileName, saveOptions);

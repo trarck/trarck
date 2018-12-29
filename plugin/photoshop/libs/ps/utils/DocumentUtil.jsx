@@ -14,7 +14,7 @@ var DocumentUtil={
 		var id12 = charIDToTypeID( "PNG8" );
 		desc4.putEnumerated( id10, id11, id12 );
 		var id13 = charIDToTypeID( "Intr" ); //Interlaced
-		desc4.putBoolean( id13, options.interlaced );
+		desc4.putBoolean( id13, options.interlaced?true:false );
 		var id14 = charIDToTypeID( "RedA" );
 		var id15 = charIDToTypeID( "IRRd" );
 		var id16 = charIDToTypeID( "Prcp" ); //Algorithm
@@ -50,7 +50,7 @@ var DocumentUtil={
 		var id33 = charIDToTypeID( "TDtA" );
 		desc4.putInteger( id33, 100 );
 		var id34 = charIDToTypeID( "Trns" ); //Transparency
-		desc4.putBoolean( id34, options.transparency );
+		desc4.putBoolean( id34, options.transparency ?true:false);
 		var id35 = charIDToTypeID( "Mtt " );
 		desc4.putBoolean( id35, true );		 //matte
 		var id36 = charIDToTypeID( "MttR" ); //matte color
@@ -91,9 +91,9 @@ var DocumentUtil={
 		var id13 = charIDToTypeID( "PN24" );
 		desc4.putEnumerated( id11, id12, id13 );
 		var id14 = charIDToTypeID( "Intr" );
-		desc4.putBoolean( id14, options.interlaced );
+		desc4.putBoolean( id14, options.interlaced ?true:false);
 		var id15 = charIDToTypeID( "Trns" );
-		desc4.putBoolean( id15, options.transparency );
+		desc4.putBoolean( id15, options.transparency ?true:false);
 		var id16 = charIDToTypeID( "Mtt " );
 		desc4.putBoolean( id16, true );
 		var id17 = charIDToTypeID( "MttR" );

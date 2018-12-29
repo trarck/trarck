@@ -22,7 +22,7 @@ var IosIconCreator;
             }
                 
             if(!this.options.baseName){
-                this.options.baseName=inputFile.name;
+                this.options.baseName=inputFile.name.substr(0,inputFile.name.indexOf("."));
             }
             
             if(!this.options.outDir){
@@ -45,8 +45,8 @@ var IosIconCreator;
             var fileName=this.options.baseName+"-"+width;
             var saveOptions={
                 fileType:FileType.Png24,
-                transparency:true,
-                interlaced:true,
+                transparency:false,
+                interlaced:false,
                 destination:this.options.outDir
             }
             DocumentUtil.saveFile(duppedDocument, fileName, saveOptions);

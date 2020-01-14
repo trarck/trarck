@@ -201,4 +201,15 @@ var DocumentUtil={
 		}
 	}
     
+    cropRect:function(docRef,x,y,w,h){
+        docRef.crop([x,y,x+w,y+h ]);
+    },
+    
+    cropByChannel(docRef,chnnaelName){
+        var channel=docRef.channels.getByName (chnnaelName);
+        docRef.selection.load(channel);
+        var bounds = doc.selection.bounds;
+        doc.crop(bounds);
+        return bounds
+    }
 };
